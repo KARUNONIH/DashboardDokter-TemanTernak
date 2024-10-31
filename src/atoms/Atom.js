@@ -1,0 +1,10 @@
+import { atom } from 'jotai';
+export const sidebarAtom = atom(true);
+export const profileDropdownAtom = atom(false);
+export const notificationAtom = atom(false);
+export const isModalOpenAtom = atom(false);
+export const activeFeatureAtom = atom(0);
+export const activeFormRegistrationAtom = atom("proggress1");
+export const sessionSignAtom = atom(false);
+export const navbarCollapseAtom = atom(false);
+export const formSpecializationAtom = atom("pendidikan");
