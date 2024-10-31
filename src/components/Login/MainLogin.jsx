@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
 import { activeFormRegistrationAtom } from "../../atoms/Atom";
-import FormRegistration from "./FormRegistration.jsx";
+import FormRegistration from "./FormRegistration";
 
 const MainLogin = ({ sign }) => {
   return (
