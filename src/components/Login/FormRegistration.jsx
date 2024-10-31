@@ -1,4 +1,4 @@
-import Input from "./input";
+import Input from "./Input";
 import { useAtom } from "jotai";
 import { activeFormRegistrationAtom, formSpecializationAtom, sessionSignAtom } from "../../atoms/Atom";
 import { Navigate, useNavigate } from "react-router-dom";
