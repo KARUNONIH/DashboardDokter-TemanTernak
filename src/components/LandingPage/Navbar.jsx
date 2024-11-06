@@ -33,7 +33,7 @@ const Navbar = ({ featureRef, flowRef, jumbotronRef }) => {
           <span className="self-center whitespace-nowrap text-2xl font-semibold">Teman Ternak</span>
         </section>
         <div className="flex space-x-3 md:order-2 md:space-x-0 rtl:space-x-reverse">
-          <Button color={"blue"} label={"Download App"} className="hidden md:block" />
+          <Button color={"green"} label={"Download App"} className="hidden md:block" />
           <button onClick={navbarCollapseFunction} data-collapse-toggle="navbar-sticky" type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden" aria-controls="navbar-sticky" aria-expanded={navbarCollapse}>
             <span className="sr-only">Open main menu</span>
             {navbarButtonIcon}

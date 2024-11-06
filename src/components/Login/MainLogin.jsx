@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { activeFormRegistrationAtom } from "../../atoms/Atom";
 import FormRegistration from "./FormRegistration";
 
-const MainLogin = ({ sign }) => {
+const MainLogin = ({ sign, signin, signup, preSignup }) => {
   return (
     <div className="w-[500px] flex justify-center items-center">
       <div className="">
@@ -12,7 +12,7 @@ const MainLogin = ({ sign }) => {
           <h1 className="text-xl font-semibold">Create a Doctor Account</h1>
           <p className="text-sm text-gray-500">Provide your email and choose a password</p>
         </section>
-        <FormRegistration type={sign}/>
+        <FormRegistration type={sign} signin={signin} signup={signup} preSignup={ preSignup } />
         <p className={`text-center mt-6 text-sm capitalize ${sign === "signup" ? 'hidden' : 'block'}`}>
           doesn't have an account ? <Link to={"/signup"} className="underline text-blue-600">sign up</Link>
         </p>

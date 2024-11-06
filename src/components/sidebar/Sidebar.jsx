@@ -13,7 +13,7 @@ function Sidebar() {
   const isActive = (path) => (location.pathname === path ? "bg-blue-600/[.1] text-blue-600" : "");
 
   return (
-    <div className={`flex ${isSidebarVisible ? "md:w-48 w-44" : "w-0"} transition-width duration-300 ease-in-out fixed md:relative overflow-hidden h-screen shadow`}>
+    <div className={`flex ${isSidebarVisible ? "md:w-48 w-44" : "w-0"} transition-width duration-300 ease-in-out fixed bg-white z-50 overflow-hidden h-screen shadow`}>
       <div className=" bg-white-50  p-4 w-full">
         <div className="">
           <div className="flex items-center h-max gap-2">
@@ -25,29 +25,19 @@ function Sidebar() {
             <p className="text-xs text-gray-500 md:text-sm text-nowrap">Doctor App</p>
           </div>
         </div>
-        <SidebarItem icon={<MdDashboard />} label="Dashboard" className="mb-4" classActive={isActive("/dashboard")} />
+        <SidebarItem icon={<MdDashboard />} label="Dashboard" className="mb-4" classActive={isActive("/dashboard")} path={'/dashboard'}/>
 
-        <SidebarGroup title="CLINIC">
-          <SidebarItem icon={<FaCalendarAlt />} label="Reservations" />
-          <SidebarItem icon={<FaUser />} label="Patients" />
-          <SidebarItem icon={<FaPills />} label="Treatments" />
-          <SidebarItem icon={<FaUsers />} label="Staff List" />
+        <SidebarGroup title="SERVICE">
+          <SidebarItem icon={<FaPills />} label="Layanan" classActive={isActive("/layanan")} path={'/layanan'}/>
+          <SidebarItem icon={<FaCalendarAlt />} label="Konsultasi" classActive={isActive("/konsultasi")} path={'/konsultasi'}/>
+          <SidebarItem icon={<FaUser />} label="Riwayat" classActive={isActive("/riwayat")} path={'/riwayat'}/>
         </SidebarGroup>
 
         <SidebarGroup title="FINANCE">
-          <SidebarItem icon={<FaBriefcase />} label="Accounts" />
-          <SidebarItem icon={<FaChartBar />} label="Sales" />
-          <SidebarItem icon={<FaShoppingCart />} label="Purchases" />
-          <SidebarItem icon={<FaCreditCard />} label="Payment Method" />
+          <SidebarItem icon={<FaBriefcase />} label="Keuangan" classActive={isActive("/keuangan")} path={'/keuangan'}/>
         </SidebarGroup>
 
-        <SidebarGroup title="PHYSICAL ASSET">
-          <SidebarItem icon={<FaBox />} label="Stocks" />
-          <SidebarItem icon={<FaDesktop />} label="Peripherals" />
-        </SidebarGroup>
-
-        <SidebarItem icon={<FaFileAlt />} label="Report" />
-        <SidebarItem icon={<FaComments />} label="Customer Support" />
+        <SidebarItem icon={<FaComments />} label="setting"classActive={isActive("/pengaturan")} path={'/pengaturan'}/>
       </div>
     </div>
   );

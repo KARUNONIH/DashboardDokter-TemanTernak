@@ -26,7 +26,7 @@ const SideLogin = ({ sign }) => {
     if (stage === "proggress5") return "h-full";
   }
   return (
-    <div className={`flex h-[600px] ${sign === "signup" ? "w-[400px] pb-4 pl-10 pr-10 pt-6" : "w-0"} flex-col justify-between overflow-hidden rounded bg-gray-300/15 transition-all duration-300 ease-in-out`}>
+    <div className={`flex h-[600px] ${sign === "signup" && proggressSignUp !== "proggress0" ? "w-[400px] pb-4 pl-10 pr-10 pt-6" : "w-0"} flex-col justify-between overflow-hidden rounded bg-gray-300/15 transition-all duration-300 ease-in-out`}>
       <div className="">
         <section className="flex items-center gap-2">
           <img src="/asset/stars.png" alt="" className="aspect-square w-14" />

@@ -1,13 +1,14 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 
-function SidebarItem({ icon, label, className, classActive }) {
+function SidebarItem({ icon, label, className, classActive, path }) {
   return (
-    <div className={`flex items-center gap-2 p-1.5 hover:bg-gray-200 rounded-lg cursor-pointer md:text-md text-sm ${className} ${classActive}`}>
-      <div className="text-gray-500">
-        {icon}
+    <Link to={path}>
+      <div className={`md:text-md flex cursor-pointer items-center gap-2 rounded-lg p-1.5 text-sm hover:bg-gray-200 ${className} ${classActive}`}>
+        <div className="text-gray-500">{icon}</div>
+        <span className="text-nowrap font-semibold">{label}</span>
       </div>
-      <span className='font-semibold text-nowrap'>{label}</span>
-    </div>
+    </Link>
   );
 }
 

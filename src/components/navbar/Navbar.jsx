@@ -9,6 +9,11 @@ const Navbar = () => {
   const location = useLocation();
   const pageTitles = {
     '/dashboard': 'Dashboard',
+    '/layanan': 'layanan',
+    '/konsultasi': 'konsultasi',
+    '/riwayat': 'riwayat',
+    '/keuangan': 'keuangan',
+    '/pengaturan': 'pengaturan',
   }
   const pageTitle = pageTitles[location.pathname];
 
@@ -16,7 +21,7 @@ const Navbar = () => {
     <nav className="flex items-center justify-between px-4 py-0 bg-white border-b">
       <div className="flex items-center gap-2">
         <ButtonToggleSidebar className={ "hidden md:block "} />
-        <h1 className="text-xl font-bold">{pageTitle}</h1>
+        <h1 className="text-xl font-bold  capitalize">{pageTitle}</h1>
       </div>
       <NavbarContent/>
     </nav>

@@ -14,8 +14,8 @@ function ProfileDropdown({}) {
   };
 
   const destroySign = () => {
+    localStorage.removeItem('token');
     setsessionSign(false);
-    navigate('/signin');
   }
 
   return (
@@ -32,7 +32,6 @@ function ProfileDropdown({}) {
       {dropdownVisible && (
         <div className="absolute right-0 w-48 bg-white rounded-md shadow shadow-gray-300">
           <ul>
-            <li className="p-2 hover:bg-gray-200 cursor-pointer">Settings</li>
             <li className="p-2 hover:bg-gray-200 cursor-pointer">
               <button className="w-full h-full block" onClick={destroySign}>
                 Logout
