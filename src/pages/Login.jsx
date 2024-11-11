@@ -1,58 +1,72 @@
 import { useAtom } from "jotai";
 import MainLogin from "../components/Login/MainLogin";
 import SideLogin from "../components/Login/SideLogin";
-import { activeFormRegistrationAtom, errorSignupAtom, preSignupAtom, sessionSignAtom, signupStatusAtom } from "../atoms/Atom";
-import { useEffect } from "react";
+import { activeFormRegistrationAtom, errorApiAtom, loginAtom, preSignupAtom, sessionSignAtom, signupStatusAtom, signupAtom } from "../atoms/Atom";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Post from "../fetchAPI/Post";
+import GetAuthorization from "../fetchAPI/GetAuthorization";
+import PostAuthorization from "../fetchAPI/PostAuthorization";
 
 const Login = ({ sign }) => {
-  const [sessionSign, setSessionSign] = useAtom(sessionSignAtom);
-  const [activeFormRegistration, setActiveFormRegistration] = useAtom(activeFormRegistrationAtom);
-  const [signupStatus, setSignupStatus] = useAtom(signupStatusAtom);
-  const [errorSignup, setErrorSignup] = useAtom(errorSignupAtom);
   const [dataPreSignup, setDataPreSignup] = useAtom(preSignupAtom);
+  const [dataLogin, setDataLogin] = useAtom(loginAtom);
+  const [dataSignup, setDataSignup] = useAtom(signupAtom);
+  const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
 
   const navigate = useNavigate();
 
-  const signin = () => {
-    const token = "hasan-login-teman-teman-123";
-    localStorage.setItem("token", token);
-    setSessionSign(true);
-    navigate("/dashboard");
+  const endpoint = {
+    preSignup: "https://api.temanternak.h14.my.id/users",
+    signup: "https://api.temanternak.h14.my.id/registrations/veterinarians",
+    signin: "https://api.temanternak.h14.my.id/authentications",
+    statusUser: "https://api.temanternak.h14.my.id/users/my"
   };
 
-  const signup = () => {
-    console.log("signup");
-    // collect all data
-    // post data
-    // get response
-    // if successful set token
-    // change state to proggress5
-    // return response
+  const { data: preSignupData, loading: preSignupLoading, error: preSignupError, fetchData: fetchPreSignup } = Post(endpoint.preSignup, dataPreSignup);
+  const { data: signupData, loading: signupLoading, error: signupError, fetchData: fetchSignup } = PostAuthorization(endpoint.signup, dataSignup, JSON.parse(localStorage.getItem("token")));
+  const { data: signinData, loading: signinLoading, error: signinError, fetchData: fetchSignin } = Post(endpoint.signin, dataLogin);
+  const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchStatusUser } = GetAuthorization(endpoint.statusUser, JSON.parse(localStorage.getItem("token")));
 
-    const isSuccess = true;
-
-    if (isSuccess) {
-      const token = "hasan-daftar-teman-teman-123";
-      localStorage.setItem("token", token);
-      setSessionSign(true);
-      setSignupStatus(true);
-      setActiveFormRegistration("proggress5");
-    } else {
-      setSessionSign(false);
-      setSignupStatus(false);
-      setErrorSignup("Lu dokter gadungan");
-      setActiveFormRegistration("proggress5");
+  const preSignup = async () => {
+    const result = await fetchPreSignup();
+    if (result) {
+      console.log(result);
+      navigate("/signin");
     }
   };
 
-  const preSignup = () => {
-    // const response = Post("http://api.temanternak.h14.my.id/users", dataPreSignup);
-    
-    // if (response.status === 'success') { }
-    setActiveFormRegistration("proggress1");
+  const signup = async () => {
+    console.log(dataSignup);
+
+    const result = await fetchSignup();
+    if (result) {
+    console.log(result);
+    registrationProggres("proggress5");
+    } else {
+      console.error(signupError);
+  }
   };
+
+  const statusUser = async () => {
+    const result = await fetchStatusUser();
+    if (result.data.role === "invited-user") {
+      registrationProggres("proggress1");
+      navigate("/signup");
+    } else if (result.data.role === "veterinarian") {
+      navigate("/dashboard");
+    }
+  }
+
+  const signin = async () => {
+    const result = await fetchSignin();
+    if (result) {
+      localStorage.setItem("token", JSON.stringify(result.token));
+      statusUser();
+    }
+  };
+
+  
 
   return (
     <div className="flex h-[100dvh] w-[100dvw] items-center justify-center bg-slate-50">

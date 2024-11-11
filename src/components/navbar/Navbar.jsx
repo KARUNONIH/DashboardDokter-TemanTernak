@@ -18,7 +18,7 @@ const Navbar = () => {
   const pageTitle = pageTitles[location.pathname];
 
   return (
-    <nav className="flex items-center justify-between px-4 py-0 bg-white border-b">
+    <nav className="flex items-center justify-between px-4 py-0 bg-white border-b sticky top-0">
       <div className="flex items-center gap-2">
         <ButtonToggleSidebar className={ "hidden md:block "} />
         <h1 className="text-xl font-bold  capitalize">{pageTitle}</h1>

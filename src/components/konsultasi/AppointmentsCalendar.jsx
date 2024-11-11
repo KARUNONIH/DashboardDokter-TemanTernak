@@ -6,9 +6,16 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import { FaVideo } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
+import { useAtom } from "jotai";
+import { modalKonsultasiAtom } from "../../atoms/Atom";
 
 const AppointmentsCalendar = () => {
   const [totalEvents, setTotalEvents] = useState(0);
+  const [modalKonsultasi, setModalKonsultasi] = useAtom(modalKonsultasiAtom);
+
+  const openModal = () => {
+    setModalKonsultasi(true);
+  };
 
   const events = [
     {
@@ -45,11 +52,43 @@ const AppointmentsCalendar = () => {
   ];
 
   const handleEvents = (events) => {
-    const filteredEvents = events.filter(
-      (event) => event.title !== "Break Time"
-    );
+    const filteredEvents = events.filter((event) => event.title !== "Break Time");
     setTotalEvents(filteredEvents.length);
   };
+
+  const renderEventContent = (eventInfo) => {
+    return (
+      <div className="flex h-full cursor-pointer flex-col items-start rounded p-2 text-black" style={{ backgroundColor: eventInfo.event.backgroundColor }} onClick={openModal}>
+        <div className="w-max">
+          <div className="flex justify-between gap-3">
+            <div className={`flex aspect-square h-6 items-center justify-center rounded text-white`} style={{ backgroundColor: eventInfo.event.extendedProps.bgIcon }}>
+              <FaVideo />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">{eventInfo.event.title}</span>
+              <span className="text-sm text-gray-600">{eventInfo.timeText}</span>
+              <span
+                className="mt-2 rounded-full bg-white px-0.5 py-0.5 text-center text-xs font-medium"
+                style={{
+                  borderColor: eventInfo.event.extendedProps.bgIcon,
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                }}
+              >
+                {eventInfo.event.extendedProps.type}
+              </span>
+            </div>
+            <section className="flex h-max items-center rounded bg-white">
+              <span className="text-green-600">
+                <GoDotFill />
+              </span>
+              {eventInfo.event.extendedProps.status && <span className={`px-1 py-0.5 text-xs font-medium`}>{eventInfo.event.extendedProps.status}</span>}
+            </section>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
@@ -66,7 +105,7 @@ const AppointmentsCalendar = () => {
         }}
         customButtons={{
           totalEventsDisplay: {
-            text: `Total Konsultasi: ${totalEvents}`, 
+            text: `Total Konsultasi: ${totalEvents}`,
             click: () => {},
           },
         }}
@@ -100,39 +139,7 @@ const AppointmentsCalendar = () => {
 };
 
 // Custom render function for event content
-function renderEventContent(eventInfo) {
-  return (
-    <div className="flex h-full cursor-pointer flex-col items-start rounded p-2 text-black" style={{ backgroundColor: eventInfo.event.backgroundColor }}>
-      <div className="w-max">
-        <div className="flex justify-between gap-3">
-          <div className={`flex aspect-square h-6 items-center justify-center rounded text-white`} style={{ backgroundColor: eventInfo.event.extendedProps.bgIcon }}>
-            <FaVideo />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">{eventInfo.event.title}</span>
-            <span className="text-sm text-gray-600">{eventInfo.timeText}</span>
-            <span
-              className="mt-2 rounded-full bg-white px-0.5 py-0.5 text-center text-xs font-medium"
-              style={{
-                borderColor: eventInfo.event.extendedProps.bgIcon,
-                borderWidth: "1px",
-                borderStyle: "solid",
-              }}
-            >
-              {eventInfo.event.extendedProps.type}
-            </span>
-          </div>
-          <section className="flex h-max items-center rounded bg-white">
-            <span className="text-green-600">
-              <GoDotFill />
-            </span>
-            {eventInfo.event.extendedProps.status && <span className={`px-1 py-0.5 text-xs font-medium`}>{eventInfo.event.extendedProps.status}</span>}
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-}
+
 
 // Function to set status color with Tailwind CSS
 function getStatusColor(status) {

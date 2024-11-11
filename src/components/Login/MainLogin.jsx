@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
-import { activeFormRegistrationAtom } from "../../atoms/Atom";
 import FormRegistration from "./FormRegistration";
 
 const MainLogin = ({ sign, signin, signup, preSignup }) => {
+
   return (
     <div className="w-[500px] flex justify-center items-center">
       <div className="">

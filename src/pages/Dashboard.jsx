@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
-import React from "react";
-import { sessionSignAtom } from "../atoms/Atom";
+import React, { useEffect } from "react";
+import { dataUSerAtom, sessionSignAtom } from "../atoms/Atom";
 import { useNavigate } from "react-router-dom";
 import LineChart from "../components/Dashboard/LineChart";
 import SummaryCard from "../components/Dashboard/SummaryCard";
@@ -8,8 +8,28 @@ import WorkHoursChart from "../components/Dashboard/StatisktikKonsultasi";
 import MonthlyEvents from "../components/Dashboard/KonsultasiTerkini";
 import EmployeeList from "../components/Dashboard/JadwalUlang";
 import Schedule from "../components/Dashboard/JadwalHariIni";
+import GetAuthorization from "../fetchAPI/GetAuthorization";
 
 const Dashboard = () => {
+  const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
+
+  const endpoint = {
+    dataUserUrl: "https://api.temanternak.h14.my.id/users/my"
+  };
+
+  const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await fetchDataUser();
+      if (response) {
+        console.log(response);
+        setDataUSer(response.data);
+      }
+    }
+
+    fetch();
+  }, []);
+
   const getGreetingMessage = () => {
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
@@ -42,7 +62,7 @@ const Dashboard = () => {
       <div className="">
         <h1 className="text-lg font-semibold">
           {getGreetingMessage()}
-          <span>, Jhon!</span>
+          <span>, { dataUser.username }!</span>
         </h1>
         <p className="text-sm text-gray-600">{getCurrentDate()}</p>
       </div>
