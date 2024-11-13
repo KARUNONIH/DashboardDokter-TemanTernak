@@ -4,7 +4,7 @@ const SearchNavbarInput = () => {
   return (
     <div className="">
       <form class="w-[300px]">
-        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only ">
+        <label htmlFor="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only ">
           Search
         </label>
         <div class="relative">

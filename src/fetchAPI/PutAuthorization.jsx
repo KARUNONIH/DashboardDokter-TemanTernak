@@ -2,22 +2,23 @@
 import { useAtom } from "jotai";
 import { loadingApiAtom, responseApiAtom, errorApiAtom } from "../atoms/Atom";
 
-const GetAuthorization = (url, token) => {
+const PutAuthorization = (url, body, token) => {
   const [data, setData] = useAtom(responseApiAtom);
   const [loading, setLoading] = useAtom(loadingApiAtom);
   const [error, setError] = useAtom(errorApiAtom);
 
-    const fetchData = async () => {
+  const fetchData = async () => {
     try {
       setData(null);
       setError(null);
       setLoading(true);
       const response = await fetch(url, {
-        method: "GET",
+        method: "PUT",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -39,4 +40,4 @@ const GetAuthorization = (url, token) => {
   return { data, loading, error, fetchData };
 };
 
-export default GetAuthorization;
+export default PutAuthorization;

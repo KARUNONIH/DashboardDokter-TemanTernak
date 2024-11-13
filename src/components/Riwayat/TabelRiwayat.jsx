@@ -1,5 +1,5 @@
 import React from "react";
-import PaymentRow from "./PaymentRow";
+import DataTable from "./DataTable";
 
 const paymentsData = [
   {
@@ -20,7 +20,6 @@ const paymentsData = [
     totalAmount: "$535",
     paymentStatus: "Unpaid",
   },
-  // Tambahkan data lainnya di sini
 ];
 
 const TabelRiwayat = () => {
@@ -40,7 +39,7 @@ const TabelRiwayat = () => {
         </thead>
         <tbody>
           {paymentsData.map((payment, index) => (
-            <PaymentRow
+            <DataTable
               key={index}
               reservationId={payment.reservationId}
               patientName={payment.patientName}

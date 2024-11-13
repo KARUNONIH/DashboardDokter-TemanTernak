@@ -26,7 +26,7 @@ const AppointmentsCalendar = () => {
       borderColor: "rgba(192, 38, 211, 0.0)",
       extendedProps: {
         status: "Finished",
-        type: "Video Call",
+        name: "Video Call",
         bgIcon: "rgba(192, 38, 211, 1)",
       },
     },
@@ -38,7 +38,7 @@ const AppointmentsCalendar = () => {
       borderColor: "#D6FAD6",
       extendedProps: {
         status: "Finished",
-        type: "Video Call",
+        name: "Video Call",
         bgIcon: "#D6FAD6",
       },
     },
@@ -61,9 +61,7 @@ const AppointmentsCalendar = () => {
       <div className="flex h-full cursor-pointer flex-col items-start rounded p-2 text-black" style={{ backgroundColor: eventInfo.event.backgroundColor }} onClick={openModal}>
         <div className="w-max">
           <div className="flex justify-between gap-3">
-            <div className={`flex aspect-square h-6 items-center justify-center rounded text-white`} style={{ backgroundColor: eventInfo.event.extendedProps.bgIcon }}>
-              <FaVideo />
-            </div>
+            <img className={`aspect-square h-6  rounded `} style={{ backgroundColor: eventInfo.event.extendedProps.bgIcon }}/>
             <div className="flex flex-col">
               <span className="text-sm font-medium">{eventInfo.event.title}</span>
               <span className="text-sm text-gray-600">{eventInfo.timeText}</span>
@@ -75,7 +73,7 @@ const AppointmentsCalendar = () => {
                   borderStyle: "solid",
                 }}
               >
-                {eventInfo.event.extendedProps.type}
+                {eventInfo.event.extendedProps.name}
               </span>
             </div>
             <section className="flex h-max items-center rounded bg-white">
@@ -95,8 +93,8 @@ const AppointmentsCalendar = () => {
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin, listPlugin]}
         initialView="timeGridDay"
-        slotMinTime="08:00:00"
-        slotMaxTime="18:00:00"
+        slotMinTime="00:00:00"
+        slotMaxTime="24:00:00"
         events={events}
         headerToolbar={{
           left: "totalEventsDisplay",

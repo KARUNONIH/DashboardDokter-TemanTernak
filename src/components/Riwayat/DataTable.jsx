@@ -1,7 +1,7 @@
 import React from "react";
 import { FaChevronDown, FaDownload, FaEdit } from "react-icons/fa";
 
-const PaymentRow = ({
+const DataTable = ({
   reservationId,
   patientName,
   patientImage,
@@ -25,10 +25,8 @@ const PaymentRow = ({
 
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-50">
-      {/* Reservation ID */}
       <td className="px-4 py-3 text-gray-800 font-semibold">{reservationId}</td>
 
-      {/* Patient Name */}
       <td className="px-4 py-3 flex items-center">
         <img
           src={patientImage}
@@ -38,23 +36,18 @@ const PaymentRow = ({
         <span className="text-gray-800">{patientName}</span>
       </td>
 
-      {/* Number of Bill */}
       <td className="px-4 py-3 text-gray-600">{billNumber}</td>
 
-      {/* Reservation Date */}
       <td className="px-4 py-3 text-gray-600">{reservationDate}</td>
 
-      {/* Total Amount */}
       <td className="px-4 py-3 font-semibold text-gray-800">{totalAmount}</td>
 
-      {/* Payment Status */}
       <td className="px-4 py-3">
         <span className={`text-xs font-medium px-2 py-1 rounded-md ${getStatusStyle()}`}>
           {paymentStatus}
         </span>
       </td>
 
-      {/* Actions */}
       <td className="px-4 py-3 flex space-x-2">
         <FaEdit className="text-gray-500 cursor-pointer hover:text-gray-700" />
         <FaDownload className="text-gray-500 cursor-pointer hover:text-gray-700" />
@@ -64,4 +57,4 @@ const PaymentRow = ({
   );
 };
 
-export default PaymentRow;
+export default DataTable;

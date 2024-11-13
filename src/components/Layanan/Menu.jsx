@@ -1,0 +1,108 @@
+import { useAtom } from "jotai";
+import { dataLayananAtom, filterDataLayananKonsultasiJadwalAtom, modalLayananAtom, settingMenuLayananAtom, typeModalLayananAtom } from "../../atoms/Atom";
+import { FaPlus } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+
+const Menu = () => {
+  const [settingMenuLayanan, setSettingMenuLayanan] = useAtom(settingMenuLayananAtom);
+  const [isModalOpen, setModalOpen] = useAtom(modalLayananAtom);
+  const [dataLayanan] = useAtom(dataLayananAtom);
+  const [search, setSearch] = useState({ konsultasi: "", layanan: "", jadwal: "" });
+  const [filterData, setFilterData] = useAtom(filterDataLayananKonsultasiJadwalAtom);
+  const [typeModal, setTypeModal] = useAtom(typeModalLayananAtom);
+
+
+  useEffect(() => {
+    setFilterData({ ...filterData, layanan: dataLayanan.layanan });
+    setFilterData({ ...filterData, jadwal: dataLayanan.jadwal });
+    console.log(dataLayanan);
+  }, [dataLayanan]);
+
+  const handleSearch = (searchTerm, type) => {
+    if (type === "layanan") {
+      const filteredData = (dataLayanan.layanan || []).filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilterData({ ...filterData, layanan: filteredData });
+    } else if(type === "jadwal"){
+      const filteredData = (dataLayanan.layanan || []).filter((item) =>
+        item.start_time.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.end_time.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilterData({ ...filterData, layanan: filteredData });
+    }
+  };
+
+  const handleInputChange = (value, type) => {
+    setSearch({...search, [type]: value});
+    handleSearch(value, type);
+  };
+
+  return (
+    <div className="flex items-center justify-between border-b-2 border-gray-300">
+      <div className="-mb-0.5 flex">
+        <button type="button" className={`${settingMenuLayanan.activeMenu === "konsultasi" ? "border-b-4 border-black" : ""} box-border`} onClick={() => setSettingMenuLayanan({ ...settingMenuLayanan, activeMenu: "konsultasi" })}>
+          <p className="p-4">Konsultasi</p>
+        </button>
+        <button type="button" className={`${settingMenuLayanan.activeMenu === "layanan" ? "border-b-4 border-black" : ""} box-border`} onClick={() => setSettingMenuLayanan({ ...settingMenuLayanan, activeMenu: "layanan" })}>
+          <p className="p-4">Layanan</p>
+        </button>
+        <button type="button" className={`${settingMenuLayanan.activeMenu === "jadwal" ? "border-b-4 border-black" : ""} box-border`} onClick={() => setSettingMenuLayanan({ ...settingMenuLayanan, activeMenu: "jadwal" })}>
+          <p className="p-4">Jadwal</p>
+        </button>
+      </div>
+      {settingMenuLayanan.activeMenu === "konsultasi" && (
+        <div className="flex items-center gap-4">
+        <div className="flex w-[370px] items-center gap-3 rounded bg-gray-50 shadow shadow-gray-300">
+          <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
+            <FaMagnifyingGlass />
+          </label>
+          <input type="text" placeholder="Cari nama konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" />
+        </div>
+      </div>
+      )}
+      {settingMenuLayanan.activeMenu === "layanan" && (
+        <div className="flex items-center gap-4">
+          <div className="flex w-[370px] items-center gap-3 rounded bg-gray-50 shadow shadow-gray-300">
+            <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
+              <FaMagnifyingGlass />
+            </label>
+            <input type="text" placeholder="Cari nama layanan" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" value={search.layanan} onChange={(e) => handleInputChange(e.target.value, "layanan")} />
+          </div>
+          <button className="flex items-center gap-2 rounded border-2 border-gray-300 px-2 py-1 hover:bg-gray-100" onClick={() => {
+            setTypeModal("add");
+            setModalOpen(true)
+          }}>
+            <section className="text-gray-600">
+              <FaPlus />
+            </section>
+            <p className="text-sm">Layanan</p>
+          </button>
+        </div>
+      )}
+      {settingMenuLayanan.activeMenu === "jadwal" && (
+        <div className="flex items-center gap-4">
+        <div className="flex w-[370px] items-center gap-3 rounded bg-gray-50 shadow shadow-gray-300">
+          <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
+            <FaMagnifyingGlass />
+          </label>
+          <input type="text" placeholder="Cari jadwal konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" />
+        </div>
+        <button className="flex items-center gap-2 rounded border-2 border-gray-300 px-2 py-1 hover:bg-gray-100" onClick={() => {
+          setTypeModal("schedule");
+          setModalOpen(true)
+        }}>
+          <section className="text-gray-600">
+            <FaPlus />
+          </section>
+          <p className="text-sm">Jadwal</p>
+        </button>
+      </div>
+      )}
+    </div>
+  );
+};
+
+export default Menu;

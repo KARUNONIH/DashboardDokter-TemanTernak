@@ -3,11 +3,13 @@ import { useAtom } from "jotai";
 import { loadingApiAtom, responseApiAtom, errorApiAtom } from "../atoms/Atom";
 
 const Get = (url) => {
+
   const [data, setData] = useAtom(responseApiAtom);
   const [loading, setLoading] = useAtom(loadingApiAtom);
   const [error, setError] = useAtom(errorApiAtom);
 
   const fetchData = async () => {
+
     try {
       setData(null);
       setError(null);
