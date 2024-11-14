@@ -1,4 +1,3 @@
-// Post.js
 import { useAtom } from "jotai";
 import { loadingApiAtom, responseApiAtom, errorApiAtom } from "../atoms/Atom";
 

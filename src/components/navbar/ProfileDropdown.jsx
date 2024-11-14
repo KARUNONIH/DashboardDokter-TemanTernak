@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { dataUSerAtom, profileDropdownAtom, sessionSignAtom } from "../../atoms/Atom";
 import { FaChevronDown } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import DestroyAuthorization from "../../fetchAPI/DestroyAuthorization";
 
 function ProfileDropdown({}) {
   const [dropdownVisible, setDropdownVisible] = useAtom(profileDropdownAtom);
@@ -10,19 +11,24 @@ function ProfileDropdown({}) {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const navigate = useNavigate();
 
+  const { data: signOutData, loading: signOutLoading, error: signOutError, fetchData: fetchSignOut } = DestroyAuthorization("https://api.temanternak.h14.my.id/authentications", JSON.parse(localStorage.getItem("token")));
+
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
 
-  const destroySign = () => {
-    localStorage.removeItem('token');
-    setsessionSign(false);
-  }
+  const destroySign = async () => {
+    const response = await fetchSignOut();
+    if (response) {
+      localStorage.removeItem("token");
+      navigate("/signin");
+    }
+  };
 
   return (
     <div className={`relative hidden md:block`}>
-      <div className="flex items-center cursor-pointer p-2" onClick={toggleDropdown}>
-        <img src="/asset/stars.png" alt="Profile" className="w-10 h-10 rounded-full" />
+      <div className="flex cursor-pointer items-center p-2" onClick={toggleDropdown}>
+        <img src="/asset/stars.png" alt="Profile" className="h-10 w-10 rounded-full" />
         <div className="ml-2">
           <h1 className="font-semibold">{dataUser.name}</h1>
           <p className="text-sm text-gray-500">{dataUser.role}</p>
@@ -31,10 +37,10 @@ function ProfileDropdown({}) {
       </div>
 
       {dropdownVisible && (
-        <div className="absolute right-0 w-48 bg-white rounded-md shadow shadow-gray-300">
+        <div className="absolute right-0 w-48 rounded-md bg-white shadow shadow-gray-300">
           <ul>
-            <li className="p-2 hover:bg-gray-200 cursor-pointer">
-              <button className="w-full h-full block" onClick={destroySign}>
+            <li className="cursor-pointer p-2 hover:bg-gray-200">
+              <button className="block h-full w-full" onClick={destroySign}>
                 Logout
               </button>
             </li>

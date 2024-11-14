@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { loadingApiAtom, responseApiAtom, errorApiAtom } from "../atoms/Atom";
 
-const GetAuthorization = (url, token) => {
+const DestroyAuthorization = (url, token) => {
   const [data, setData] = useAtom(responseApiAtom);
   const [loading, setLoading] = useAtom(loadingApiAtom);
   const [error, setError] = useAtom(errorApiAtom);
@@ -12,7 +12,7 @@ const GetAuthorization = (url, token) => {
       setError(null);
       setLoading(true);
       const response = await fetch(url, {
-        method: "GET",
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -38,4 +38,4 @@ const GetAuthorization = (url, token) => {
   return { data, loading, error, fetchData };
 };
 
-export default GetAuthorization;
+export default DestroyAuthorization;

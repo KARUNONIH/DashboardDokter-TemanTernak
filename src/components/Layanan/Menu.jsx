@@ -12,28 +12,97 @@ const Menu = () => {
   const [filterData, setFilterData] = useAtom(filterDataLayananKonsultasiJadwalAtom);
   const [typeModal, setTypeModal] = useAtom(typeModalLayananAtom);
 
+  useEffect(() => {
+    setModalOpen(false);
+  }, []);
+
+  
 
   useEffect(() => {
-    setFilterData({ ...filterData, layanan: dataLayanan.layanan });
-    setFilterData({ ...filterData, jadwal: dataLayanan.jadwal });
-    console.log(dataLayanan);
+    setFilterData({ ...filterData, layanan: dataLayanan.layanan, jadwal: dataLayanan.jadwal, konsultasi: dataLayanan.konsultasi});
+    console.log("data Layanan",dataLayanan);
   }, [dataLayanan]);
+
+  const formatDateTime = (dateString) => {
+    console.log(dateString);
+    const date = new Date(dateString);
+    const userTimeOffset = date.getTimezoneOffset();
+    
+    date.setMinutes(date.getMinutes() - userTimeOffset);
+    const options = {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    };
+    
+    return new Intl.DateTimeFormat('id-ID', options).format(date);
+  };
+  
+  const status = (isAccepted, isSuspended) => {
+    return isAccepted && !isSuspended ? "approved" : !isAccepted && !isSuspended ? "pending" : "suspended";
+  }
+
+  const formatDateTimeRange = (startTimeISO, endTimeISO) => {
+    console.log(startTimeISO, endTimeISO);
+    const startDate = new Date(startTimeISO);
+    const endDate = new Date(endTimeISO);
+    
+    const userTimeOffset = startDate.getTimezoneOffset();
+    
+    startDate.setMinutes(startDate.getMinutes() - userTimeOffset);
+    endDate.setMinutes(endDate.getMinutes() - userTimeOffset);
+    
+    const dateOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+
+    const formattedDate = new Intl.DateTimeFormat("id-ID", dateOptions).format(startDate);
+    const formattedStartTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(startDate);
+    const formattedEndTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(endDate);
+
+    // const gmtOffset = -new Date().getTimezoneOffset() / 60;
+    // const gmtString = `GMT${gmtOffset >= 0 ? "+" : ""}${gmtOffset}`;
+
+    return `${formattedDate} ${formattedStartTime} - ${formattedEndTime}`;
+  };
 
   const handleSearch = (searchTerm, type) => {
     if (type === "layanan") {
       const filteredData = (dataLayanan.layanan || []).filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        status(item.isAccepted, item.isSuspended).toLowerCase().includes(searchTerm.toLowerCase()) 
       );
       setFilterData({ ...filterData, layanan: filteredData });
     } else if(type === "jadwal"){
-      const filteredData = (dataLayanan.layanan || []).filter((item) =>
-        item.start_time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.end_time.toLowerCase().includes(searchTerm.toLowerCase())
+      const filteredData = (dataLayanan.jadwal || []).filter((item) =>
+        formatDateTime(item.start_time).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        formatDateTime(item.end_time).toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilterData({ ...filterData, layanan: filteredData });
+      setFilterData({ ...filterData, jadwal: filteredData });
+    } else if (type === "konsultasi") {
+      console.log("sf", dataLayanan.konsultasi);
+      const filteredData = (dataLayanan.konsultasi || []).filter((item) =>
+        item.booker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      formatDateTimeRange(item.startTime, item.endTime).toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilterData({ ...filterData, konsultasi: filteredData });
     }
   };
+
+  
 
   const handleInputChange = (value, type) => {
     setSearch({...search, [type]: value});
@@ -59,7 +128,7 @@ const Menu = () => {
           <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
             <FaMagnifyingGlass />
           </label>
-          <input type="text" placeholder="Cari nama konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" />
+          <input type="text" placeholder="Cari nama konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" value={search.konsultasi} onChange={(e) => handleInputChange(e.target.value, "konsultasi")}/>
         </div>
       </div>
       )}
@@ -69,7 +138,7 @@ const Menu = () => {
             <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
               <FaMagnifyingGlass />
             </label>
-            <input type="text" placeholder="Cari nama layanan" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" value={search.layanan} onChange={(e) => handleInputChange(e.target.value, "layanan")} />
+            <input type="text" placeholder="Cari nama layanan" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" value={search.layanan} onChange={(e) => handleInputChange(e.target.value, "layanan")} />
           </div>
           <button className="flex items-center gap-2 rounded border-2 border-gray-300 px-2 py-1 hover:bg-gray-100" onClick={() => {
             setTypeModal("add");
@@ -88,7 +157,7 @@ const Menu = () => {
           <label htmlFor="input" className="cursor-pointer pl-3 text-xl text-gray-600">
             <FaMagnifyingGlass />
           </label>
-          <input type="text" placeholder="Cari jadwal konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" id="input" />
+          <input type="text" placeholder="Cari jadwal konsultasi" className="w-full rounded bg-gray-50 p-2 text-sm focus:outline-none" value={search.jadwal} onChange={(e) => handleInputChange(e.target.value, "jadwal")}/>
         </div>
         <button className="flex items-center gap-2 rounded border-2 border-gray-300 px-2 py-1 hover:bg-gray-100" onClick={() => {
           setTypeModal("schedule");

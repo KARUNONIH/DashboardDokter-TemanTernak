@@ -18,7 +18,7 @@ function Sidebar() {
         <div className="">
           <div className="flex items-center h-max gap-2">
             <img src="/asset/stars.png" alt="" className="w-[40px] h-[40px]" />
-            <h1 className="md:text-2xl font-bold mb-2">Zendenta</h1>
+            <h1 className="md:text-2xl font-bold mb-2">4 in 1</h1>
           </div>
           <div className="bg-white p-2 rounded-lg my-4">
             <h2 className="text-sm md:text-md font-semibold text-nowrap">Teman Ternak</h2>
