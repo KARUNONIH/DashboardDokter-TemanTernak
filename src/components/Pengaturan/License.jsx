@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Input from "./input";
+import Input from "./Input";
 import Get from "../../fetchAPI/Get";
 import Swal from 'sweetalert2';
 
@@ -37,7 +37,6 @@ const License = () => {
     fetchData();
   }, []);
 
-  // useEffect untuk mengambil URL STRV saat strvFileId berubah
   useEffect(() => {
     const getFileUrl = async () => {
       if (strvFileId) {
@@ -53,7 +52,6 @@ const License = () => {
     getFileUrl();
   }, [strvFileId]);
 
-  // useEffect untuk mengambil URL SIP saat sipFileId berubah
   useEffect(() => {
     const getSipFileUrl = async () => {
       if (sipFileId) {
@@ -87,22 +85,20 @@ const License = () => {
         const dataFile = await response.json();
         setData((prevData) => ({ ...prevData, [type]: dataFile.data.id }));
 
-        // Update state strvFileId atau sipFileId berdasarkan tipe file
         if (type === "strvFileId") {
           setStrvFileId(dataFile.data.id);
           setFile((prevFile) => ({
             ...prevFile,
-            strv: { ...prevFile.strv, name: "STRV Baru" }, // Ubah nama STRV menjadi STRV Baru
+            strv: { ...prevFile.strv, name: "STRV Baru" },
           }));
         } else if (type === "sipFileId") {
           setSipFileId(dataFile.data.id);
           setFile((prevFile) => ({
             ...prevFile,
-            sip: { ...prevFile.sip, name: "SIP Baru" }, // Ubah nama SIP menjadi SIP Baru
+            sip: { ...prevFile.sip, name: "SIP Baru" },
           }));
         }
 
-        // Ambil URL terbaru setelah upload file
         const fileResponse = await fetch(endpoint.file + dataFile.data.id, {
           method: "GET",
           headers: {
@@ -112,7 +108,6 @@ const License = () => {
 
         if (fileResponse.ok) {
           const fileData = await fileResponse.json();
-          // Update URL file berdasarkan tipe
           if (type === "strvFileId") {
             setFile((prevFile) => ({
               ...prevFile,
@@ -141,22 +136,18 @@ const License = () => {
     if (response) {
       console.log("update", response);
 
-      // Tampilkan SweetAlert setelah update berhasil
       Swal.fire({
         title: 'Success!',
         text: 'Data berhasil diupdate.',
         icon: 'success',
         confirmButtonText: 'OK'
       }).then(() => {
-        // Reset file names ke nama lama setelah update
         setFile({
           strv: { url: "", name: "STRV Lama" },
           sip: { url: "", name: "SIP Lama" },
         });
 
-        // Ambil data terbaru setelah SweetAlert
         fetchGet().then(() => {
-          // Ambil URL terbaru setelah data di-fetch
           if (strvFileId) {
             fetchGetFile().then(response => {
               if (response) {

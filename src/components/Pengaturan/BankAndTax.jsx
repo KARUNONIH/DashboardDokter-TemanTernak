@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Input from "./input";
 import Swal from 'sweetalert2';
+import Input from "./Input";
 
 const BankAndTax = () => {
   const [data, setData] = useState(null);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Input from "./input";
+import Input from "./Input";
 import Get from "../../fetchAPI/Get";
 import Swal from 'sweetalert2';
 
@@ -37,7 +37,6 @@ const GeneralIdentity = () => {
     fetchData();
   }, []);
 
-  // useEffect untuk mengambil URL foto formal saat idFile berubah
   useEffect(() => {
     const getFileUrl = async () => {
       if (idFile) {
@@ -53,7 +52,6 @@ const GeneralIdentity = () => {
     getFileUrl();
   }, [idFile]);
 
-  // useEffect untuk mengambil URL KTP saat ktpFileId berubah
   useEffect(() => {
     const getKtpFileUrl = async () => {
       if (ktpFileId) {
@@ -87,22 +85,20 @@ const GeneralIdentity = () => {
         const dataFile = await response.json();
         setData((prevData) => ({ ...prevData, [type]: dataFile.data.id }));
 
-        // Update state idFile atau ktpFileId berdasarkan tipe file
         if (type === "formalPictureId") {
           setIdFile(dataFile.data.id);
           setFile((prevFile) => ({
             ...prevFile,
-            foto: { ...prevFile.foto, name: "Foto Formal Baru" }, // Ubah nama foto formal menjadi foto baru
+            foto: { ...prevFile.foto, name: "Foto Formal Baru" },
           }));
         } else if (type === "ktpFileId") {
           setKtpFileId(dataFile.data.id);
           setFile((prevFile) => ({
             ...prevFile,
-            ktp: { ...prevFile.ktp, name: "Foto KTP Baru" }, // Ubah nama foto KTP menjadi foto baru
+            ktp: { ...prevFile.ktp, name: "Foto KTP Baru" },
           }));
         }
 
-        // Ambil URL terbaru setelah upload file
         const fileResponse = await fetch(endpoint.file + dataFile.data.id, {
           method: "GET",
           headers: {
@@ -112,7 +108,6 @@ const GeneralIdentity = () => {
 
         if (fileResponse.ok) {
           const fileData = await fileResponse.json();
-          // Update URL file berdasarkan tipe
           if (type === "formalPictureId") {
             setFile((prevFile) => ({
               ...prevFile,
@@ -141,22 +136,18 @@ const GeneralIdentity = () => {
     if (response) {
       console.log("update", response);
 
-      // Tampilkan SweetAlert setelah update berhasil
       Swal.fire({
         title: 'Success!',
         text: 'Data berhasil diupdate.',
         icon: 'success',
         confirmButtonText: 'OK'
       }).then(() => {
-        // Reset file names ke nama lama setelah update
         setFile({
           foto: { url: "", name: "Foto Formal Lama" },
           ktp: { url: "", name: "Foto KTP Lama" },
         });
 
-        // Ambil data terbaru setelah SweetAlert
         fetchGet().then(() => {
-          // Ambil URL terbaru setelah data di-fetch
           if (idFile) {
             fetchGetFile().then(response => {
               if (response) {
