@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
-import React, { useEffect } from "react";
-import { dataUSerAtom, sessionSignAtom } from "../atoms/Atom";
+import React, { useEffect, useState } from "react";
+import { ConsultationDataDashboardAtom, dataUSerAtom, sessionSignAtom } from "../atoms/Atom";
 import { useNavigate } from "react-router-dom";
 import LineChart from "../components/Dashboard/LineChart";
 import SummaryCard from "../components/Dashboard/SummaryCard";
@@ -12,18 +12,64 @@ import GetAuthorization from "../fetchAPI/GetAuthorization";
 
 const Dashboard = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
+  const [infoDashboard, setInfoDashboard] = useState({ consultationToday: 0, totalConsultation: 0, futureConsultation: 0 });
+  const [dataConsultation, setDataConsultation] = useAtom(ConsultationDataDashboardAtom);
 
   const endpoint = {
-    dataUserUrl: "https://api.temanternak.h14.my.id/users/my"
+    dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
+    getConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
+  const { data: consultationData, loading: consultationLoading, error: consultationError, fetchData: fetchConsultation } = GetAuthorization(endpoint.getConsultation, JSON.parse(localStorage.getItem("token")));
+  
+  const isTodayOrAfter = (dateString, type) => {
+    const userTimezoneOffset = new Date().getTimezoneOffset();
+  
+    const date = new Date(dateString);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + userTimezoneOffset);
+  
+    const today = new Date();
+    today.setMinutes(today.getMinutes() + today.getTimezoneOffset() + userTimezoneOffset);
+  
+    if (type === "today") {
+      return (
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate()
+      );
+    } else if (type === "future") {
+      return date > today;
+    } else {
+      return false;
+    }
+  };
+  
+
   useEffect(() => {
     const fetch = async () => {
       const response = await fetchDataUser();
       if (response) {
         console.log(response);
         setDataUSer(response.data);
+      }
+
+      const consultationResponse = await fetchConsultation();
+      if (consultationResponse) {
+        console.log(consultationResponse);
+        setDataConsultation(consultationResponse.data);
+        const consultationsToday = consultationResponse.data.filter(item =>
+          isTodayOrAfter(item.startTime, "today")
+        );
+
+        const totalConsultations = consultationResponse.data.filter(item =>
+          item.status === "COMPLETED"
+        );
+
+        const consultationsFuture = consultationResponse.data.filter(item =>
+          isTodayOrAfter(item.startTime, "future") && item.status === "WAITING"
+        );
+        setInfoDashboard({ ...infoDashboard, consultationToday: consultationsToday.length, totalConsultation: totalConsultations.length, futureConsultation:consultationsFuture.length});
       }
     }
 
@@ -69,9 +115,9 @@ const Dashboard = () => {
       <div className="w-full">
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 my-6">
-            <SummaryCard title="Total Employees" value="104" color="blue" />
-            <SummaryCard title="Job Applicants" value="1,839" color="purple" />
-            <SummaryCard title="Total Payroll" value="$324,920.83" color="green" />
+            <SummaryCard title="Konsutasi Hari Ini" value={infoDashboard.consultationToday} color="blue" />
+            <SummaryCard title="Total Konsultasi" value={infoDashboard.totalConsultation} color="purple" />
+            <SummaryCard title="Konsultasi Mendatang" value={infoDashboard.futureConsultation} color="green" />
           </div>
 
           <div className="flex gap-6 h-[400px]">

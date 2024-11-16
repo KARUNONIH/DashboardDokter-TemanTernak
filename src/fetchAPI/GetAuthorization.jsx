@@ -6,7 +6,8 @@ const GetAuthorization = (url, token) => {
   const [loading, setLoading] = useAtom(loadingApiAtom);
   const [error, setError] = useAtom(errorApiAtom);
 
-    const fetchData = async () => {
+  const fetchData = async () => {
+      
     try {
       setData(null);
       setError(null);
