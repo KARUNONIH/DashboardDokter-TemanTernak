@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Input from "./input";
 import Get from "../../fetchAPI/Get";
 import Swal from 'sweetalert2';
+import InputRegistration from "./InputRegistration";
 
 const GeneralIdentity = () => {
   const [data, setData] = useState(null);
@@ -186,14 +186,14 @@ const GeneralIdentity = () => {
     <form className="rounded p-6 shadow shadow-gray-300" onSubmit={updateData}>
       <h1 className="mb-4 text-lg font-semibold capitalize">Identitas Umum</h1>
       <div className="grid grid-cols-2 gap-2">
-        <Input label="Gelar Depan" type="text" value={data?.frontTitle || ""} onChange={(e) => setData({ ...data, frontTitle: e.target.value })} />
-        <Input label="Gelar Belakang" type="text" value={data?.backTitle || ""} onChange={(e) => setData({ ...data, backTitle: e.target.value })} />
-        <Input label="Tanggal Lahir" type="date" value={data?.dateOfBirth || ""} onChange={(e) => setData({ ...data, dateOfBirth: e.target.value })} />
-        <Input label="No WhatsApp" type="number" value={data?.whatsappNumber || ""} onChange={(e) => setData({ ...data, whatsappNumber: e.target.value })} />
-        <Input label="NIK" type="text" value={data?.nik || ""} onChange={(e) => setData({ ...data, nik: e.target.value })} />
-        <Input label="Biodata" type="text" value={data?.biodata || ""} onChange={(e) => setData({ ...data, biodata: e.target.value })} />
-        <Input label="Foto Formal" type="file" value={file.foto} onChange={(e) => uploadFile(e.target.files[0], "formalPictureId")} />
-        <Input label="Foto KTP" type="file" value={file.ktp} onChange={(e) => uploadFile(e.target.files[0], "ktpFileId")} />
+        <InputRegistration label="Gelar Depan" type="text" value={data?.frontTitle || ""} onChange={(e) => setData({ ...data, frontTitle: e.target.value })} />
+        <InputRegistration label="Gelar Belakang" type="text" value={data?.backTitle || ""} onChange={(e) => setData({ ...data, backTitle: e.target.value })} />
+        <InputRegistration label="Tanggal Lahir" type="date" value={data?.dateOfBirth || ""} onChange={(e) => setData({ ...data, dateOfBirth: e.target.value })} />
+        <InputRegistration label="No WhatsApp" type="number" value={data?.whatsappNumber || ""} onChange={(e) => setData({ ...data, whatsappNumber: e.target.value })} />
+        <InputRegistration label="NIK" type="text" value={data?.nik || ""} onChange={(e) => setData({ ...data, nik: e.target.value })} />
+        <InputRegistration label="Biodata" type="text" value={data?.biodata || ""} onChange={(e) => setData({ ...data, biodata: e.target.value })} />
+        <InputRegistration label="Foto Formal" type="file" value={file.foto} onChange={(e) => uploadFile(e.target.files[0], "formalPictureId")} />
+        <InputRegistration label="Foto KTP" type="file" value={file.ktp} onChange={(e) => uploadFile(e.target.files[0], "ktpFileId")} />
       </div>
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 text-sm mt-4 rounded cursor-pointer">Update Identitas</button>
     </form>

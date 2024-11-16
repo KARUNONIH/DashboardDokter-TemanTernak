@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
-import FormRegistration from "./FormRegistration.text";
+import FormRegistration from "./FormRegistration";
 
 const MainLogin = ({ sign, signin, signup, preSignup }) => {
 
