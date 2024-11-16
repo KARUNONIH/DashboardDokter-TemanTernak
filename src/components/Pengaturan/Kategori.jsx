@@ -1,7 +1,6 @@
 import BankAndTax from "./BankAndTax";
 import Education from "./Education";
 import GeneralIdentity from "./GeneralIdentity";
-import Input from "./input";
 import License from "./License";
 import OrganizationExperience from "./OrganizationExperience";
 import Specialization from "./Specialization";
