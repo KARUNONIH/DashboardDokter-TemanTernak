@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
 import FormRegistration from "./FormRegistration";
 
-const MainLogin = ({ sign, signin, signup, preSignup }) => {
+const MainLogin = ({ sign, signin, signup, preSignup, invitationId }) => {
 
   return (
     <div className="w-[500px] flex justify-center items-center">
@@ -12,10 +12,12 @@ const MainLogin = ({ sign, signin, signup, preSignup }) => {
           <h1 className="text-xl font-semibold">Create a Doctor Account</h1>
           <p className="text-sm text-gray-500">Provide your email and choose a password</p>
         </section>
-        <FormRegistration type={sign} signin={signin} signup={signup} preSignup={ preSignup } />
-        <p className={`text-center mt-6 text-sm capitalize ${sign === "signup" ? 'hidden' : 'block'}`}>
-          doesn't have an account ? <Link to={"/signup"} className="underline text-blue-600">sign up</Link>
+        <FormRegistration type={sign} signin={signin} signup={signup} preSignup={preSignup} />
+        {sign === "signin" && (
+        <p className={`text-center mt-6 text-sm capitalize`}>
+          doesn't have an account ? <Link to={`/signup?invitationId=${invitationId}`} className="underline text-blue-600">sign up</Link>
         </p>
+        )}
       </div>
     </div>
   );

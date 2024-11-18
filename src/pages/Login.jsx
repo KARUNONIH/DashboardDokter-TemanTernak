@@ -3,7 +3,7 @@ import MainLogin from "../components/Login/MainLogin";
 import SideLogin from "../components/Login/SideLogin";
 import { activeFormRegistrationAtom, errorApiAtom, loginAtom, preSignupAtom, sessionSignAtom, signupStatusAtom, signupAtom, statusRegistationAtom, newDataSignupAtom } from "../atoms/Atom";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from "../fetchAPI/Post";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
 import PostAuthorization from "../fetchAPI/PostAuthorization";
@@ -15,8 +15,19 @@ const Login = ({ sign }) => {
   const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
   const [statusRegistration, setStatusRegistration] = useAtom(statusRegistationAtom);
   const [dataRegistration, setDataRegistration] = useAtom(newDataSignupAtom);
+  const [searchParams] = useSearchParams();
+  const [isLoggin, setIsLoggin] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
+  const [isPreSignup, setIsPreSignup] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem("invitationId", JSON.stringify(searchParams.get("invitationId")));
+  }, []);
+
+  const invitationIdValue = JSON.parse(localStorage.getItem("invitationId"));
+
 
   const endpoint = {
     preSignup: "https://api.temanternak.h14.my.id/users",
@@ -27,30 +38,58 @@ const Login = ({ sign }) => {
   };
 
   const { data: preSignupData, loading: preSignupLoading, error: preSignupError, fetchData: fetchPreSignup } = Post(endpoint.preSignup, dataPreSignup);
-  const { data: signupData, loading: signupLoading, error: signupError, fetchData: fetchSignup } = PostAuthorization(endpoint.signup, dataSignup, JSON.parse(localStorage.getItem("token")));
+  const { data: signupData, loading: signupLoading, error: signupError, fetchData: fetchSignup } = PostAuthorization(endpoint.signup, dataRegistration, JSON.parse(localStorage.getItem("token")));
   const { data: signinData, loading: signinLoading, error: signinError, fetchData: fetchSignin } = Post(endpoint.signin, dataLogin);
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchStatusUser } = GetAuthorization(endpoint.statusUser, JSON.parse(localStorage.getItem("token")));
   const { data: dataUserData, loading: dataUserLoading, error: dataUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUser, JSON.parse(localStorage.getItem("token")));
 
   const preSignup = async () => {
-    const result = await fetchPreSignup();
-    if (result) {
-      console.log(result);
-      navigate("/signin");
-    }
+    setDataPreSignup((prev) => ({
+      ...prev,
+      invitationId: invitationIdValue,
+    }));
+    setIsPreSignup(true);
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const result = await fetchPreSignup();
+      if (result) {
+        console.log(result);
+        navigate(`/signin?invitationId=${invitationIdValue}`);
+      }
+    };
+
+    if (isPreSignup) {
+      fetch();
+    }
+  }, [dataPreSignup.invitationId]);
 
   const signup = async () => {
-    console.log(dataSignup);
-
-    const result = await fetchSignup();
-    if (result) {
-      console.log(result);
-      registrationProggres("proggress5");
-    } else {
-      console.error(signupError);
-    }
+    setDataRegistration((prev) => ({
+      ...prev,
+      invitationId: invitationIdValue,
+    }));
+    setIsSignup(true);
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      console.log(dataRegistration);
+
+      const result = await fetchSignup();
+      if (result) {
+        console.log(result);
+        registrationProggres("proggress5");
+      } else {
+        console.error(signupError);
+      }
+    };
+
+    if (isSignup) {
+      fetch()
+    }
+  }, [dataRegistration.invitationId]);
 
   useEffect(() => {
     const statusUser = async () => {
@@ -59,50 +98,59 @@ const Login = ({ sign }) => {
 
       if (responseStatus.data.role === "invited-user" && responseData.data.length === 0) {
         registrationProggres("proggress1");
-        navigate("/signup");
+        navigate(`/signup?invitationId=${invitationIdValue}`);
       } else if (responseStatus.data.role === "veterinarian") {
         navigate("/dashboard");
       } else if (responseStatus.data.role === "invited-user" && responseData.data.length !== 0) {
+        navigate(`/signup?invitationId=${invitationIdValue}`);
         setStatusRegistration(true);
         registrationProggres("proggress5");
-        setDataRegistration({
+        const dataRegis = {
           generalIdentity: {
-            frontTitle: responseData.data.frontTitle,
-            backTitle: responseData.data.backTitle,
-            dateOfBirth: responseData.data.dateOfBirth,
-            whatsappNumber: responseData.data.whatsappNumber,
-            formalPictureId: responseData.data.formalPictureId,
-            nik: responseData.data.nik,
-            ktpFileId: responseData.data.ktpFileId,
-            biodata: responseData.data.biodata,
+            frontTitle: responseData.data[0].frontTitle,
+            backTitle: responseData.data[0].backTitle,
+            dateOfBirth: responseData.data[0].dateOfBirth,
+            whatsappNumber: responseData.data[0].whatsappNumber,
+            formalPictureId: responseData.data[0].formalPictureFilePath.split("/")[1],
+            nik: responseData.data[0].nik,
+            ktpFileId: responseData.data[0].ktpFilePath.split("/")[1],
+            biodata: responseData.data[0].biodata,
           },
-          license: responseData.data.license,
-          specializations: responseData.data.specializations,
-          educations: responseData.data.educations,
-          workingExperiences: responseData.data.workingExperiences,
-          organizationExperiences: responseData.data.organizationExperiences,
-          bankAndTax: responseData.data.bankAndTax,
-          invitationId: responseData.data.invitation.id,
-        });
+          license: responseData.data[0].license,
+          specializations: responseData.data[0].specializations,
+          educations: responseData.data[0].educations,
+          workingExperiences: responseData.data[0].workingExperiences,
+          organizationExperiences: responseData.data[0].organizationExperiences,
+          bankAndTax: responseData.data[0].bankAndTax,
+          invitationId: responseData.data[0].invitation.id,
+        };
+        localStorage.setItem("data", JSON.stringify(dataRegis));
         navigate("/signup");
       }
     };
 
-    statusUser();
+    if (isLoggin) {
+      statusUser();
+    }
   }, [localStorage.getItem("token")]);
+
+  useEffect(() => {
+    console.log("data", dataRegistration);
+  }, [dataRegistration]);
 
   const signin = async () => {
     const result = await fetchSignin();
     if (result) {
       localStorage.setItem("token", JSON.stringify(result.token));
+      setIsLoggin(true);
     }
   };
 
   return (
     <div className="flex h-[100dvh] w-[100dvw] items-center justify-center bg-slate-50">
       <div className="flex max-h-full w-max items-center rounded bg-white p-4 shadow">
-        <SideLogin sign={sign} />
-        <MainLogin sign={sign} signin={signin} signup={signup} preSignup={preSignup} />
+        <SideLogin sign={sign} invitationId={invitationIdValue}/>
+        <MainLogin sign={sign} signin={signin} signup={signup} preSignup={preSignup} invitationId={invitationIdValue}/>
       </div>
     </div>
   );

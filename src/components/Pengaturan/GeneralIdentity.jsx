@@ -181,7 +181,7 @@ const GeneralIdentity = () => {
         <Input label="Gelar Belakang" type="text" value={data?.backTitle || ""} onChange={(e) => setData({ ...data, backTitle: e.target.value })} />
         <Input label="Tanggal Lahir" type="date" value={data?.dateOfBirth || ""} onChange={(e) => setData({ ...data, dateOfBirth: e.target.value })} />
         <Input label="No WhatsApp" type="number" value={data?.whatsappNumber || ""} onChange={(e) => setData({ ...data, whatsappNumber: e.target.value })} />
-        <Input label="NIK" type="text" value={data?.nik || ""} onChange={(e) => setData({ ...data, nik: e.target.value })} />
+        <Input label="NIK" type="number" value={data?.nik || ""} onChange={(e) => setData({ ...data, nik: e.target.value })} />
         <Input label="Biodata" type="text" value={data?.biodata || ""} onChange={(e) => setData({ ...data, biodata: e.target.value })} />
         <Input label="Foto Formal" type="file" value={file.foto} onChange={(e) => uploadFile(e.target.files[0], "formalPictureId")} />
         <Input label="Foto KTP" type="file" value={file.ktp} onChange={(e) => uploadFile(e.target.files[0], "ktpFileId")} />

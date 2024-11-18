@@ -36,10 +36,15 @@ const Table = () => {
 
   const formatISOToDate = (isoString) => {
     const date = new Date(isoString);
+    
+    const gmtOffset = date.getTimezoneOffset();
+    
+    date.setMinutes(date.getMinutes() - gmtOffset);
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-
+  
     return `${year}-${month}-${day}`;
   };
 
@@ -205,11 +210,11 @@ const Table = () => {
     {
       name: "Aksi",
       cell: (row) => (
-        <div
+        <Link to={`/layanan?id=${row.id}`}
           className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white"
         >
           <FaInfoCircle className="cursor-pointer text-xl" />
-        </div>
+        </Link>
       ),
       width: "10%",
     },

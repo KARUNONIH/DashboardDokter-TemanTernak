@@ -10,6 +10,8 @@ import GetAuthorization from "../fetchAPI/GetAuthorization";
 import { useEffect, useState } from "react";
 import PutAuthorization from "../fetchAPI/PutAuthorization";
 import Swal from "sweetalert2";
+import { useLocation } from "react-router-dom";
+import Videoroom from "../components/Layanan/VideoRoom";
 
 const Layanan = () => {
   const [dataService, setDataService] = useAtom(addServiceDataAtom);
@@ -42,6 +44,10 @@ const Layanan = () => {
   const { data: getOnlyServiceData, loading: getOnlyServiceLoading, error: getOnlyServiceError, fetchData: fetchGetOnlyService } = GetAuthorization(endpoint.getOnlyService, JSON.parse(localStorage.getItem("token")));
   const { data: getBookingsData, loading: getBookingsLoading, error: getBookingsError, fetchData: fetchGetBookings } = GetAuthorization(endpoint.getBookings, JSON.parse(localStorage.getItem("token")));
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const hasFilter = params.has('id');
+
   useEffect(() => {
     const fetchDataSequential = async () => {
       const meResponse = await fetchGetMe();
@@ -58,8 +64,11 @@ const Layanan = () => {
       const bookingsResponse = await fetchGetBookings();
       if (bookingsResponse) {
         console.log(bookingsResponse);
-        setDataLayanan((prev) => ({ ...prev, konsultasi: bookingsResponse.data }));
-        setLengthOfConsultations((prev) => ({ ...prev, konsultasi: bookingsResponse.data.length }));
+        const confirmBookings = bookingsResponse.data.filter((item) =>
+          item.status === "CONFIRMED"
+        );
+        setDataLayanan((prev) => ({ ...prev, konsultasi: confirmBookings }));
+        setLengthOfConsultations((prev) => ({ ...prev, konsultasi: confirmBookings.length }));
       }
     };
 
@@ -129,12 +138,21 @@ const Layanan = () => {
       setModalOpen(false);
       setScheduleData({ startTime: "", endTime: "" });
     } else {
-      console.error(addScheduleError);
+      Swal.fire({
+        icon: "error",
+        title: "Jadwal gagal Ditambahkan!",
+        text: "Jadwal Anda Overlapping jadwal yang lainnya.",
+      });
+      console.log(addScheduleError);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 px-8 py-4">
+  {hasFilter ? (
+    <Videoroom />
+  ) : (
+    <>
       <Modal addService={addService} editService={editService} addSchedule={addSchedule} />
       <Info />
       <div className="mt-10">
@@ -143,7 +161,9 @@ const Layanan = () => {
           <Table />
         </div>
       </div>
-    </div>
+    </>
+  )}
+</div>
   );
 };
 

@@ -8,8 +8,8 @@ const NavbarContent = () => {
   return (
     <div className="flex items-center gap-3">
       <SearchNavbarInput />
-      <Divider />
-      <Notification />
+      {/* <Divider /> */}
+      {/* <Notification /> */}
       <Divider />
       <ButtonToggleSidebar className={"block md:hidden"} />
       <ProfileDropdown />

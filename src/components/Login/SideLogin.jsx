@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
 import { activeFormRegistrationAtom } from "../../atoms/Atom";
 
-const SideLogin = ({ sign }) => {
+const SideLogin = ({ sign, invitationId }) => {
   const [proggressSignUp] = useAtom(activeFormRegistrationAtom);
   const proggress = ["proggress1", "proggress2", "proggress3", "proggress4", "proggress5"];
 
@@ -55,7 +55,7 @@ const SideLogin = ({ sign }) => {
               Back to Home
             </Link>
           </section>
-          <Link to={"/signin"} className="text-nowrap font-bold text-gray-600 hover:underline">
+          <Link to={`/signin?invitationId=${invitationId}`} className="text-nowrap font-bold text-gray-600 hover:underline">
             Sign in
           </Link>
         </section>
