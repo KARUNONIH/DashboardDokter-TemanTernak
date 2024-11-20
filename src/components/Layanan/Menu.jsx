@@ -24,22 +24,18 @@ const Menu = () => {
   }, [dataLayanan]);
 
   const formatDateTime = (dateString) => {
-    console.log(dateString);
     const date = new Date(dateString);
-    const userTimeOffset = date.getTimezoneOffset();
-    
-    date.setMinutes(date.getMinutes() - userTimeOffset);
     const options = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     };
-    
-    return new Intl.DateTimeFormat('id-ID', options).format(date);
+
+    return new Intl.DateTimeFormat("id-ID", options).format(date);
   };
   
   const status = (isAccepted, isSuspended) => {
@@ -47,14 +43,8 @@ const Menu = () => {
   }
 
   const formatDateTimeRange = (startTimeISO, endTimeISO) => {
-    console.log(startTimeISO, endTimeISO);
     const startDate = new Date(startTimeISO);
     const endDate = new Date(endTimeISO);
-    
-    const userTimeOffset = startDate.getTimezoneOffset();
-    
-    startDate.setMinutes(startDate.getMinutes() - userTimeOffset);
-    endDate.setMinutes(endDate.getMinutes() - userTimeOffset);
     
     const dateOptions = {
       weekday: "long",
@@ -71,10 +61,6 @@ const Menu = () => {
     const formattedDate = new Intl.DateTimeFormat("id-ID", dateOptions).format(startDate);
     const formattedStartTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(startDate);
     const formattedEndTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(endDate);
-
-    // const gmtOffset = -new Date().getTimezoneOffset() / 60;
-    // const gmtString = `GMT${gmtOffset >= 0 ? "+" : ""}${gmtOffset}`;
-
     return `${formattedDate} ${formattedStartTime} - ${formattedEndTime}`;
   };
 
@@ -88,14 +74,14 @@ const Menu = () => {
       setFilterData({ ...filterData, layanan: filteredData });
     } else if(type === "jadwal"){
       const filteredData = (dataLayanan.jadwal || []).filter((item) =>
-        formatDateTime(item.start_time).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        formatDateTime(item.end_time).toLowerCase().includes(searchTerm.toLowerCase())
+        formatDateTime(item.startTime).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        formatDateTime(item.endTime).toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilterData({ ...filterData, jadwal: filteredData });
     } else if (type === "konsultasi") {
       console.log("sf", dataLayanan.konsultasi);
       const filteredData = (dataLayanan.konsultasi || []).filter((item) =>
-        item.bookerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.booker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       formatDateTimeRange(item.startTime, item.endTime).toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilterData({ ...filterData, konsultasi: filteredData });

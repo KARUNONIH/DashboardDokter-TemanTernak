@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
 import FormRegistration from "./FormRegistration";
+import { activeFormRegistrationAtom } from "../../atoms/Atom";
 
 const MainLogin = ({ sign, signin, signup, preSignup, invitationId }) => {
+  const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
 
   return (
     <div className="w-[500px] flex justify-center items-center">
@@ -17,6 +19,12 @@ const MainLogin = ({ sign, signin, signup, preSignup, invitationId }) => {
         <p className={`text-center mt-6 text-sm capitalize`}>
           doesn't have an account ? <Link to={`/signup?invitationId=${invitationId}`} className="underline text-blue-600">sign up</Link>
         </p>
+        )}
+
+        {sign === "signup" && registration === "proggress5" && (
+          <button type="button" className={`text-center mt-6 text-sm capitalize`} onClick={() => registrationProggres("proggress1")}>
+            Lihat berkas pendaftaran anda
+        </button>
         )}
       </div>
     </div>

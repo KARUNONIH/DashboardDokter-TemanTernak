@@ -7,7 +7,7 @@ import SearchNavbarInput from "./SearchNavbarInput";
 const NavbarContent = () => {
   return (
     <div className="flex items-center gap-3">
-      <SearchNavbarInput />
+      {/* <SearchNavbarInput /> */}
       {/* <Divider /> */}
       {/* <Notification /> */}
       <Divider />

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import MainLogin from "../components/Login/MainLogin";
 import SideLogin from "../components/Login/SideLogin";
-import { activeFormRegistrationAtom, errorApiAtom, loginAtom, preSignupAtom, sessionSignAtom, signupStatusAtom, signupAtom, statusRegistationAtom, newDataSignupAtom } from "../atoms/Atom";
+import { activeFormRegistrationAtom, errorApiAtom, loginAtom, preSignupAtom, sessionSignAtom, signupStatusAtom, signupAtom, statusRegistationAtom, newDataSignupAtom, errorLoginAtom } from "../atoms/Atom";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from "../fetchAPI/Post";
@@ -20,11 +20,16 @@ const Login = ({ sign }) => {
   const [isLoggin, setIsLoggin] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [isPreSignup, setIsPreSignup] = useState(false);
+  const [errorLogin, setErrorLogin] = useAtom(errorLoginAtom);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.setItem("invitationId", JSON.stringify(searchParams.get("invitationId")));
+    if (searchParams.get("invitationId")) {
+      localStorage.setItem("invitationId", JSON.stringify(searchParams.get("invitationId")));
+    } else {
+      navigate("/");
+    }
   }, []);
 
   const invitationIdValue = JSON.parse(localStorage.getItem("invitationId"));
@@ -80,12 +85,12 @@ const Login = ({ sign }) => {
       console.log(dataRegistration);
       let result = "";
 
-      if (registration) {
+      if (statusRegistration) {
         result = await fetchEditSignup();
       } else {
          result = await fetchSignup();
       }
-      
+
       if (result) {
         console.log(result);
         localStorage.removeItem("data");
@@ -126,12 +131,13 @@ const Login = ({ sign }) => {
       const responseStatus = await fetchStatusUser();
       const responseData = await fetchDataUser();
 
-      localStorage.removeItem("data");
 
       if (responseStatus.data.role === "invited-user" && responseData.data.length === 0) {
+      localStorage.removeItem("data");
         registrationProggres("proggress1");
         navigate(`/signup?invitationId=${invitationIdValue}`);
       } else if (responseStatus.data.role === "veterinarian") {
+      localStorage.removeItem("data");
         navigate("/dashboard");
       } else if (responseStatus.data.role === "invited-user" && responseData.data.length !== 0) {
         navigate(`/signup?invitationId=${invitationIdValue}`);
@@ -176,6 +182,10 @@ const Login = ({ sign }) => {
     if (result) {
       localStorage.setItem("token", JSON.stringify(result.token));
       setIsLoggin(true);
+      setErrorLogin({})
+    } else {
+      console.log(errorLogin);
+      setErrorLogin({message: "Email atau Password Salah"});
     }
   };
 

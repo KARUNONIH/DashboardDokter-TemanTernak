@@ -18,9 +18,6 @@ const Table = () => {
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
-    const userTimeOffset = date.getTimezoneOffset();
-
-    date.setMinutes(date.getMinutes() - userTimeOffset);
     const options = {
       weekday: "long",
       day: "numeric",
@@ -37,10 +34,6 @@ const Table = () => {
   const formatISOToDate = (isoString) => {
     const date = new Date(isoString);
     
-    const gmtOffset = date.getTimezoneOffset();
-    
-    date.setMinutes(date.getMinutes() - gmtOffset);
-    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -51,11 +44,6 @@ const Table = () => {
   const formatDateTimeRange = (startTimeISO, endTimeISO) => {
     const startDate = new Date(startTimeISO);
     const endDate = new Date(endTimeISO);
-    
-    // const userTimeOffset = startDate.getTimezoneOffset();
-    
-    // startDate.setMinutes(startDate.getMinutes() - userTimeOffset);
-    // endDate.setMinutes(endDate.getMinutes() - userTimeOffset);
     
     const dateOptions = {
       weekday: "long",
@@ -72,10 +60,6 @@ const Table = () => {
     const formattedDate = new Intl.DateTimeFormat("id-ID", dateOptions).format(startDate);
     const formattedStartTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(startDate);
     const formattedEndTime = new Intl.DateTimeFormat("id-ID", timeOptions).format(endDate);
-
-    // const gmtOffset = -new Date().getTimezoneOffset() / 60;
-    // const gmtString = `GMT${gmtOffset >= 0 ? "+" : ""}${gmtOffset}`;
-
     return `${formattedDate} ${formattedStartTime} - ${formattedEndTime}`;
   };
 
@@ -139,23 +123,23 @@ const Table = () => {
   const columnsJadwal = [
     {
       name: "Waktu Mulai",
-      selector: (row) => row.start_time,
+      selector: (row) => row.startTime,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{formatDateTime(row.start_time)} </span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{formatDateTime(row.startTime)} </span>,
       width: "30%",
     },
     {
       name: "Waktu Berakhir",
-      selector: (row) => row.end_time,
+      selector: (row) => row.endTime,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{formatDateTime(row.end_time)} </span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{formatDateTime(row.endTime)} </span>,
       width: "30%",
     },
     {
       name: "Aksi",
       cell: (row) => (
         <Link
-          to={`/konsultasi?tanggal=${formatISOToDate(row.start_time)}`}
+          to={`/konsultasi?tanggal=${formatISOToDate(row.startTime)}`}
           className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white"
           onClick={() => {
             setEditDataServiceNoId({ price: row.price, duration: row.duration, description: row.description, name: row.name });
@@ -174,9 +158,9 @@ const Table = () => {
   const columnsKonsultasi = [
     {
       name: "Nama Pemesan",
-      selector: (row) => row.bookerName,
+      selector: (row) => row.booker.name,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{ row.bookerName }</span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{ row.booker.name }</span>,
       width: "20%",
     },
     {
@@ -188,16 +172,16 @@ const Table = () => {
     },
     {
       name: "Jenis Konsultasi",
-      selector: (row) => row.name,
+      selector: (row) => row.service.name,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{row.serviceName}</span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{row.service.name}</span>,
       width: "30%",
     },
     {
       name: "Durasi",
-      selector: (row) => row.duration,
+      selector: (row) => row.service.duration,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{row.duration} Menit</span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{row.service.duration} Menit</span>,
       width: "15%",
     },
     // {

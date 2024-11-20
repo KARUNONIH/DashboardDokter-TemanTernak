@@ -8,6 +8,7 @@ import { activeFormRegistrationAtom } from "../../atoms/Atom";
 const SideLogin = ({ sign, invitationId }) => {
   const [proggressSignUp] = useAtom(activeFormRegistrationAtom);
   const proggress = ["proggress1", "proggress2", "proggress3", "proggress4", "proggress5"];
+  const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
 
   const getCondition = (stage) => {
     const currentStageIndex = proggress.indexOf(proggressSignUp);
@@ -39,7 +40,7 @@ const SideLogin = ({ sign, invitationId }) => {
           <div className="flex flex-col gap-8">
             <ProggressSideLogin icon={<FiUser />} proggress={"Identitas Umum"} detail={"Provide an email and Password"} condition={getCondition("proggress1")} />
             <ProggressSideLogin icon={<FiUser />} proggress={"Perizinan"} detail={"Enter your verification code"} condition={getCondition("proggress2")} />
-            <ProggressSideLogin icon={<FiUser />} proggress={"Spesialisasi"} detail={"Provide a doctor certificate"} condition={getCondition("proggress3")} />
+            <ProggressSideLogin icon={<FiUser />} proggress={"Pengalaman Profesi"} detail={"Provide a doctor certificate"} condition={getCondition("proggress3")} />
             <ProggressSideLogin icon={<FiUser />} proggress={"Keuangan dan Perpajakan"} detail={"Get ready to work 24/7"} condition={getCondition("proggress4")} />
             <ProggressSideLogin icon={<FiUser />} proggress={"Pendaftaran Selesai"} detail={"Get ready to work 24/7"} condition={getCondition("proggress5")} />
           </div>
@@ -51,7 +52,8 @@ const SideLogin = ({ sign, invitationId }) => {
             <span>
               <FaArrowLeftLong />
             </span>
-            <Link to={"/"} className="text-nowrap font-bold text-gray-600">
+        
+        <Link to={"/"} className="text-nowrap font-bold text-gray-600" onClick={() => registrationProggres("proggress1")}>
               Back to Home
             </Link>
           </section>

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import Swal from "sweetalert2";
 
-
 const Modal = ({ addService, editService, addSchedule }) => {
   const [isModalOpen, setModalOpen] = useAtom(modalLayananAtom);
   const [dataService, setDataService] = useAtom(addServiceDataAtom);
@@ -24,30 +23,53 @@ const Modal = ({ addService, editService, addSchedule }) => {
     e.stopPropagation();
   };
 
-  const validateDates = (startTime, endTime) => {
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-
-    if (start.getFullYear() !== end.getFullYear() || start.getMonth() !== end.getMonth() || start.getDate() !== end.getDate()) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Tanggal Tidak Valid',
-        text: 'Tanggal harus di hari yang sama.',
-    });
-      return false;
-    }
-
-    if (start >= end) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Waktu Tidak Valid',
-        text: 'Waktu mulai harus lebih awal daripada waktu akhir.',
-    });
-      return false;
-    }
-
-    return true;
-  };
+  // const validateDates = (startTime, endTime) => {
+  //   const toLocalDate = (date) => {
+  //     const utcDate = new Date(date);
+  //     // Gunakan waktu lokal berdasarkan zona waktu pengguna
+  //     return new Date(
+  //       utcDate.getUTCFullYear(),
+  //       utcDate.getUTCMonth(),
+  //       utcDate.getUTCDate(),
+  //       utcDate.getUTCHours(),
+  //       utcDate.getUTCMinutes(),
+  //       utcDate.getUTCSeconds()
+  //     );
+  //   };
+  
+  //   // Konversi ke waktu lokal berdasarkan zona waktu lokal pengguna
+  //   const startDate = toLocalDate(startTime);
+  //   const endDate = toLocalDate(endTime);
+  
+  //   // Periksa apakah tanggal dalam hari yang sama
+  //   if (
+  //     startDate.getFullYear() !== endDate.getFullYear() ||
+  //     startDate.getMonth() !== endDate.getMonth() ||
+  //     startDate.getDate() !== endDate.getDate()
+  //   ) {
+  //     console.log(startDate, endDate);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Tanggal Tidak Valid",
+  //       text: "Tanggal harus di hari yang sama.",
+  //     });
+  //     return false;
+  //   }
+  
+  //   // Periksa apakah waktu mulai lebih awal daripada waktu akhir
+  //   if (startDate >= endDate) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Waktu Tidak Valid",
+  //       text: "Waktu mulai harus lebih awal daripada waktu akhir.",
+  //     });
+  //     return false;
+  //   }
+  
+  //   return true;
+  // };
+  
+    
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,26 +78,25 @@ const Modal = ({ addService, editService, addSchedule }) => {
     } else if (typeModal === "edit") {
       editService();
     } else if (typeModal === "schedule") {
-      if (validateDates(scheduleData.startTime, scheduleData.endTime)) {
-        addSchedule();
-      }
+      addSchedule();
+      // if (validateDates(scheduleData.startTime, scheduleData.endTime)) {
+      // }
     }
   };
 
   const handleDateChange = (inputDate, type) => {
     const date = new Date(inputDate);
-
-    const isoString = date.toISOString().slice(0, -5);
-
-    const timezoneOffset = -date.getTimezoneOffset();
-    const offsetHours = String(Math.floor(Math.abs(timezoneOffset / 60))).padStart(2, "0");
-    const offsetMinutes = String(Math.abs(timezoneOffset % 60)).padStart(2, "0");
-    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-
-    const formatted = `${isoString}${offsetSign}${offsetHours}:${offsetMinutes}`;
-    console.log(formatted);
-    setScheduleData({ ...scheduleData, [type]: formatted });
+  
+    if (type === "startTime") {
+      date.setSeconds(date.getSeconds() + 1);
+    }
+  
+    const isoString = date.toISOString();
+  
+    console.log(isoString);
+    setScheduleData({ ...scheduleData, [type]: isoString });
   };
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5" onClick={handleOverlayClick}>

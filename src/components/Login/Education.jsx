@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Education = () => {
+  const [isContinue, setIsContinue] = useState(false);
   const [educations, setEducations] = useState([]);
   const [currentData, setCurrentData] = useState({
     institution: "",
@@ -24,9 +25,9 @@ const Education = () => {
   const dataRegis = JSON.parse(localStorage.getItem("data"));
 
   useEffect(() => {
-    if (dataRegis.educations) {
-      setEducations(dataRegis.educations);
-      setCurrentData(dataRegis.educations[0]);
+    if (dataRegis?.educations) {
+      setEducations(dataRegis?.educations);
+      setCurrentData(dataRegis?.educations[0]);
     }
   }, []);
 
@@ -78,7 +79,7 @@ const Education = () => {
           ...prev,
           educations,
         }));
-        setformSpecializations("workingExperiences");
+      setIsContinue(true);
       }
     } else {
       setformSpecializations("specializations");
@@ -86,8 +87,13 @@ const Education = () => {
   };
 
   useEffect(() => {
-    console.log(dataRegistration);
-  }, [dataRegistration]);
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      setformSpecializations("workingExperiences");
+      setIsContinue(false);
+    }
+  }, [isContinue]);
+
 
   const isFormValid = useMemo(() => {
     return currentData.institution && currentData.year && currentData.program && currentData.title;
@@ -99,6 +105,7 @@ const Education = () => {
       setCurrentData(educations[currentIndex]);
     }
   }, [currentIndex, educations]);
+
 
   return (
     <div className="w-[500px] px-6">

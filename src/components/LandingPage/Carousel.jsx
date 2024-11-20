@@ -4,13 +4,44 @@ import { useAtom } from "jotai";
 import { activeFeatureAtom } from "../../atoms/Atom";
 
 const features = [
-  { id: 0, name: "Feature 1", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
-  { id: 1, name: "Feature 2", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
-  { id: 2, name: "Feature 3", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
-  { id: 3, name: "Feature 4", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
-  { id: 4, name: "Feature 5", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
-  { id: 5, name: "Feature 6", description1: `Fitur Konsultasi Online melalui video call di aplikasi ini dirancang untuk memudahkan peternak yang memiliki hewan sakit dalam mendapatkan akses langsung ke dokter hewan. Untuk menggunakan fitur ini, peternak cukup membuka aplikasi, memilih opsi "Konsultasi Online", dan memilih layanan video call. Setelah memilih dokter hewan yang tersedia, peternak dapat memulai video call secara langsung dari aplikasi, di mana dokter hewan akan melakukan konsultasi seputar kondisi hewan secara real-time. Semua ini dapat dilakukan dari ponsel pintar, tanpa perlu aplikasi tambahan.`, description2: `Peternak juga dapat menjadwalkan konsultasi jika dokter hewan tidak tersedia pada saat itu, dan notifikasi akan diberikan untuk mengingatkan waktu konsultasi yang telah dijadwalkan. Aplikasi ini menyediakan fitur perekaman konsultasi, sehingga peternak dapat meninjau kembali arahan dari dokter hewan. Ini memudahkan mereka untuk mengikuti saran atau perawatan lebih lanjut yang telah disarankan.` },
+  {
+    id: 0,
+    name: "Konsultasi Online (Video Call & Chat)",
+    description1: `Fitur ini memberikan kemudahan bagi peternak untuk berkonsultasi dengan dokter hewan secara langsung melalui video call atau chat. Dengan fitur ini, peternak dapat berdiskusi mengenai kondisi hewan mereka tanpa harus meninggalkan lokasi peternakan.`,
+    description2: `Fitur ini mendukung penjadwalan ulang apabila dokter tidak tersedia. Peternak juga dapat merekam sesi konsultasi untuk dijadikan referensi di masa mendatang. Semua ini dapat dilakukan dengan mudah melalui ponsel pintar.`,
+  },
+  {
+    id: 1,
+    name: "Pembayaran Mudah",
+    description1: `Fitur pembayaran dalam aplikasi menyediakan berbagai metode pembayaran, seperti transfer bank, e-wallet, dan kartu kredit, untuk memudahkan transaksi.`,
+    description2: `Keamanan data pembayaran menjadi prioritas utama dengan sistem yang telah terintegrasi secara aman. Pengguna juga akan menerima notifikasi dan bukti pembayaran secara otomatis setelah transaksi berhasil.`,
+  },
+  {
+    id: 2,
+    name: "Reschedule Konsultasi",
+    description1: `Fitur reschedule memungkinkan peternak menjadwalkan ulang konsultasi jika waktu yang telah ditentukan sebelumnya tidak sesuai.`,
+    description2: `Notifikasi akan diberikan untuk mengingatkan jadwal konsultasi yang telah diubah. Proses reschedule ini sederhana dan dapat dilakukan langsung melalui aplikasi tanpa memerlukan komunikasi tambahan.`,
+  },
+  {
+    id: 3,
+    name: "Resep Dokter",
+    description1: `Fitur ini memungkinkan dokter hewan memberikan resep digital berdasarkan hasil konsultasi. Resep ini dapat langsung diakses dan diunduh oleh peternak dari aplikasi.`,
+    description2: `Dengan format digital, resep dapat digunakan kapan saja untuk pembelian obat di apotek terdekat atau yang telah bekerja sama dengan aplikasi.`,
+  },
+  {
+    id: 4,
+    name: "Komentar dan Feedback",
+    description1: `Peternak dapat memberikan komentar atau masukan tambahan mengenai kondisi hewan mereka selama sesi konsultasi berlangsung.`,
+    description2: `Fitur ini juga memungkinkan pengguna untuk memberikan feedback mengenai pengalaman mereka, sehingga dokter dan penyedia layanan dapat terus meningkatkan kualitas pelayanan.`,
+  },
+  {
+    id: 5,
+    name: "Variasi Layanan",
+    description1: `Aplikasi ini menyediakan berbagai pilihan layanan kesehatan hewan, mulai dari konsultasi umum, pemeriksaan khusus, hingga layanan darurat.`,
+    description2: `Tersedia juga paket-paket layanan yang dapat dipilih sesuai kebutuhan, seperti paket pencegahan penyakit atau pemeriksaan berkala. Semua ini dirancang untuk memenuhi kebutuhan spesifik peternak.`,
+  },
 ];
+
 
 const Carousel = () => {
   const [activeFeature, setActiveFeature] = useAtom(activeFeatureAtom);

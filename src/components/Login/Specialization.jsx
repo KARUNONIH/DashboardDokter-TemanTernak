@@ -5,6 +5,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import InputRegistration from "./InputRegistration";
 
 const Specializations = () => {
+  const [isContinue, setIsContinue] = useState(false);
   const [specializations, setSpecializations] = useState([]);
   const [currentSpecialization, setCurrentSpecialization] = useState("");
   const [errors, setErrors] = useState({});
@@ -19,9 +20,9 @@ const Specializations = () => {
 
 
   useEffect(() => {
-    if (dataRegis.specializations) {
-      setSpecializations(dataRegis.specializations);
-      setCurrentSpecialization(dataRegis.specializations[0]);
+    if (dataRegis?.specializations) {
+      setSpecializations(dataRegis?.specializations);
+      setCurrentSpecialization(dataRegis?.specializations[0]);
     }
   }, []);
 
@@ -61,8 +62,8 @@ const Specializations = () => {
           ...prev,
           specializations,
         }));
-        setformSpecializations("educations");
       }
+      setIsContinue(true);
     } else {
       registrationProggres("proggress2");
     }
@@ -75,6 +76,14 @@ const Specializations = () => {
   const isFormValid = useMemo(() => {
     return currentSpecialization !== "";
   }, [currentSpecialization]);
+
+  useEffect(() => {
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      setformSpecializations("educations");
+      setIsContinue(false);
+    }
+  }, [isContinue]);
 
   return (
     <div className="px-6 w-[500px]">

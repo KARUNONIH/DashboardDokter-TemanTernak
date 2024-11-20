@@ -5,6 +5,7 @@ import { activeFormRegistrationAtom, formSpecializationAtom, newDataSignupAtom, 
 import { useAtom } from "jotai";
 
 const BankAndTax = ({ submit }) => {
+  const [isContinue, setIsContinue] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState({
     npwp: { url: "", name: "" },
@@ -32,8 +33,8 @@ const BankAndTax = ({ submit }) => {
 
 
   useEffect(() => {
-    if (dataRegis.bankAndTax) {
-      setData(dataRegis.bankAndTax);
+    if (dataRegis?.bankAndTax) {
+      setData(dataRegis?.bankAndTax);
     }
   }, []);
 
@@ -45,7 +46,7 @@ const BankAndTax = ({ submit }) => {
   }, [data]);
 
   useEffect(() => {
-    if (dataRegis.bankAndTax) {
+    if (dataRegis?.bankAndTax) {
       setFile((prevFile) => ({
         ...prevFile,
         npwp: {
@@ -161,15 +162,25 @@ const BankAndTax = ({ submit }) => {
           bankAndTax: data,
         }));
         console.log("Fasdf");
-        submit();
+      setIsContinue(true);
+        
       } else {
         setIsCheckAction(true);
       }
     } else {
+      setIsContinue(true);
       registrationProggres("proggress3");
       setformSpecializations("organizationExperiences");
     }
   };
+
+  useEffect(() => {
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      submit();
+      setIsContinue(false);
+    }
+  }, [isContinue]);
 
   return (
     <div className="px-6">

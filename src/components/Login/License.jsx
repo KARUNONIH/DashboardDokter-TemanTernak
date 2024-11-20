@@ -5,6 +5,7 @@ import InputRegistration from "./InputRegistration";
 import { activeFormRegistrationAtom, formSpecializationAtom, newDataSignupAtom, statusRegistationAtom } from "../../atoms/Atom";
 
 const License = () => {
+  const [isContinue, setIsContinue] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState({
     strv: { url: "", name: "" },
@@ -32,8 +33,8 @@ const License = () => {
   const { fetchData: fetchGetSipFile } = GetAuthorization(endpoint.file + sipFileId, token);
 
   useEffect(() => {
-    if (dataRegis.license) {
-      setData(dataRegis.license);
+    if (dataRegis?.license) {
+      setData(dataRegis?.license);
     }
   }, []);
 
@@ -131,8 +132,8 @@ const License = () => {
           ...prev,
           license: data,
         }));
-        registrationProggres("proggress3");
-        setformSpecializations("specializations");
+      setIsContinue(true);
+        
       } else {
         setIsCheckAction(true);
       }
@@ -140,8 +141,13 @@ const License = () => {
   };
 
   useEffect(() => {
-    console.log(dataRegistration)
-  }, [dataRegistration]);
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      registrationProggres("proggress3");
+        setformSpecializations("specializations");
+      setIsContinue(false);
+    }
+  }, [isContinue]);
 
   return (
     <div className="px-6">

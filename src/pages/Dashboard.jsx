@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
-import { ConsultationDataDashboardAtom, dataUSerAtom, sessionSignAtom } from "../atoms/Atom";
+import { ConsultationDataDashboardAtom, dataUSerAtom, konsultasiTerkiniAtom, sessionSignAtom } from "../atoms/Atom";
 import { useNavigate } from "react-router-dom";
 import LineChart from "../components/Dashboard/LineChart";
 import SummaryCard from "../components/Dashboard/SummaryCard";
@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const [infoDashboard, setInfoDashboard] = useState({ consultationToday: 0, totalConsultation: 0, futureConsultation: 0 });
   const [dataConsultation, setDataConsultation] = useAtom(ConsultationDataDashboardAtom);
+  const [KonsultasiTerkini, setKonsultasiTerkini] = useAtom(konsultasiTerkiniAtom);
 
   const endpoint = {
     dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
@@ -24,13 +25,10 @@ const Dashboard = () => {
   const { data: consultationData, loading: consultationLoading, error: consultationError, fetchData: fetchConsultation } = GetAuthorization(endpoint.getConsultation, JSON.parse(localStorage.getItem("token")));
   
   const isTodayOrAfter = (dateString, type) => {
-    const userTimezoneOffset = new Date().getTimezoneOffset();
-  
+
     const date = new Date(dateString);
-    date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + userTimezoneOffset);
   
     const today = new Date();
-    today.setMinutes(today.getMinutes() + today.getTimezoneOffset() + userTimezoneOffset);
   
     if (type === "today") {
       return (
@@ -39,7 +37,7 @@ const Dashboard = () => {
         date.getDate() === today.getDate()
       );
     } else if (type === "future") {
-      return date > today;
+      return date.getDate() > today.getDate();
     } else {
       return false;
     }
@@ -69,7 +67,12 @@ const Dashboard = () => {
         const consultationsFuture = consultationResponse.data.filter(item =>
           isTodayOrAfter(item.startTime, "future") && item.status === "WAITING"
         );
-        setInfoDashboard({ ...infoDashboard, consultationToday: consultationsToday.length, totalConsultation: totalConsultations.length, futureConsultation:consultationsFuture.length});
+        setInfoDashboard({ ...infoDashboard, consultationToday: consultationsToday.length, totalConsultation: totalConsultations.length, futureConsultation: consultationsFuture.length });
+        setKonsultasiTerkini((prev) => ({
+          ...prev,
+          upcoming: consultationResponse.data.filter(item => item.status === "WAITING"),
+          done: consultationResponse.data.filter(item => item.status === "COMPLETED"),
+        }));
       }
     }
 
@@ -108,7 +111,7 @@ const Dashboard = () => {
       <div className="">
         <h1 className="text-lg font-semibold">
           {getGreetingMessage()}
-          <span>, { dataUser.username }!</span>
+          <span>, { dataUser.name }!</span>
         </h1>
         <p className="text-sm text-gray-600">{getCurrentDate()}</p>
       </div>

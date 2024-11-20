@@ -6,15 +6,17 @@ import TabelRiwayat from "../components/Riwayat/TabelRiwayat";
 import TabNavigation from "../components/Riwayat/TabNavigation";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
 import { useAtom } from "jotai";
-import { dataRiwayatAtom, dataUSerAtom } from "../atoms/Atom";
+import { dataRiwayatAtom, dataUSerAtom, lengthOfHistoryAtom } from "../atoms/Atom";
+import Modal from "../components/Riwayat/Modal";
 
 const Riwayat = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const [dataRiwayat, setDataRiwayat] = useAtom(dataRiwayatAtom);
+  const [lengthHistory, setLengthHistory] = useAtom(lengthOfHistoryAtom);
 
   const endpoint = {
     dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
-    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations"
+    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
@@ -31,22 +33,29 @@ const Riwayat = () => {
       const responseconsultation = await fetchGetConsultation();
       if (responseconsultation) {
         console.log(responseconsultation);
-        const confirmBookings = bookingsResponse.data.filter((item) =>
+        const confirmBookings = responseconsultation.data.filter((item) =>
           item.status !== "WAITING"
         );
         setDataRiwayat(confirmBookings); 
+        setLengthHistory(confirmBookings)
       }
     }
 
     fetch();
   }, []);
+
+  const handelSubmit = async () => {
+
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 px-8 py-4">
-      <DashboardHeader />
+      {/* <DashboardHeader /> */}
+      <Modal />
       <TabNavigation />
       <div className="flex justify-between items-center">
-        <SearchInput />
-        <Filter />
+        {/* <SearchInput /> */}
+        {/* <Filter /> */}
       </div>
       <TabelRiwayat />
     </div>

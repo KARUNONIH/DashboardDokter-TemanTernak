@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
-// import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { IoMdSend } from "react-icons/io";
+import { FaVideo } from "react-icons/fa";
+import { FaVideoSlash } from "react-icons/fa";
+import { FaMicrophone } from "react-icons/fa";
+import { FaMicrophoneSlash } from "react-icons/fa";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 
 const VideoRoom = () => {
   const [peers, setPeers] = useState(new Map());
@@ -17,16 +23,26 @@ const VideoRoom = () => {
   const [timerText, setTimerText] = useState("00:00:00");
   const [timerClass, setTimerClass] = useState("bg-danger");
   const [videoDevices, setVideoDevices] = useState([]);
-    const [audioDevices, setAudioDevices] = useState([]);
-    const [idSocket, setIdSocket] = useState([]);
+  const [audioDevices, setAudioDevices] = useState([]);
+  const [idSocket, setIdSocket] = useState([]);
+  const [showTimer, setShowTimer] = useState(true);
+  const [showChat, setShowChat] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [showTextEditor, setShowTextEditor] = useState(false);
+  const messagesEndRef = useRef(null);
+  const [isMessagesEndRef, setIsMessagesEndRef] = useState(false);
+  const [typeTimer, setTypeTimer] = useState("before");
 
   const query = new URLSearchParams(window.location.search);
   const videoContainerRef = useRef(null);
   const messageInputRef = useRef(null);
   const fileInputRef = useRef(null);
   const localVideoRef = useRef(null);
+  const editorRef = useRef(null);
+  const quillInstance = useRef(null);
 
   const authToken = query.get("token");
+  const idBooking = query.get("id");
 
   const configuration = {
     iceServers: [
@@ -106,35 +122,49 @@ const VideoRoom = () => {
     };
 
     peerConnection.ontrack = (event) => {
-    //   if (!idSocket.includes(socketId)) {
+      if (!idSocket.includes(socketId)) {
+        // Buat elemen video
         const videoElement = document.createElement("video");
         videoElement.id = `video-${socketId}`;
         videoElement.autoplay = true;
         videoElement.playsInline = true;
         videoElement.srcObject = event.streams[0];
+        videoElement.className = "w-[400px] rounded bg-blue-200";
 
+        // Buat wrapper untuk video dan kontrol
         const wrapper = document.createElement("div");
-        wrapper.className = "video-wrapper";
-        wrapper.appendChild(videoElement);
+        wrapper.className = "video-wrapper flex rounded bg-white p-4 shadow shadow-gray-300";
 
-        const label = document.createElement("div");
-        label.className = "username";
+        // Tambahkan elemen kontrol untuk tampilan status
+        const controls = document.createElement("div");
+        controls.className = "mt-4 flex items-center gap-2";
+
+        // Status video
+        const statusVid = document.createElement("div");
+        statusVid.className = "text-sm text-gray-600";
+        statusVid.textContent = isVideoOn ? <FaVideo /> : <FaVideoSlash />;
+
+        // Status mikrofon
+        const statusMic = document.createElement("div");
+        statusMic.className = "text-sm text-gray-600";
+        statusMic.textContent = isMuted ? <FaMicrophoneSlash /> : <FaMicrophone />;
+
+        // Label nama pengguna
+        const label = document.createElement("p");
+        label.className = "username text-center text-base font-semibold";
         label.textContent = `${myData?.role === "veterinarian" ? consultation?.bookerName : consultation?.veterinarianNameAndTitle}`;
 
-        const statusMic = document.createElement("div");
-        statusMic.className = "status-mic";
-        statusMic.textContent = isMuted ? "Muted" : "Unmuted";
+        // Susun elemen dalam wrapper
+        controls.appendChild(statusVid);
+        controls.appendChild(statusMic);
+        controls.appendChild(label);
+        wrapper.appendChild(videoElement);
+        wrapper.appendChild(controls);
 
-        const statusVid = document.createElement("div");
-        statusVid.className = "status-vid";
-        statusVid.textContent = isVideoOn ? "Video On" : "Video Off";
-
-        wrapper.appendChild(statusMic);
-        wrapper.appendChild(statusVid);
-        wrapper.appendChild(label);
+        // Tambahkan wrapper ke video container
         videoContainerRef.current?.appendChild(wrapper);
-        // setIdSocket(idSocket.push(socketId));
-    //   }
+        setIdSocket([...idSocket, socketId]);
+      }
     };
 
     peerConnection.onconnectionstatechange = () => {
@@ -153,6 +183,7 @@ const VideoRoom = () => {
       setMessages((prev) => [...prev, msg]);
       setLastReceivedMessageId(msg.id);
       localStorage.setItem("lastReceivedMessageId", msg.id);
+      setIsMessagesEndRef(msg);
     }
   };
 
@@ -386,10 +417,14 @@ const VideoRoom = () => {
       let distance;
       if (startTime > now) {
         distance = startTime - now;
-        setTimerClass("bg-success"); // Indikator waktu menuju mulai
+        setTypeTimer("before");
+        setTimerClass("before"); // Indikator waktu menuju mulai
       } else {
         distance = endTime - now;
-        setTimerClass("bg-danger"); // Indikator waktu menuju selesai
+        setTypeTimer("after");
+        setShowVideo(true);
+        setShowTextEditor(true);
+        setTimerClass("after"); // Indikator waktu menuju selesai
       }
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24)); // Hitung hari
@@ -398,91 +433,251 @@ const VideoRoom = () => {
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Format teks timer dengan hari
-      setTimerText(`${days}d ${hours.toString().padStart(2, "0")}h:${minutes.toString().padStart(2, "0")}m:${seconds.toString().padStart(2, "0")}s`);
+      setTimerText(`${days}h ${hours.toString().padStart(2, "0")}j:${minutes.toString().padStart(2, "0")}m:${seconds.toString().padStart(2, "0")}d`);
 
       // Jika waktu sudah lewat
+      if (typeTimer === "after") {
+        setShowChat(true);
+      } else if (distance <= 300 && typeTimer === "before") {
+        setShowChat(true);
+      }
+
       if (distance < -10) {
         clearInterval(interval);
         leaveRoom();
+        Navigate("/layanan");
       }
     }, 1000);
 
-    return () => clearInterval(interval); // Bersihkan interval saat komponen di-unmount
+    return () => clearInterval(interval);
   }, [consultation]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isMessagesEndRef]);
+
+  useEffect(() => {
+    if (!quillInstance.current && editorRef.current) {
+      quillInstance.current = new Quill(editorRef.current, {
+        theme: "snow",
+        placeholder: "Mulai mengetik di sini...",
+        modules: {
+          toolbar: [[{ header: [1, 2, false] }], ["bold", "italic", "underline"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"]],
+        },
+      });
+    }
+
+    const quill = quillInstance.current;
+
+    const savedData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
+    const currentData = savedData.find((item) => item.idBooking === idBooking);
+
+    if (currentData && isJoined) {
+      quill.root.innerHTML = currentData.content;
+    }
+
+    const handleTextChange = () => {
+      const content = quill.root.innerHTML;
+
+      const existingData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
+
+      const updatedData = existingData.filter((item) => item.idBooking !== idBooking);
+
+      updatedData.push({ idBooking, content });
+
+      localStorage.setItem("hasilKonsultasi", JSON.stringify(updatedData));
+    };
+
+    if (isJoined) {
+      quill.on("text-change", handleTextChange);
+    }
+
+    const placeholderStyle = `
+      color: #888; 
+      font-style: italic; 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+      display: block;
+    `;
+
+    if (isJoined) {
+      const quillEditorElement = editorRef.current.querySelector(".ql-editor::before");
+      if (quillEditorElement) {
+        quillEditorElement.style.cssText = placeholderStyle;
+      }
+    }
+
+    return () => {
+      if (isJoined) {
+        quill.off("text-change", handleTextChange);
+      }
+    };
+  }, [idBooking, isJoined]);
+
   return (
     <div className="fixed left-0 top-0 z-50 h-full w-full bg-slate-50 p-8">
-      <Link to={"/layanan"}>Kembali</Link>
-      <div id="meeting-info">
-        {consultation && (
-          <div className="flex">
-            <h1>{consultation.serviceName}</h1>
-            <p>Dokter: {consultation.veterinarianNameAndTitle}</p>
-            <p>Pelanggan: {consultation.bookerName}</p>
-            <p>Waktu Mulai: {new Date(consultation.startTime).toLocaleString()}</p>
-            <p>Waktu Selesai: {new Date(consultation.endTime).toLocaleString()}</p>
-            <span id="timer" className={`p-1 ${timerClass}`}>
-              {timerText}
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div className="controls">
-        <button onClick={isJoined ? leaveRoom : joinRoom}>{isJoined ? "Leave Room" : "Join Room"}</button>
-        <button onClick={toggleMute}>{localIsMuted ? "Unmute" : "Mute"}</button>
-        <button onClick={toggleVideo}>{localIsVideoOn ? "Turn Off Video" : "Turn On Video"}</button>
-
-        <select id="cameraSelect" onChange={handleCameraChange}>
-          {videoDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label || `Camera ${device.deviceId.slice(0, 5)}`}
-            </option>
-          ))}
-        </select>
-
-        <select id="microphoneSelect" onChange={handleMicrophoneChange}>
-          {audioDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div ref={videoContainerRef} id="videoContainer" className="video-container flex items-center">
-        <div className="video-wrapper">
-          <video id="video-local" ref={localVideoRef} autoPlay playsInline muted />
-          <div className="username">You ({consultation?.veterinarianNameAndTitle})</div>
-          <div className="status-mic">{localIsMuted ? "Muted" : "Unmuted"}</div>
-          <div className="status-vid">{localIsVideoOn ? "Video On" : "Video Off"}</div>
-        </div>
-      </div>
-
-      <div className="chat-container">
-        <ul id="messages" className="messages-list">
-          <li>PEsan pertama</li>
-          {messages.map((msg, index) => (
-            <li key={index} className={`chat-bubble ${msg.sender === myData?.id ? "right" : "left"}`}>
-              {msg.message.startsWith("WITHFILE:") ? (
-                <div>
-                  <a href={`https://api.temanternak.h14.my.id/files/${msg.message.split("WITHFILE:")[1].split("END;")[0]}`} target="_blank" rel="noopener noreferrer" className="file-link">
-                    View Attachment
-                  </a>
-                  <p>{msg.message.split("END;")[1]}</p>
+      <div className="mx-auto flex w-[90%] justify-center gap-4">
+        {isJoined ? (
+          <>
+            <section className="w-max min-w-[800px]">
+              <div className="mb-4 flex justify-between">
+                <section>
+                  <h1 className="text-lg font-bold capitalize text-gray-800">
+                    {consultation?.serviceName}
+                    <span className="block text-sm font-medium text-gray-600">
+                      {new Date(consultation?.startTime).toLocaleString()} - {new Date(consultation?.endTime).toLocaleString()}
+                    </span>
+                  </h1>
+                  {!showVideo && <p className="font-medium italic">saat ini anda sudah bisa berkomunikasi Via chat, video akan ditampilkan saat waktu konsultasi dimulai</p>}
+                </section>
+                <div id="meeting-info">
+                  <div className="flex items-center gap-2">
+                    <button onClick={isJoined ? leaveRoom : joinRoom} className={`rounded px-2 py-1 text-sm font-medium transition duration-300 ${isJoined ? "bg-red-600 text-white hover:bg-red-700" : "bg-green-600 text-white hover:bg-green-700"}`}>
+                      {isJoined ? "Leave Room" : "Join Room"}
+                    </button>
+                    {consultation && (
+                      <div className="flex">
+                        <span id="timer" className={`rounded-md bg-blue-500 px-3 py-1 text-sm font-semibold text-white shadow ${timerClass}`}>
+                          {timerText}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <p>{msg.message}</p>
-              )}
-              <small className="timestamp">{new Date(msg.timestamp).toLocaleTimeString()}</small>
-            </li>
-          ))}
-        </ul>
+              </div>
+              {showVideo && (
+                <>
+                  <div ref={videoContainerRef} id="videoContainer" className="video-container flex items-center gap-2">
+                    <div className="video-wrapper flex rounded bg-white p-4 shadow shadow-gray-300">
+                      <div className="">
+                        <video id="video-local" ref={localVideoRef} autoPlay playsInline muted className="w-[400px] rounded bg-blue-200" />
+                        <div className="mt-4 flex items-center gap-2">
+                          <button onClick={toggleVideo} className="flex aspect-square h-8 items-center justify-center rounded border-2 border-gray-300">
+                            {localIsVideoOn ? <FaVideo /> : <FaVideoSlash />}
+                          </button>
+                          <button onClick={toggleMute} className="flex aspect-square h-8 items-center justify-center rounded border-2 border-gray-300">
+                            {localIsMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+                          </button>
+                          <p className="username text-center text-base font-semibold">{consultation?.veterinarianNameAndTitle}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="controls mt-4 flex gap-3">
+                    <div className="flex-1">
+                      <label htmlFor="cameraSelect" className="mb-1 block text-sm font-medium text-gray-700">
+                        Pilih Kamera
+                      </label>
+                      <select id="cameraSelect" onChange={handleCameraChange} className="w-full rounded-lg border border-gray-300 bg-white p-2 text-sm shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-blue-500">
+                        {videoDevices.map((device) => (
+                          <option key={device.deviceId} value={device.deviceId}>
+                            {device.label || `Camera ${device.deviceId.slice(0, 5)}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-        <form id="chatForm" onSubmit={handleSendMessage}>
-          <input type="text" ref={messageInputRef} id="messageInput" placeholder="Type a message..." />
-          <input type="file" ref={fileInputRef} id="fileInput" accept="image/*" />
-          <button type="submit">Send</button>
-        </form>
+                    <div className="flex-1">
+                      <label htmlFor="microphoneSelect" className="mb-1 block text-sm font-medium text-gray-700">
+                        Pilih Mikrofon
+                      </label>
+                      <select id="microphoneSelect" onChange={handleMicrophoneChange} className="w-full rounded-lg border border-gray-300 bg-white p-2 text-sm shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-blue-500">
+                        {audioDevices.map((device) => (
+                          <option key={device.deviceId} value={device.deviceId}>
+                            {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mt-10 w-[800px]">
+                    <div ref={editorRef} id="editor-container" className="border bg-white"></div>
+                  </div>
+                </>
+              )}
+            </section>
+            {showChat && (
+              <section className="max-w-[800px] flex-1">
+                <div className="chat-container shadow-gray rounded bg-white p-4 shadow">
+                  <ul id="messages" className="messages-list max-h-[500px] min-h-[400px] space-y-4 overflow-y-auto pr-2">
+                    {messages.map((msg, index) => (
+                      <li key={index} className={`flex ${msg.userId === myData?.id ? "justify-start" : "justify-end"}`}>
+                        <div className={`max-w-[80%] rounded-lg p-3 ${msg.userId === myData?.id ? "bg-gray-50 text-black" : "bg-blue-600 text-white"}`}>
+                          {msg.message.startsWith("WITHFILE:") ? (
+                            <div>
+                              <p className="text-base font-semibold">{msg.userId === myData?.id ? `Anda (${myData.role === "veterinarian" ? consultation.veterinarianNameAndTitle : consultation.bookerName})` : myData.role === "veterinarian" ? consultation.bookerName : consultation.veterinarianNameAndTitle}</p>
+                              <p className="text-sm">{msg.message.split("END;")[1]}</p>
+                              <a href={`https://api.temanternak.h14.my.id/${msg.message.split("END;")[0].replace("WITHFILE:", "")}`} target="_blank" rel="noopener noreferrer" className={`${msg.userId === myData?.id ? "text-blue-600" : "text-white"} text-sm underline hover:text-blue-700`}>
+                                View Attachment
+                              </a>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-base font-semibold">{msg.userId === myData?.id ? `Anda (${myData.role === "veterinarian" ? consultation.veterinarianNameAndTitle : consultation.bookerName})` : myData.role === "veterinarian" ? consultation.bookerName : consultation.veterinarianNameAndTitle}</p>
+                              <p className="text-sm">{msg.message}</p>
+                            </>
+                          )}
+                          <small className="timestamp mt-2 text-xs text-gray-400">{new Date(msg.timestamp).toLocaleTimeString()}</small>
+                        </div>
+                      </li>
+                    ))}
+                    <div ref={messagesEndRef}></div>
+                  </ul>
+
+                  <form id="chatForm" onSubmit={handleSendMessage} className="mt-4 flex space-x-2">
+                    <section className="flex flex-1 flex-col gap-2">
+                      <input type="text" ref={messageInputRef} id="messageInput" placeholder="Type a message..." className="rounded border border-gray-300 p-2 text-sm" />
+                      <input type="file" ref={fileInputRef} id="fileInput" accept="image/*" className="rounded border border-gray-300 p-1 text-sm" />
+                    </section>
+                    <button type="submit" className="h-max rounded bg-blue-600 px-2 py-2 text-white">
+                      <IoMdSend />
+                    </button>
+                  </form>
+                </div>
+              </section>
+            )}
+          </>
+        ) : (
+          <>
+            {showVideo ? (
+              <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
+                <section className="flex items-center">
+                  <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                    Kembali ke Layanan
+                  </Link>
+                  <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                    Kembali kedalam room
+                  </button>
+                </section>
+                <p className="text-sm text-gray-600">
+                  Konsultasi sedang berlangsung <span className="font-bold">Jika anda keluar, konsultasi bisa dianggap tidak sah!</span>.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
+                <section>
+                  <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                    Kembali ke Layanan
+                  </Link>
+                  {showChat && (
+                    <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                      Masuk kedalam room
+                    </button>
+                  )}
+                </section>
+                <div className="text-lg font-semibold text-gray-800">
+                  Konsultasi Baru Akan Dimulai Setelah <span className="text-blue-600">{timerText}</span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Anda baru bisa bergabung ke dalam room <span className="font-bold">5 menit sebelum mulai</span>.
+                </p>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

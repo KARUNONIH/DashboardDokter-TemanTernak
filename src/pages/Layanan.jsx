@@ -31,7 +31,7 @@ const Layanan = () => {
     getBookings: "https://api.temanternak.h14.my.id/bookings",
     getOnlyService: "https://api.temanternak.h14.my.id/users/my/services",
     addService: "https://api.temanternak.h14.my.id/veterinarians/services",
-    getAllService: "https://api.temanternak.h14.my.id/veterinarians/",
+    getAllShedule: "https://api.temanternak.h14.my.id/users/my/schedules",
     editService: "https://api.temanternak.h14.my.id/veterinarians/services/",
     addSchedule: "https://api.temanternak.h14.my.id/veterinarians/schedules",
     getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations"
@@ -39,7 +39,7 @@ const Layanan = () => {
 
   const { data: addServiceData, loading: addServiceLoading, error: addServiceError, fetchData: fetchAddService } = PostAuthorization(endpoint.addService, dataService, JSON.parse(localStorage.getItem("token")));
   const { data: addScheduleData, loading: addScheduleLoading, error: addScheduleError, fetchData: fetchAddSchedule } = PostAuthorization(endpoint.addSchedule, scheduleData, JSON.parse(localStorage.getItem("token")));
-  const { data: getAllServiceData, loading: getAllServiceLoading, error: getAllServiceError, fetchData: fetchGetAllService } = Get(endpoint.getAllService + dataUser.id);
+  const { data: getAllScheduleData, loading: getAllScheduleLoading, error: getAllScheduleError, fetchData: fetchGetAllSchedule } = GetAuthorization(endpoint.getAllShedule, JSON.parse(localStorage.getItem("token")));
   const { data: editServiceData, loading: editServiceLoading, error: editServiceError, fetchData: fetchEditService } = PutAuthorization(endpoint.editService + editdataService.id, editdataServiceNoId, JSON.parse(localStorage.getItem("token")));
   const { data: getMeData, loading: getMeLoading, error: getMeError, fetchData: fetchGetMe } = GetAuthorization(endpoint.getMe, JSON.parse(localStorage.getItem("token")));
   const { data: getOnlyServiceData, loading: getOnlyServiceLoading, error: getOnlyServiceError, fetchData: fetchGetOnlyService } = GetAuthorization(endpoint.getOnlyService, JSON.parse(localStorage.getItem("token")));
@@ -63,33 +63,42 @@ const Layanan = () => {
         setLengthOfConsultations((prev) => ({ ...prev, layanan: onlyServiceResponse.data.length }));
       }
 
-      const bookingsResponse = await fetchGetConsultation();
+      const bookingsResponse = await fetchGetBookings();
       if (bookingsResponse) {
         console.log(bookingsResponse);
         const confirmBookings = bookingsResponse.data.filter((item) =>
-          item.status === "WAITING"
+          item.status === "CONFIRMED"
         );
         setDataLayanan((prev) => ({ ...prev, konsultasi: confirmBookings }));
         setLengthOfConsultations((prev) => ({ ...prev, konsultasi: confirmBookings.length }));
       }
-    };
 
-    fetchDataSequential();
-  }, []);
-
-  useEffect(() => {
-    const fetchDataWithId = async () => {
-      if (dataUser.id) {
-        const respoonse = await fetchGetAllService(endpoint.getAllService + dataUser.id);
-        if (respoonse) {
-          setDataLayanan((prev) => ({ ...prev, jadwal: respoonse.data.schedules }));
-          setLengthOfConsultations((prev) => ({ ...prev, jadwal: respoonse.data.schedules.length }));
-        }
+      const scheduleResponse = await fetchGetAllSchedule();
+      if (scheduleResponse) { 
+        setDataLayanan((prev) => ({ ...prev, jadwal: scheduleResponse.data }));
+        setLengthOfConsultations((prev) => ({ ...prev, jadwal: scheduleResponse.data.length }));
       }
     };
 
-    fetchDataWithId();
-  }, [dataUser.id]);
+    if (isFetch) {
+      fetchDataSequential();
+      setIsFetch(false);
+    }
+  }, [isFetch]);
+
+  // useEffect(() => {
+  //   const fetchDataWithId = async () => {
+  //     if (dataUser.id) {
+  //       const respoonse = await fetchGetAllService(endpoint.getAllService + dataUser.id);
+  //       if (respoonse) {
+  //         setDataLayanan((prev) => ({ ...prev, jadwal: respoonse.data.schedules }));
+  //         setLengthOfConsultations((prev) => ({ ...prev, jadwal: respoonse.data.schedules.length }));
+  //       }
+  //     }
+  //   };
+
+  //   fetchDataWithId();
+  // }, [dataUser.id]);
 
   const addService = async () => {
     console.log(dataService);
@@ -139,6 +148,7 @@ const Layanan = () => {
       console.log(response);
       setModalOpen(false);
       setScheduleData({ startTime: "", endTime: "" });
+      setIsFetch(true);
     } else {
       Swal.fire({
         icon: "error",
@@ -156,7 +166,7 @@ const Layanan = () => {
   ) : (
     <>
       <Modal addService={addService} editService={editService} addSchedule={addSchedule} />
-      <Info />
+      {/* <Info /> */}
       <div className="mt-10">
         <Menu />
         <div className="">

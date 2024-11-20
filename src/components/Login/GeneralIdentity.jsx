@@ -8,6 +8,7 @@ import { activeFormRegistrationAtom, newDataSignupAtom, statusRegistationAtom } 
 import { useAtom } from "jotai";
 
 const GeneralIdentity = () => {
+  const [isContinue, setIsContinue] = useState(false);
   const [data, setData] = useState({});
   const [file, setFile] = useState({
     foto: { url: "", name: "" },
@@ -33,7 +34,7 @@ const GeneralIdentity = () => {
 
 
   useEffect(() => {
-    if (dataRegis.generalIdentity) {
+    if (dataRegis?.generalIdentity) {
       setData((prev) => ({
         ...prev,
         ...dataRegis.generalIdentity,
@@ -42,7 +43,7 @@ const GeneralIdentity = () => {
   }, []);
 
   useEffect(() => {
-    if (dataRegis.generalIdentity) {
+    if (dataRegis?.generalIdentity) {
       console.log("file");
         setIdFile(dataRegis.generalIdentity.formalPictureId);
         setKtpFileId(dataRegis.generalIdentity.ktpFileId);
@@ -51,11 +52,11 @@ const GeneralIdentity = () => {
 
   useEffect(() => {
     console.log(idFile, ktpFileId);
-    console.log(dataRegis.generalIdentity.formalPictureId, dataRegis.generalIdentity.ktpFileId);
+    console.log(dataRegis?.generalIdentity?.formalPictureId, dataRegis?.generalIdentity?.ktpFileId);
   }, [])
 
   useEffect(() => {
-    if (dataRegis.generalIdentity) {
+    if (dataRegis?.generalIdentity) {
       setFile((prevFile) => ({
         ...prevFile,
         foto: {
@@ -67,7 +68,7 @@ const GeneralIdentity = () => {
           name: "Foto KTP",
         },
       }));
-    } else if (dataRegis.generalIdentity) {
+    } else if (dataRegis?.generalIdentity) {
       setFile((prevFile) => ({
         ...prevFile,
         foto: {
@@ -133,14 +134,14 @@ const GeneralIdentity = () => {
 
         if (type === "formalPictureId") {
           setIdFile(dataFile.data.id);
-          const text = dataRegis.generalIdentity ? "Foto Formal Baru" : "Foto Formal";
+          const text = dataRegis?.generalIdentity ? "Foto Formal Baru" : "Foto Formal";
           setFile((prevFile) => ({
             ...prevFile,
             foto: { ...prevFile.foto, name: text },
           }));
         } else if (type === "ktpFileId") {
           setKtpFileId(dataFile.data.id);
-          const text = dataRegis.generalIdentity ? "Foto KTP Baru" : "Foto KTP";
+          const text = dataRegis?.generalIdentity ? "Foto KTP Baru" : "Foto KTP";
           setFile((prevFile) => ({
             ...prevFile,
             ktp: { ...prevFile.ktp, name: text },
@@ -169,7 +170,7 @@ const GeneralIdentity = () => {
           }
         }
       } else {
-        alert("File upload failed.");
+        // alert("File upload failed.");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -208,11 +209,20 @@ const GeneralIdentity = () => {
         ...prev,
         generalIdentity: data,
       }));
-      registrationProggres("proggress2");
+      setIsContinue(true);
     } else {
       setIsCheckAction(true);
     }
   };
+
+  useEffect(() => {
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      registrationProggres("proggress2");
+      setIsContinue(false);
+    }
+  }, [isContinue]);
+
 
   return (
     <div className="px-6">

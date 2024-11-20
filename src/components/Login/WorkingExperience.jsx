@@ -5,6 +5,7 @@ import { activeFormRegistrationAtom, formSpecializationAtom, newDataSignupAtom, 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const WorkingExperience = () => {
+  const [isContinue, setIsContinue] = useState(false);
   const [workingExperiences, setWorkingExperiences] = useState([]);
   const [currentData, setCurrentData] = useState({
     institution: "",
@@ -23,9 +24,9 @@ const WorkingExperience = () => {
   const dataRegis = JSON.parse(localStorage.getItem("data"));
 
   useEffect(() => {
-    if (dataRegis.workingExperiences) {
-      setWorkingExperiences(dataRegis.workingExperiences);
-      setCurrentData(dataRegis.workingExperiences[0]);
+    if (dataRegis?.workingExperiences) {
+      setWorkingExperiences(dataRegis?.workingExperiences);
+      setCurrentData(dataRegis?.workingExperiences[0]);
     }
   }, []);
 
@@ -81,7 +82,8 @@ const WorkingExperience = () => {
           ...prev,
           workingExperiences,
         }));
-        setformSpecializations("organizationExperiences"); // Ubah sesuai kebutuhan Anda
+      setIsContinue(true);
+         // Ubah sesuai kebutuhan Anda
       }
     } else {
       setformSpecializations("educations");
@@ -101,6 +103,14 @@ const WorkingExperience = () => {
       setCurrentData(workingExperiences[currentIndex]);
     }
   }, [currentIndex, workingExperiences]);
+
+  useEffect(() => {
+    if (isContinue) {
+      localStorage.setItem("data", JSON.stringify(dataRegistration));
+      setformSpecializations("organizationExperiences");
+      setIsContinue(false);
+    }
+  }, [isContinue]);
 
   return (
     <div className="px-6">

@@ -46,11 +46,11 @@ const Navbar = ({ featureRef, flowRef, jumbotronRef }) => {
                 Home
               </button>
             </li>
-            <li>
+            {/* <li>
               <Link to="/signup" className="block w-full text-center rounded px-3 py-2 text-sm text-gray-900 hover:bg-gray-100 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
                 Bergabung
               </Link>
-            </li>
+            </li> */}
             <li>
               <button onClick={() => scrollToSection(flowRef)} className="block w-full rounded px-3 py-2 text-sm text-gray-900 hover:bg-gray-100 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
                 Konsultasi
