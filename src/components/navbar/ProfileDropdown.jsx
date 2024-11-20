@@ -21,7 +21,7 @@ function ProfileDropdown({}) {
     const response = await fetchSignOut();
     if (response) {
       localStorage.removeItem("token");
-      navigate("/signin");
+      navigate("/");
     }
   };
 

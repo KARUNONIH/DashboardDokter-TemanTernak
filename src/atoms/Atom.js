@@ -40,3 +40,4 @@ export const lengthOfConsultationAtom = atom({ konsultasi: null, layanan: null, 
 export const ConsultationDataDashboardAtom = atom([]);
 export const newDataSignupAtom = atom({});
 export const statusRegistationAtom = atom(false);
+export const dataRiwayatAtom = atom([]);

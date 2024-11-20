@@ -35,6 +35,7 @@ const FormRegistration = ({ type, signin, signup, preSignup }) => {
   useEffect(() => {
     if (localStorage.getItem("token") && registration !== "proggress5") {
       registrationProggres("proggress1");
+      setformSpecializations("specializations");
     } else {
       registrationProggres("proggress0");
     }

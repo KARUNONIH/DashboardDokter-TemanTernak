@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from "../fetchAPI/Post";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
 import PostAuthorization from "../fetchAPI/PostAuthorization";
+import PutAuthorization from "../fetchAPI/PutAuthorization";
 
 const Login = ({ sign }) => {
   const [dataPreSignup, setDataPreSignup] = useAtom(preSignupAtom);
@@ -39,6 +40,7 @@ const Login = ({ sign }) => {
 
   const { data: preSignupData, loading: preSignupLoading, error: preSignupError, fetchData: fetchPreSignup } = Post(endpoint.preSignup, dataPreSignup);
   const { data: signupData, loading: signupLoading, error: signupError, fetchData: fetchSignup } = PostAuthorization(endpoint.signup, dataRegistration, JSON.parse(localStorage.getItem("token")));
+  const { data: editSignupData, loading: editSignupLoading, error: editSignupError, fetchData: fetchEditSignup } = PutAuthorization(endpoint.signup, dataRegistration, JSON.parse(localStorage.getItem("token")));
   const { data: signinData, loading: signinLoading, error: signinError, fetchData: fetchSignin } = Post(endpoint.signin, dataLogin);
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchStatusUser } = GetAuthorization(endpoint.statusUser, JSON.parse(localStorage.getItem("token")));
   const { data: dataUserData, loading: dataUserLoading, error: dataUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUser, JSON.parse(localStorage.getItem("token")));
@@ -76,10 +78,38 @@ const Login = ({ sign }) => {
   useEffect(() => {
     const fetch = async () => {
       console.log(dataRegistration);
+      let result = "";
 
-      const result = await fetchSignup();
+      if (registration) {
+        result = await fetchEditSignup();
+      } else {
+         result = await fetchSignup();
+      }
+      
       if (result) {
         console.log(result);
+        localStorage.removeItem("data");
+        const response = await fetchDataUser();
+        const dataRegis = {
+          generalIdentity: {
+            frontTitle: response.data[0].frontTitle,
+            backTitle: response.data[0].backTitle,
+            dateOfBirth: response.data[0].dateOfBirth,
+            whatsappNumber: response.data[0].whatsappNumber,
+            formalPictureId: response.data[0].formalPictureFileId,
+            nik: response.data[0].nik,
+            ktpFileId: response.data[0].ktpFileId,
+            biodata: response.data[0].biodata,
+          },
+          license: response.data[0].license,
+          specializations: response.data[0].specializations,
+          educations: response.data[0].educations,
+          workingExperiences: response.data[0].workingExperiences,
+          organizationExperiences: response.data[0].organizationExperiences,
+          bankAndTax: response.data[0].bankAndTax,
+          invitationId: response.data[0].invitation.id,
+        };
+        localStorage.setItem("data", JSON.stringify(dataRegis));
         registrationProggres("proggress5");
       } else {
         console.error(signupError);
@@ -96,6 +126,8 @@ const Login = ({ sign }) => {
       const responseStatus = await fetchStatusUser();
       const responseData = await fetchDataUser();
 
+      localStorage.removeItem("data");
+
       if (responseStatus.data.role === "invited-user" && responseData.data.length === 0) {
         registrationProggres("proggress1");
         navigate(`/signup?invitationId=${invitationIdValue}`);
@@ -111,9 +143,9 @@ const Login = ({ sign }) => {
             backTitle: responseData.data[0].backTitle,
             dateOfBirth: responseData.data[0].dateOfBirth,
             whatsappNumber: responseData.data[0].whatsappNumber,
-            formalPictureId: responseData.data[0].formalPictureFilePath.split("/")[1],
+            formalPictureId: responseData.data[0].formalPictureFileId,
             nik: responseData.data[0].nik,
-            ktpFileId: responseData.data[0].ktpFilePath.split("/")[1],
+            ktpFileId: responseData.data[0].ktpFileId,
             biodata: responseData.data[0].biodata,
           },
           license: responseData.data[0].license,
@@ -123,6 +155,7 @@ const Login = ({ sign }) => {
           organizationExperiences: responseData.data[0].organizationExperiences,
           bankAndTax: responseData.data[0].bankAndTax,
           invitationId: responseData.data[0].invitation.id,
+          // revisingId: responseData.data[0].id
         };
         localStorage.setItem("data", JSON.stringify(dataRegis));
         navigate("/signup");

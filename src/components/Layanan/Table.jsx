@@ -52,10 +52,10 @@ const Table = () => {
     const startDate = new Date(startTimeISO);
     const endDate = new Date(endTimeISO);
     
-    const userTimeOffset = startDate.getTimezoneOffset();
+    // const userTimeOffset = startDate.getTimezoneOffset();
     
-    startDate.setMinutes(startDate.getMinutes() - userTimeOffset);
-    endDate.setMinutes(endDate.getMinutes() - userTimeOffset);
+    // startDate.setMinutes(startDate.getMinutes() - userTimeOffset);
+    // endDate.setMinutes(endDate.getMinutes() - userTimeOffset);
     
     const dateOptions = {
       weekday: "long",
@@ -174,43 +174,43 @@ const Table = () => {
   const columnsKonsultasi = [
     {
       name: "Nama Pemesan",
-      selector: (row) => row.booker.name,
+      selector: (row) => row.bookerName,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{ row.booker.name }</span>,
-      width: "15%",
+      cell: (row) => <span className="font-semibold text-gray-800">{ row.bookerName }</span>,
+      width: "20%",
     },
     {
       name: "Waktu Pelaksanaan",
       selector: (row) => row.startTime,
       sortable: true,
       cell: (row) => <span className="font-semibold text-gray-800">{formatDateTimeRange(row.startTime, row.endTime)}</span>,
-      width: "20%",
+      width: "25%",
     },
     {
       name: "Jenis Konsultasi",
       selector: (row) => row.name,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{row.service.name}</span>,
-      width: "25%",
+      cell: (row) => <span className="font-semibold text-gray-800">{row.serviceName}</span>,
+      width: "30%",
     },
     {
       name: "Durasi",
       selector: (row) => row.duration,
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{row.service.duration} Menit</span>,
+      cell: (row) => <span className="font-semibold text-gray-800">{row.duration} Menit</span>,
       width: "15%",
     },
-    {
-      name: "Biaya",
-      selector: (row) => row.price,
-      sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-800">{row.service.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>,
-      width: "15%",
-    },
+    // {
+    //   name: "Biaya",
+    //   selector: (row) => row.price,
+    //   sortable: true,
+    //   cell: (row) => <span className="font-semibold text-gray-800">{row.service.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>,
+    //   width: "15%",
+    // },
     {
       name: "Aksi",
       cell: (row) => (
-        <Link to={`/layanan?id=${row.id}`}
+        <Link to={`/layanan?id=${row.id}&token=${JSON.parse(localStorage.getItem("token"))}`}
           className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white"
         >
           <FaInfoCircle className="cursor-pointer text-xl" />

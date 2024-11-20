@@ -21,11 +21,14 @@ const Education = () => {
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
   const [isContinueClicked, setIsContinueClicked] = useState(false);
 
+  const dataRegis = JSON.parse(localStorage.getItem("data"));
+
   useEffect(() => {
-    if (!statusRegistration && dataRegistration.educations) {
-      setEducations(dataRegistration.educations);
+    if (dataRegis.educations) {
+      setEducations(dataRegis.educations);
+      setCurrentData(dataRegis.educations[0]);
     }
-  }, [dataRegistration.educations, statusRegistration]);
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -78,7 +81,7 @@ const Education = () => {
         setformSpecializations("workingExperiences");
       }
     } else {
-      registrationProggres("specializations");
+      setformSpecializations("specializations");
     }
   };
 
@@ -98,7 +101,7 @@ const Education = () => {
   }, [currentIndex, educations]);
 
   return (
-    <div className="px-6 w-[500px]">
+    <div className="w-[500px] px-6">
       <div className="mb-4 flex items-center justify-between">
         <section className="flex items-center gap-2">
           <h1 className="text-lg font-semibold capitalize">Educations</h1>

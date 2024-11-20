@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Select from "react-select"; // Mengimpor react-select
+import Select from "react-select";
+import Swal from "sweetalert2";
 
 const FinancialOverview = () => {
-  const [balance, setBalance] = useState(0); // Total dana yang dimiliki dokter
-  const [withdrawAmount, setWithdrawAmount] = useState(0); // Jumlah uang yang ingin ditarik
+  const [balance, setBalance] = useState(0); // Total saldo
+  const [withdrawAmount, setWithdrawAmount] = useState(null); // Jumlah uang yang ingin ditarik
+  const [accountNumber, setAccountNumber] = useState(""); // Nomor rekening
   const [transactionHistory, setTransactionHistory] = useState([]); // Riwayat transaksi
   const [loading, setLoading] = useState(false);
-  const [banks, setBanks] = useState([]); // Daftar bank yang tersedia
-  const [selectedBank, setSelectedBank] = useState(null); // Bank yang dipilih untuk penarikan
+  const [banks, setBanks] = useState([]); // Daftar bank
+  const [selectedBank, setSelectedBank] = useState(null); // Bank yang dipilih
+  const [fee, setFee] = useState(0); // Biaya bank
+  const [idempotencyKey, setIdempotencyKey] = useState(""); // Idempotency Key
+  const [validationError, setValidationError] = useState(""); // Pesan validasi
+  const [isWithdraw, setIsWithdraw] = useState(true);
 
   // Fungsi untuk mengambil data keuangan
   const fetchFinancialData = async () => {
@@ -15,7 +21,7 @@ const FinancialOverview = () => {
       setLoading(true);
       const response = await fetch("https://api.temanternak.h14.my.id/users/my/wallet", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
       });
 
@@ -24,12 +30,12 @@ const FinancialOverview = () => {
       }
 
       const data = await response.json();
-      setBalance(data.data.balance || 0); // Menetapkan saldo, jika gagal, set saldo ke 0
-      setTransactionHistory(data.data.transactions || []); // Menetapkan riwayat transaksi, jika gagal, set ke array kosong
+      setBalance(data.data.balance || 0);
+      setTransactionHistory(data.data.transactions || []);
       setLoading(false);
     } catch (error) {
-      setBalance(0); // Jika error, set saldo ke 0
-      setTransactionHistory([]); // Jika error, set riwayat transaksi ke array kosong
+      setBalance(0);
+      setTransactionHistory([]);
       setLoading(false);
     }
   };
@@ -48,33 +54,64 @@ const FinancialOverview = () => {
       }
 
       const data = await response.json();
-      setBanks(data.data || []); // Menyimpan daftar bank, jika gagal, set ke array kosong
+      const formattedBanks = data.data.map((bank) => ({
+        value: bank.bank_code,
+        label: bank.name,
+        fee: bank.fee, // Menyimpan fee bank
+      }));
+      setBanks(formattedBanks);
     } catch (error) {
-      setBanks([]); // Jika error, set daftar bank ke array kosong
+      setBanks([]);
+    }
+  };
+
+  // Fungsi untuk mendapatkan idempotencyKey
+  const fetchIdempotencyKey = async () => {
+    try {
+      const response = await fetch("https://api.temanternak.h14.my.id/payouts/idempotencyKey", {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal mendapatkan idempotencyKey");
+      }
+
+      const data = await response.json();
+      setIdempotencyKey(data.data.idempotencyKey || "");
+    } catch (error) {
+      console.error("Error fetching idempotencyKey:", error);
     }
   };
 
   // Fungsi untuk menarik dana
   const handleWithdraw = async () => {
-    if (withdrawAmount <= 0 || withdrawAmount > balance) {
-      alert("Jumlah penarikan tidak valid");
+    if (withdrawAmount <= 0 || withdrawAmount > balance - fee) {
+      setValidationError("Jumlah tidak valid atau melebihi saldo yang tersedia.");
+      return;
+    }
+    if (!selectedBank || !accountNumber) {
+      setValidationError("Pastikan semua data terisi.");
       return;
     }
 
-    if (!selectedBank) {
-      alert("Pilih bank terlebih dahulu");
-      return;
-    }
+    setValidationError(""); // Reset pesan validasi
 
     try {
       setLoading(true);
-      const response = await fetch("https://api.temanternak.h14.my.id/withdraw", {
+      const response = await fetch("https://api.temanternak.h14.my.id/payouts/disbursement", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
-        body: JSON.stringify({ amount: withdrawAmount, bank: selectedBank.id }), // Mengirimkan id bank
+        body: JSON.stringify({
+          accountNumber,
+          bankCode: selectedBank.value,
+          amount: Number(withdrawAmount),
+          idempotencyKey,
+        }),
       });
 
       if (!response.ok) {
@@ -82,111 +119,117 @@ const FinancialOverview = () => {
       }
 
       const data = await response.json();
-      if (data.success) {
-        alert("Penarikan berhasil!");
-        setBalance(balance - withdrawAmount); // Update saldo setelah penarikan
-        setTransactionHistory((prev) => [
-          ...prev,
-          {
-            type: "withdrawal",
-            amount: withdrawAmount,
-            date: new Date().toLocaleString(),
-          },
-        ]);
+      if (data.status === "success") {
+        Swal.fire("Sukses", "Penarikan dana berhasil.", "success");
+        setIsWithdraw(true);
+        // setBalance(balance - withdrawAmount - fee);
+        setWithdrawAmount(0);
+        setAccountNumber("");
+        fetchFinancialData(); // Refresh riwayat transaksi
       } else {
-        throw new Error("Penarikan dana gagal, coba lagi.");
+        Swal.fire("Gagal", "Penarikan dana gagal. Coba lagi.", "error");
       }
-
-      setLoading(false);
     } catch (error) {
-      alert("Terjadi kesalahan saat melakukan penarikan");
+      Swal.fire("Error", "Terjadi kesalahan. Coba lagi.", "error");
+    } finally {
       setLoading(false);
     }
   };
 
-  // Mengambil data keuangan dan daftar bank ketika komponen dimuat
   useEffect(() => {
-    fetchFinancialData();
-    fetchBankList();
-  }, []);
+    if (isWithdraw) {
+      
+      fetchFinancialData();
+      fetchBankList();
+      fetchIdempotencyKey();
+      setIsWithdraw(false);
+    }
+  }, [isWithdraw]);
 
-  // Memformat daftar bank untuk react-select
-  const bankOptions = banks.map((bank) => ({
-    value: bank.id,
-    label: bank.name,
-  }));
+
+
+  useEffect(() => {
+    if (selectedBank) {
+      setFee(selectedBank.fee);
+    }
+  }, [selectedBank]);
+
+  // Filter riwayat transaksi berdasarkan logika
+  const withdrawals = transactionHistory.filter((transaction) => parseFloat(transaction.from) > parseFloat(transaction.to));
+  const deposits = transactionHistory.filter((transaction) => parseFloat(transaction.from) < parseFloat(transaction.to));
 
   return (
-    <div className="financial-overview p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Keuangan Anda</h2>
+    <div className="financial-overview mx-auto max-w-lg rounded-lg bg-white p-6 shadow-lg">
+      <h2 className="mb-6 text-center text-2xl font-semibold">Keuangan Anda</h2>
 
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
         <>
-          {/* Saldo */}
           <div className="balance-info mb-6 text-center">
             <h3 className="text-lg font-medium">Saldo saat ini:</h3>
             <p className="text-2xl font-bold text-green-600">Rp {balance.toLocaleString()}</p>
           </div>
 
-          {/* Form Penarikan Dana */}
           <div className="withdraw-form mb-6">
-            <h3 className="text-lg font-medium mb-2">Penarikan Dana</h3>
-            <div className="flex items-center space-x-4 mb-4">
-              <input
-                type="number"
-                value={withdrawAmount}
-                onChange={(e) => setWithdrawAmount(e.target.value)}
-                placeholder="Jumlah penarikan"
-                className="border p-2 rounded-md w-full"
-              />
-              <button
-                onClick={handleWithdraw}
-                className="bg-red-500 text-white px-6 py-2 rounded-md"
-              >
-                Tarik Dana
-              </button>
-            </div>
-
-            {/* Pilihan Bank */}
-            <div className="bank-selection mb-4">
+            <h3 className="mb-2 text-lg font-medium">Penarikan Dana</h3>
+            <input type="text" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} placeholder="Nomor Rekening" className="mb-4 w-full rounded-md border p-2" />
+              <Select value={selectedBank} onChange={setSelectedBank} options={banks} placeholder="Pilih Bank" isSearchable />
+              <input type="number" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="Jumlah Penarikan" className="w-full rounded-md border p-2" />
+              <div className="mb-4 flex  flex-col items-center space-x-4">
+              <div className="bank-selection mb-4">
               <h4 className="text-sm font-medium">Pilih Bank</h4>
-              <Select
-                value={selectedBank}
-                onChange={setSelectedBank}
-                options={bankOptions}
-                placeholder="Pilih Bank"
-                getOptionLabel={(e) => e.label}
-                getOptionValue={(e) => e.value}
-                isSearchable // Menambahkan kemampuan pencarian
-              />
             </div>
+              <span className="text-sm text-gray-600">Biaya Bank: Rp {fee.toLocaleString()}</span>
+            </div>
+            {validationError && <p className="mb-4 text-sm text-red-500">{validationError}</p>}
+
+            
+            <button onClick={handleWithdraw} className="w-full rounded-md bg-blue-500 px-6 py-2 text-white">
+              Tarik Dana
+            </button>
           </div>
 
-          {/* Riwayat Transaksi */}
           <div className="transaction-history">
-            <h3 className="text-lg font-semibold mb-4">Riwayat Transaksi</h3>
-            <ul className="space-y-4">
-              {transactionHistory.length === 0 ? (
-                <li className="text-gray-500">Tidak ada transaksi.</li>
+            <h3 className="mb-4 text-lg font-semibold">Riwayat Transaksi</h3>
+            <div className="withdrawals mb-6">
+              <h4 className="text-md mb-2 font-medium">Penarikan Dana</h4>
+              {withdrawals.length === 0 ? (
+                <p className="text-gray-500">Tidak ada penarikan.</p>
               ) : (
-                transactionHistory.map((transaction, index) => (
-                  <li key={index} className="border-b py-2">
-                    <div className="flex justify-between">
-                      <span className="font-semibold">
-                        {transaction.type === "withdrawal" ? "Penarikan" : "Deposit"}:
-                      </span>
-                      <span className="font-medium text-green-600">
-                        Rp {transaction.acceptedAmount}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{transaction.consultation.serviceName}</p>
-                    <p className="text-xs text-gray-400">{transaction.timestamp}</p>
-                  </li>
-                ))
+                <ul className="space-y-4">
+                  {withdrawals.map((transaction, index) => (
+                    <li key={index} className="border-b py-2">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Rp {transaction.to}</span>
+                        <span className="text-xs text-gray-400">{transaction.timestamp}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               )}
-            </ul>
+            </div>
+
+            <div className="deposits">
+              <h4 className="text-md mb-2 font-medium">Penerimaan Dana</h4>
+              {deposits.length === 0 ? (
+                <p className="text-gray-500">Tidak ada penerimaan dana.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {deposits.map((transaction, index) => (
+                    <li key={index} className="border-b py-2">
+                      <div className="flex justify-between">
+                        <span className="font-medium">diterima Rp {transaction.acceptedAmount}</span>
+                        <span>
+                          didapat dari biaya {transaction.consultation.serviceName} sebesar {transaction.price} dikurang biaya layanan sebesar {transaction.platformFee}
+                        </span>
+                        <span className="text-xs text-gray-400">{transaction.timestamp}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </>
       )}

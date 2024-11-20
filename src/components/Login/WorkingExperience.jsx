@@ -20,11 +20,14 @@ const WorkingExperience = () => {
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
   const [isContinueClicked, setIsContinueClicked] = useState(false);
 
+  const dataRegis = JSON.parse(localStorage.getItem("data"));
+
   useEffect(() => {
-    if (!statusRegistration && dataRegistration.workingExperiences) {
-      setWorkingExperiences(dataRegistration.workingExperiences);
+    if (dataRegis.workingExperiences) {
+      setWorkingExperiences(dataRegis.workingExperiences);
+      setCurrentData(dataRegis.workingExperiences[0]);
     }
-  }, [dataRegistration.workingExperiences, statusRegistration]);
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -81,7 +84,7 @@ const WorkingExperience = () => {
         setformSpecializations("organizationExperiences"); // Ubah sesuai kebutuhan Anda
       }
     } else {
-      registrationProggres("proggress2");
+      setformSpecializations("educations");
     }
   };
 

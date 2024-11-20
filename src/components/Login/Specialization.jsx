@@ -15,11 +15,15 @@ const Specializations = () => {
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
   const [isContinueClicked, setIsContinueClicked] = useState(false);
 
+  const dataRegis = JSON.parse(localStorage.getItem("data"));
+
+
   useEffect(() => {
-    if (!statusRegistration && dataRegistration.specializations) {
-      setSpecializations(dataRegistration.specializations);
+    if (dataRegis.specializations) {
+      setSpecializations(dataRegis.specializations);
+      setCurrentSpecialization(dataRegis.specializations[0]);
     }
-  }, [dataRegistration.specializations, statusRegistration]);
+  }, []);
 
   const validate = () => {
     const newErrors = {};

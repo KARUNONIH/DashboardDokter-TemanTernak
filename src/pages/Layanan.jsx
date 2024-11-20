@@ -34,6 +34,7 @@ const Layanan = () => {
     getAllService: "https://api.temanternak.h14.my.id/veterinarians/",
     editService: "https://api.temanternak.h14.my.id/veterinarians/services/",
     addSchedule: "https://api.temanternak.h14.my.id/veterinarians/schedules",
+    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations"
   };
 
   const { data: addServiceData, loading: addServiceLoading, error: addServiceError, fetchData: fetchAddService } = PostAuthorization(endpoint.addService, dataService, JSON.parse(localStorage.getItem("token")));
@@ -43,6 +44,7 @@ const Layanan = () => {
   const { data: getMeData, loading: getMeLoading, error: getMeError, fetchData: fetchGetMe } = GetAuthorization(endpoint.getMe, JSON.parse(localStorage.getItem("token")));
   const { data: getOnlyServiceData, loading: getOnlyServiceLoading, error: getOnlyServiceError, fetchData: fetchGetOnlyService } = GetAuthorization(endpoint.getOnlyService, JSON.parse(localStorage.getItem("token")));
   const { data: getBookingsData, loading: getBookingsLoading, error: getBookingsError, fetchData: fetchGetBookings } = GetAuthorization(endpoint.getBookings, JSON.parse(localStorage.getItem("token")));
+  const { data: getConsultationsData, loading: getConsultationsLoading, error: getConsultationsError, fetchData: fetchGetConsultation } = GetAuthorization(endpoint.getSConsultation, JSON.parse(localStorage.getItem("token")));
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -61,11 +63,11 @@ const Layanan = () => {
         setLengthOfConsultations((prev) => ({ ...prev, layanan: onlyServiceResponse.data.length }));
       }
 
-      const bookingsResponse = await fetchGetBookings();
+      const bookingsResponse = await fetchGetConsultation();
       if (bookingsResponse) {
         console.log(bookingsResponse);
         const confirmBookings = bookingsResponse.data.filter((item) =>
-          item.status === "CONFIRMED"
+          item.status === "WAITING"
         );
         setDataLayanan((prev) => ({ ...prev, konsultasi: confirmBookings }));
         setLengthOfConsultations((prev) => ({ ...prev, konsultasi: confirmBookings.length }));

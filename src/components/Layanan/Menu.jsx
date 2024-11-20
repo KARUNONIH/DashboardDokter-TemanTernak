@@ -95,7 +95,7 @@ const Menu = () => {
     } else if (type === "konsultasi") {
       console.log("sf", dataLayanan.konsultasi);
       const filteredData = (dataLayanan.konsultasi || []).filter((item) =>
-        item.booker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.bookerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       formatDateTimeRange(item.startTime, item.endTime).toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilterData({ ...filterData, konsultasi: filteredData });

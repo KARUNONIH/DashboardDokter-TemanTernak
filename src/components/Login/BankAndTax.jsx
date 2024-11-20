@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import InputRegistration from "./InputRegistration";
-import { activeFormRegistrationAtom, newDataSignupAtom, statusRegistationAtom } from "../../atoms/Atom";
+import { activeFormRegistrationAtom, formSpecializationAtom, newDataSignupAtom, statusRegistationAtom } from "../../atoms/Atom";
 import { useAtom } from "jotai";
 
 const BankAndTax = ({ submit }) => {
@@ -17,6 +17,8 @@ const BankAndTax = ({ submit }) => {
   const [dataRegistration, setDataRegistration] = useAtom(newDataSignupAtom);
   const [isCheckAction, setIsCheckAction] = useState(false);
   const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
+  const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
+
 
   const endpoint = {
     file: "https://api.temanternak.h14.my.id/users/my/files/",
@@ -26,24 +28,24 @@ const BankAndTax = ({ submit }) => {
   const { fetchData: fetchGetNpwpFile } = GetAuthorization(endpoint.file + npwpFileId, token);
   const { fetchData: fetchGetBankFile } = GetAuthorization(endpoint.file + bankAccountFileId, token);
 
-  useEffect(() => {
-    if (!statusRegistration && dataRegistration.bankAndTax) {
-      setData((prev) => ({
-        ...prev,
-        ...dataRegistration.bankAndTax,
-      }));
-    }
-  }, [dataRegistration.bankAndTax]);
+  const dataRegis = JSON.parse(localStorage.getItem("data"));
+
 
   useEffect(() => {
-    if (statusRegistration || (!statusRegistration && dataRegistration.bankAndTax)) {
-      setNpwpFileId(dataRegistration.bankAndTax.npwpFileId);
-      setBankAccountFileId(dataRegistration.bankAndTax.bankAccountFileId);
+    if (dataRegis.bankAndTax) {
+      setData(dataRegis.bankAndTax);
     }
   }, []);
 
   useEffect(() => {
-    if (statusRegistration || (!statusRegistration && dataRegistration.bankAndTax)) {
+    if (data) {
+      setNpwpFileId(data.npwpFileId);
+      setBankAccountFileId(data.bankAccountFileId);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (dataRegis.bankAndTax) {
       setFile((prevFile) => ({
         ...prevFile,
         npwp: {
@@ -165,6 +167,7 @@ const BankAndTax = ({ submit }) => {
       }
     } else {
       registrationProggres("proggress3");
+      setformSpecializations("organizationExperiences");
     }
   };
 

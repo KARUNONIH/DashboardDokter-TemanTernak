@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import { useAtom } from "jotai";
 import InputRegistration from "./InputRegistration";
-import { activeFormRegistrationAtom, newDataSignupAtom, statusRegistationAtom } from "../../atoms/Atom";
+import { activeFormRegistrationAtom, formSpecializationAtom, newDataSignupAtom, statusRegistationAtom } from "../../atoms/Atom";
 
 const License = () => {
   const [data, setData] = useState(null);
@@ -17,6 +17,11 @@ const License = () => {
   const [errors, setErrors] = useState({});
   const [isCheckAction, setIsCheckAction] = useState(false);
   const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
+  const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
+
+
+  const dataRegis = JSON.parse(localStorage.getItem("data"));
+
 
   const endpoint = {
     file: "https://api.temanternak.h14.my.id/users/my/files/",
@@ -27,10 +32,10 @@ const License = () => {
   const { fetchData: fetchGetSipFile } = GetAuthorization(endpoint.file + sipFileId, token);
 
   useEffect(() => {
-    if (!statusRegistration && dataRegistration.license) {
-      setData(dataRegistration.license);
+    if (dataRegis.license) {
+      setData(dataRegis.license);
     }
-  }, [dataRegistration.license]);
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -127,6 +132,7 @@ const License = () => {
           license: data,
         }));
         registrationProggres("proggress3");
+        setformSpecializations("specializations");
       } else {
         setIsCheckAction(true);
       }
