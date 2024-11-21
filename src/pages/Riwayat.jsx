@@ -6,13 +6,14 @@ import TabelRiwayat from "../components/Riwayat/TabelRiwayat";
 import TabNavigation from "../components/Riwayat/TabNavigation";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
 import { useAtom } from "jotai";
-import { dataRiwayatAtom, dataUSerAtom, lengthOfHistoryAtom } from "../atoms/Atom";
+import { dataIdModalRiwayat, dataRiwayatAtom, dataUSerAtom, lengthOfHistoryAtom, modalRiwayatAtom } from "../atoms/Atom";
 import Modal from "../components/Riwayat/Modal";
 
 const Riwayat = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const [dataRiwayat, setDataRiwayat] = useAtom(dataRiwayatAtom);
   const [lengthHistory, setLengthHistory] = useAtom(lengthOfHistoryAtom);
+  
 
   const endpoint = {
     dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
@@ -33,27 +34,23 @@ const Riwayat = () => {
       const responseconsultation = await fetchGetConsultation();
       if (responseconsultation) {
         console.log(responseconsultation);
-        const confirmBookings = responseconsultation.data.filter((item) =>
-          item.status !== "WAITING"
-        );
-        setDataRiwayat(confirmBookings); 
-        setLengthHistory(confirmBookings)
+        const confirmBookings = responseconsultation.data.filter((item) => item.status !== "WAITING");
+        setDataRiwayat(confirmBookings);
+        setLengthHistory(confirmBookings);
       }
-    }
+    };
 
     fetch();
   }, []);
 
-  const handelSubmit = async () => {
-
-  }
+  const handelSubmit = async () => {};
 
   return (
     <div className="min-h-screen bg-slate-50 px-8 py-4">
       {/* <DashboardHeader /> */}
       <Modal />
       <TabNavigation />
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         {/* <SearchInput /> */}
         {/* <Filter /> */}
       </div>

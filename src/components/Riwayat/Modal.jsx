@@ -1,116 +1,112 @@
 import { useAtom } from "jotai";
-import { addServiceDataAtom, dataIdModalRiwayat, editServiceDataAtom, editServiceDataNoIdAtom, modalLayananAtom, modalRiwayatAtom, scheduleDataAtom, typeModalLayananAtom } from "../../atoms/Atom";
-import { useState } from "react";
+import { modalRiwayatAtom, dataIdModalRiwayat } from "../../atoms/Atom";
+import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
-import Swal from "sweetalert2";
-import PostAuthorization from "../../fetchAPI/PostAuthorization";
+import { Editor } from "@tinymce/tinymce-react"; 
+import Swal from "sweetalert2"; 
 
-const Modal = ({ addConsultationResult }) => {
-    const [isModalOpen, setModalOpen] = useAtom(modalRiwayatAtom);
-    const [idRiwayat, setIdRiwayat] = useAtom(dataIdModalRiwayat);
-  //   const [dataService, setDataService] = useAtom(addServiceDataAtom);
-  //   const [editdataService, setEditDataService] = useAtom(editServiceDataAtom);
-  //   const [typeModal] = useAtom(typeModalLayananAtom);
-  //   const [scheduleData, setScheduleData] = useAtom(scheduleDataAtom);
-  //   const [editdataServiceNoId, setEditDataServiceNoId] = useAtom(editServiceDataNoIdAtom);
+const Modal = () => {
+  const [isModalOpen, setModalOpen] = useAtom(modalRiwayatAtom);
+  const [idRiwayat] = useAtom(dataIdModalRiwayat);
+  const [editorContent, setEditorContent] = useState("");
 
-  const endpoint = {
-    consultationResult: "https://api.temanternak.h14.my.id/bookings/673869d56866a15fc6096862/consultations/resul",
+  const apiKey = "rabze7jmjzkemmjg46ascadg7u4eiu648iaws73n4qzfb5ug";
+
+  const handleEditorChange = (content, editor) => {
+      setEditorContent(content);
   };
 
-  const { data: getConsultationsData, loading: getConsultationsLoading, error: getConsultationsError, fetchData: fetchGetConsultation } = PostAuthorization(endpoint.getSConsultation, JSON.parse(localStorage.getItem("token")));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const postData = {
+      result: editorContent, 
+    };
+
+    try {
+      const response = await fetch(`https://api.temanternak.h14.my.id/bookings/${idRiwayat}/consultations/result`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal mengirim data");
+      }
+
+      const result = await response.json();
+      console.log(result);
+
+      // Tampilkan SweetAlert jika berhasil
+      Swal.fire({
+        icon: 'success',
+        title: 'Sukses!',
+        text: 'Data berhasil dikirim.',
+      });
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+
+      // Tampilkan SweetAlert jika gagal
+      Swal.fire({
+        icon: 'error',
+        title: 'Terjadi kesalahan!',
+        text: 'Gagal mengirim data, coba lagi.',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
+    const currentData = savedData.find((item) => item.idBooking === idRiwayat);
+    if (currentData) {
+      setEditorContent(currentData.content);
+    }
+  }, [idRiwayat]);
 
   if (!isModalOpen) return null;
 
-  const handleOverlayClick = () => {
-    setModalOpen(false);
-  };
-
-  const handleModalContentClick = (e) => {
-    e.stopPropagation();
-  };
-
-  // const validateDates = (startTime, endTime) => {
-  //   const toLocalDate = (date) => {
-  //     const utcDate = new Date(date);
-  //     // Gunakan waktu lokal berdasarkan zona waktu pengguna
-  //     return new Date(
-  //       utcDate.getUTCFullYear(),
-  //       utcDate.getUTCMonth(),
-  //       utcDate.getUTCDate(),
-  //       utcDate.getUTCHours(),
-  //       utcDate.getUTCMinutes(),
-  //       utcDate.getUTCSeconds()
-  //     );
-  //   };
-
-  //   // Konversi ke waktu lokal berdasarkan zona waktu lokal pengguna
-  //   const startDate = toLocalDate(startTime);
-  //   const endDate = toLocalDate(endTime);
-
-  //   // Periksa apakah tanggal dalam hari yang sama
-  //   if (
-  //     startDate.getFullYear() !== endDate.getFullYear() ||
-  //     startDate.getMonth() !== endDate.getMonth() ||
-  //     startDate.getDate() !== endDate.getDate()
-  //   ) {
-  //     console.log(startDate, endDate);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Tanggal Tidak Valid",
-  //       text: "Tanggal harus di hari yang sama.",
-  //     });
-  //     return false;
-  //   }
-
-  //   // Periksa apakah waktu mulai lebih awal daripada waktu akhir
-  //   if (startDate >= endDate) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Waktu Tidak Valid",
-  //       text: "Waktu mulai harus lebih awal daripada waktu akhir.",
-  //     });
-  //     return false;
-  //   }
-
-  //   return true;
-  // };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (typeModal === "add") {
-      addService();
-    } else if (typeModal === "edit") {
-      editService();
-    } else if (typeModal === "schedule") {
-      addSchedule();
-      // if (validateDates(scheduleData.startTime, scheduleData.endTime)) {
-      // }
-    }
-  };
-
-  const handleDateChange = (inputDate, type) => {
-    const date = new Date(inputDate);
-
-    if (type === "startTime") {
-      date.setSeconds(date.getSeconds() + 1);
-    }
-
-    const isoString = date.toISOString();
-
-    console.log(isoString);
-    setScheduleData({ ...scheduleData, [type]: isoString });
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5" onClick={handleOverlayClick}>
-      <form className="relative w-full max-w-xl rounded-lg bg-white p-4 shadow-lg" onClick={handleModalContentClick} onSubmit={handleSubmit}>
-        <div className="absolute -right-4 -top-4 flex aspect-square h-10 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white text-4xl text-black" onClick={() => setModalOpen(false)}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5"
+      onClick={() => setModalOpen(false)}
+    >
+      <form
+        className="relative w-full max-w-xl rounded-lg bg-white p-4 shadow-lg"
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={handleSubmit} // Form submit
+      >
+        <div
+          className="absolute -right-4 -top-4 flex aspect-square h-10 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white text-4xl text-black"
+          onClick={() => setModalOpen(false)}
+        >
           <IoIosClose />
         </div>
         <h1 className="text-center text-xl font-semibold">Membuat Hasil Konsultasi</h1>
-        <p className="mt-2 text-center text-sm text-gray-600">Hasil Konsultasi yang ditampilkan melanjutkan dari yang dibuat ketika konsultsai sedang berlangsung</p>
-        {/* content */}
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Hasil Konsultasi yang ditampilkan melanjutkan dari yang dibuat ketika konsultasi sedang berlangsung
+        </p>
+        <div className="mt-10 w-full">
+          <Editor
+            apiKey={apiKey} // Menyertakan API key di sini
+            init={{
+              selector: "#editor-container",
+              plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table paste code help wordcount",
+              ],
+              toolbar:
+                "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+              menubar: true,
+              height: 400,
+            }}
+            value={editorContent}
+            onEditorChange={handleEditorChange} // Menangani perubahan konten
+          />
+        </div>
         <div className="mt-4 flex flex-row-reverse">
           <button type="submit" className="w-1/2 rounded bg-green-600 py-1 text-white">
             Submit

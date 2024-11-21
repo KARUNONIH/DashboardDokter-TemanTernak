@@ -17,6 +17,7 @@
     "@fullcalendar/resource-timeline": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@shadcn/ui": "^0.0.4",
+    "@tinymce/tinymce-react": "^5.1.1",
     "chart.js": "^4.4.6",
     "jotai": "^2.10.1",
     "lucide-react": "^0.460.0",

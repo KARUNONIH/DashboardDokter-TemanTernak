@@ -1,15 +1,17 @@
 import React from "react";
 import { useAtom } from "jotai";
-import { filterDataRiwatAtom, lengthOfHistoryAtom } from "../../atoms/Atom";
+import { dataIdModalRiwayat, filterDataRiwatAtom, lengthOfHistoryAtom, modalRiwayatAtom } from "../../atoms/Atom";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaEdit, FaInfoCircle } from "react-icons/fa";
 
 
 
 const TabelRiwayat = () => {
   const [filterData, setFilterData] = useAtom(filterDataRiwatAtom);
   const [lengthHistory, setLengthHistory] = useAtom(lengthOfHistoryAtom);
+  const [isModalOpen, setModalOpen] = useAtom(modalRiwayatAtom);
+  const [idRiwayat, setIdRiwayat] = useAtom(dataIdModalRiwayat);
 
   const formatDateTimeRange = (startTimeISO, endTimeISO) => {
     const startDate = new Date(startTimeISO);
@@ -84,9 +86,18 @@ const TabelRiwayat = () => {
     {
       name: "Aksi",
       cell: (row) => (
-        <Link to={`/layanan?id=${row.id}&token=${JSON.parse(localStorage.getItem("token"))}`} className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white">
-          <FaInfoCircle className="cursor-pointer text-xl" />
-        </Link>
+        row.status === "COMPLETED" ?
+        <div
+          className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white"
+            onClick={() => {
+              setIdRiwayat(row.bookingId)
+            setModalOpen(true);
+          }}
+        >
+          <FaEdit className="cursor-pointer text-xl" />
+          </div>
+          :
+          <p>No Action</p>
       ),
       width: "10%",
     },
