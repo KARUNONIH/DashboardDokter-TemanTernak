@@ -17,10 +17,10 @@ function SummaryCard({ title, value, color }) {
   const dropshadow = "0px 0px 10px rgba(255, 255, 255,  0.2)";
 
   return (
-    <div className={`${backgroundColor.wrapper[color]} relative overflow-hidden rounded p-6 text-white shadow shadow-gray-300`}>
+    <div className={`${backgroundColor.wrapper[color]} relative overflow-hidden rounded p-6 text-white shadow shadow-gray-300 z-0`}>
       <h2 className="text-lg font-semibold">{title}</h2>
       <p className="mt-2 text-3xl font-bold">{value}</p>
-      <div className={`absolute aspect-square ${backgroundColor.shade[color]} -right-10 top-0 rotate-[45deg]`} style={{ height: "calc(100%)", filter: `drop-shadow(${dropshadow})` }}></div>
+      <div className={`absolute aspect-square ${backgroundColor.shade[color]} -right-10 top-0 rotate-[45deg] z-0`} style={{ height: "calc(100%)", filter: `drop-shadow(${dropshadow})` }}></div>
     </div>
   );
 }

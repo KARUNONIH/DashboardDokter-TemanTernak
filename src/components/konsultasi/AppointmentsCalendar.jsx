@@ -7,20 +7,23 @@ import listPlugin from "@fullcalendar/list";
 import { FaVideo } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { useAtom } from "jotai";
-import { consultationDataCalendarAtom, modalKonsultasiAtom } from "../../atoms/Atom";
+import { allDataKonsultasiAtom, consultationDataCalendarAtom, dataModalKonsultasiAtom, modalKonsultasiAtom } from "../../atoms/Atom";
 import { useLocation } from "react-router-dom";
 
 const AppointmentsCalendar = () => {
   const [totalEvents, setTotalEvents] = useState(0);
   const [modalKonsultasi, setModalKonsultasi] = useAtom(modalKonsultasiAtom);
   const [dataCalendar, setDataCalendar] = useAtom(consultationDataCalendarAtom);
+  const [dataModal, setDataModal] = useAtom(dataModalKonsultasiAtom);
+  const [allDataModal, setAllDataModal] = useAtom(allDataKonsultasiAtom);
 
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const tanggal = queryParams.get("tanggal");
 
-  const openModal = () => {
+  const openModal = (id) => {
+    setDataModal(allDataModal.filter(item => item.id === id));
     setModalKonsultasi(true);
   };
 
@@ -56,7 +59,7 @@ const AppointmentsCalendar = () => {
 
   const renderEventContent = (eventInfo) => {
     return (
-      <div className="flex h-full cursor-pointer flex-col items-start rounded p-2 text-black" style={{ backgroundColor: eventInfo.event.backgroundColor }} onClick={openModal}>
+      <div className="flex h-full cursor-pointer flex-col items-start rounded p-2 text-black" style={{ backgroundColor: eventInfo.event.backgroundColor }} onClick={() => openModal(eventInfo.event.extendedProps.id)}>
         <div className="w-max">
           <div className="flex justify-between gap-3">
             <img className={`aspect-square h-6 rounded`} style={{ backgroundColor: eventInfo.event.extendedProps.bgIcon }} src={ eventInfo.event.extendedProps.src} />

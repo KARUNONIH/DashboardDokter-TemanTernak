@@ -40,7 +40,6 @@ const Modal = () => {
       const result = await response.json();
       console.log(result);
 
-      // Tampilkan SweetAlert jika berhasil
       Swal.fire({
         icon: 'success',
         title: 'Sukses!',
@@ -49,7 +48,6 @@ const Modal = () => {
     } catch (error) {
       console.error("Terjadi kesalahan:", error);
 
-      // Tampilkan SweetAlert jika gagal
       Swal.fire({
         icon: 'error',
         title: 'Terjadi kesalahan!',
@@ -76,7 +74,7 @@ const Modal = () => {
       <form
         className="relative w-full max-w-xl rounded-lg bg-white p-4 shadow-lg"
         onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit} // Form submit
+        onSubmit={handleSubmit} 
       >
         <div
           className="absolute -right-4 -top-4 flex aspect-square h-10 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white text-4xl text-black"

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import AppointmentsCalendar from "../components/konsultasi/AppointmentsCalendar";
 import Modal from "../components/konsultasi/Modal";
-import { consultationDataCalendarAtom, dataUSerAtom } from "../atoms/Atom";
+import { allDataKonsultasiAtom, consultationDataCalendarAtom, dataModalKonsultasiAtom, dataUSerAtom } from "../atoms/Atom";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
 import { useEffect, useState } from "react";
 
@@ -9,6 +9,8 @@ const Konsultasi = () => {
   const [dataCalendar, setDataCalendar] = useAtom(consultationDataCalendarAtom);
   const [isFetch, setIsFetch] = useState({ getMe: true, getConsultation: true });
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
+  const [dataModal, setDataModal] = useAtom(dataModalKonsultasiAtom);
+  const [allDataModal, setAllDataModal] = useAtom(allDataKonsultasiAtom);
 
   const endpoint = {
     getMe: "https://api.temanternak.h14.my.id/users/my",
@@ -55,10 +57,12 @@ const Konsultasi = () => {
             consultationName: item.serviceName,
             bgIcon: "rgba(192, 38, 211, 1)",
             image: `https://ui-avatars.com/api/?name=${item.bookerName}`,
+            id : item.id
           },
         }));
         setDataCalendar(newData);
         setIsFetch({ ...isFetch, getConsultation: false });
+        setAllDataModal(response.data);
       }
     };
 

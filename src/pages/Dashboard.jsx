@@ -57,7 +57,7 @@ const Dashboard = () => {
         console.log(consultationResponse);
         setDataConsultation(consultationResponse.data);
         const consultationsToday = consultationResponse.data.filter(item =>
-          isTodayOrAfter(item.startTime, "today")
+          isTodayOrAfter(item.startTime, "today") && item.status === "WAITING"
         );
 
         const totalConsultations = consultationResponse.data.filter(item =>
@@ -117,7 +117,7 @@ const Dashboard = () => {
       </div>
       <div className="w-full">
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 my-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 my-6 relative z-0">
             <SummaryCard title="Konsutasi Hari Ini" value={infoDashboard.consultationToday} color="blue" />
             <SummaryCard title="Total Konsultasi" value={infoDashboard.totalConsultation} color="purple" />
             <SummaryCard title="Konsultasi Mendatang" value={infoDashboard.futureConsultation} color="green" />
@@ -128,10 +128,10 @@ const Dashboard = () => {
             <MonthlyEvents />
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mt-6">
+          {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mt-6">
             <EmployeeList />
             <Schedule />
-          </div>
+          </div> */}
         </div>
       </div>
   );

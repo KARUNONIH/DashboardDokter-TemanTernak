@@ -47,3 +47,5 @@ export const filterDataRiwatAtom = atom([]);
 export const lengthOfHistoryAtom = atom(null);
 export const modalRiwayatAtom = atom(false);
 export const dataIdModalRiwayat = atom(null);
+export const dataModalKonsultasiAtom = atom([]);
+export const allDataKonsultasiAtom = atom([]);

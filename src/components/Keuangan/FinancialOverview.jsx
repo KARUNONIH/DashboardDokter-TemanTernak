@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 const FinancialOverview = () => {
   const [balance, setBalance] = useState(0); // Total saldo
-  const [withdrawAmount, setWithdrawAmount] = useState(null); // Jumlah uang yang ingin ditarik
+  const [withdrawAmount, setWithdrawAmount] = useState(0); // Jumlah uang yang ingin ditarik
   const [accountNumber, setAccountNumber] = useState(""); // Nomor rekening
   const [transactionHistory, setTransactionHistory] = useState([]); // Riwayat transaksi
   const [loading, setLoading] = useState(false);
@@ -95,6 +95,10 @@ const FinancialOverview = () => {
       setValidationError("Pastikan semua data terisi.");
       return;
     }
+    if (withdrawAmount < 10000) {
+      setValidationError("Jumlah penarikan harus lebih dari Rp 10.000");
+      return;
+    }
 
     setValidationError(""); // Reset pesan validasi
 
@@ -138,15 +142,12 @@ const FinancialOverview = () => {
 
   useEffect(() => {
     if (isWithdraw) {
-      
       fetchFinancialData();
       fetchBankList();
       fetchIdempotencyKey();
       setIsWithdraw(false);
     }
   }, [isWithdraw]);
-
-
 
   useEffect(() => {
     if (selectedBank) {
@@ -159,80 +160,96 @@ const FinancialOverview = () => {
   const deposits = transactionHistory.filter((transaction) => parseFloat(transaction.from) < parseFloat(transaction.to));
 
   return (
-    <div className="financial-overview mx-auto max-w-lg rounded-lg bg-white p-6 shadow-lg">
-      <h2 className="mb-6 text-center text-2xl font-semibold">Keuangan Anda</h2>
+    <div className="mt-8 flex w-[90%] justify-center gap-4 bg-slate-50">
+      <div className="financial-overview max-w-lg rounded-lg bg-white p-6 shadow shadow-gray-300">
+        {loading ? (
+          <div className="text-center">Loading...</div>
+        ) : (
+          <>
+            <h3 className="mb-2 text-lg font-bold">Penarikan Dana</h3>
+            <div className="balance-info mb-6 flex items-center gap-2 text-center">
+              <h3 className="text-base">Saldo : </h3>
+              <p className="text-base font-semibold text-green-600">{balance.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</p>
+            </div>
 
-      {loading ? (
-        <div className="text-center">Loading...</div>
-      ) : (
-        <>
-          <div className="balance-info mb-6 text-center">
-            <h3 className="text-lg font-medium">Saldo saat ini:</h3>
-            <p className="text-2xl font-bold text-green-600">Rp {balance.toLocaleString()}</p>
+            <div className="withdraw-form mb-6">
+              <label htmlFor="" className="text-sm font-semibold">
+                Nomor Rekening
+              </label>
+              <input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} placeholder="Nomor Rekening" className="mb-4 w-full rounded-md border p-2 text-sm" />
+              <label htmlFor="" className="text-sm font-semibold">
+                Bank
+              </label>
+              <Select value={selectedBank} onChange={setSelectedBank} options={banks} placeholder="Pilih Bank" isSearchable className="mb-4 text-sm" />
+              <label htmlFor="" className="text-sm font-semibold">
+                Jumlah Penarikan
+              </label>
+              <input type="number" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="Jumlah Penarikan" className="w-full rounded-md border p-2 text-sm" />
+              <div className="mb-4 flex flex-col items-center space-x-4">
+                <section className="justify-center flex gap-4 mt-2">
+                  <p className="text-xs text-gray-600">Jumlah Penarikan : {parseInt(withdrawAmount || 0).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</p>
+                  <p className="text-xs text-gray-600">Biaya Bank: {fee.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</p>
+                </section>
+              </div>
+              {validationError && <p className="mb-4 text-sm text-red-600 text-center">{validationError}</p>}
+
+              <button onClick={handleWithdraw} className="w-full rounded-md bg-blue-500 px-6 py-2 text-white">
+              Tarik {withdrawAmount && fee !== 0 ? ((parseInt(withdrawAmount) || 0) + fee).toLocaleString("id-ID", { style: "currency", currency: "IDR" }) : "Dana"}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+      <div className="flex flex-col gap-8">
+        <div className="transaction-history h-max w-[600px] rounded bg-white p-6 shadow shadow-gray-300">
+          <h3 className="mb-4 text-lg font-semibold">Riwayat Transaksi</h3>
+          <div className="withdrawals mb-6">
+            <h4 className="mb-2 text-base font-medium">Penarikan Dana</h4>
+            {withdrawals.length === 0 ? (
+              <p className="text-gray-500">Tidak ada penarikan.</p>
+            ) : (
+              <ul className="space-y-4">
+                {withdrawals.map((transaction, index) => (
+                  <li key={index} className="border-b py-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-800">{(transaction.from - transaction.to).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                      <span className="text-xs text-gray-400">{new Date(transaction.timestamp).toLocaleString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-
-          <div className="withdraw-form mb-6">
-            <h3 className="mb-2 text-lg font-medium">Penarikan Dana</h3>
-            <input type="text" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} placeholder="Nomor Rekening" className="mb-4 w-full rounded-md border p-2" />
-              <Select value={selectedBank} onChange={setSelectedBank} options={banks} placeholder="Pilih Bank" isSearchable />
-              <input type="number" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="Jumlah Penarikan" className="w-full rounded-md border p-2" />
-              <div className="mb-4 flex  flex-col items-center space-x-4">
-              <div className="bank-selection mb-4">
-              <h4 className="text-sm font-medium">Pilih Bank</h4>
-            </div>
-              <span className="text-sm text-gray-600">Biaya Bank: Rp {fee.toLocaleString()}</span>
-            </div>
-            {validationError && <p className="mb-4 text-sm text-red-500">{validationError}</p>}
-
-            
-            <button onClick={handleWithdraw} className="w-full rounded-md bg-blue-500 px-6 py-2 text-white">
-              Tarik Dana
-            </button>
-          </div>
-
-          <div className="transaction-history">
-            <h3 className="mb-4 text-lg font-semibold">Riwayat Transaksi</h3>
-            <div className="withdrawals mb-6">
-              <h4 className="text-md mb-2 font-medium">Penarikan Dana</h4>
-              {withdrawals.length === 0 ? (
-                <p className="text-gray-500">Tidak ada penarikan.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {withdrawals.map((transaction, index) => (
-                    <li key={index} className="border-b py-2">
-                      <div className="flex justify-between">
-                        <span className="font-medium">Rp {transaction.to}</span>
-                        <span className="text-xs text-gray-400">{transaction.timestamp}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="deposits">
-              <h4 className="text-md mb-2 font-medium">Penerimaan Dana</h4>
-              {deposits.length === 0 ? (
-                <p className="text-gray-500">Tidak ada penerimaan dana.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {deposits.map((transaction, index) => (
-                    <li key={index} className="border-b py-2">
-                      <div className="flex justify-between">
-                        <span className="font-medium">diterima Rp {transaction.acceptedAmount}</span>
-                        <span>
-                          didapat dari biaya {transaction.consultation.serviceName} sebesar {transaction.price} dikurang biaya layanan sebesar {transaction.platformFee}
-                        </span>
-                        <span className="text-xs text-gray-400">{transaction.timestamp}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+        <div className="deposits h-max w-[600px] rounded bg-white p-6 shadow shadow-gray-300">
+          <h4 className="text-md mb-2 font-medium">Penerimaan Dana</h4>
+          {deposits.length === 0 ? (
+            <p className="text-gray-500">Tidak ada penerimaan dana.</p>
+          ) : (
+            <ul className="space-y-4">
+              {deposits.map((transaction, index) => (
+                <li key={index} className="border-b py-2">
+                  <div className="flex justify-between">
+                    <section className="flex flex-col gap-1">
+                      <span className="text-sm font-medium text-gray-800">{transaction.acceptedAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                      <span className="text-xs text-gray-400">{new Date(transaction.timestamp).toLocaleString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
+                    </section>
+                    <section className="flex flex-col gap-1">
+                      <p className="text-right text-sm">{transaction.consultation.serviceName}</p>
+                      <p className="text-right text-xs text-gray-500">
+                        Biaya ({transaction.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}) - Admin ({transaction.platformFee.toLocaleString("id-ID", { style: "currency", currency: "IDR" })})
+                      </p>
+                    </section>
+                    {/* <span>
+                          didapat dari biaya {transaction.consultation.serviceName} sebesar  dikurang biaya layanan sebesar {transaction.platformFee}
+                        </span> */}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -458,64 +458,64 @@ const VideoRoom = () => {
     }
   }, [isMessagesEndRef]);
 
-  useEffect(() => {
-    if (!quillInstance.current && editorRef.current) {
-      quillInstance.current = new Quill(editorRef.current, {
-        theme: "snow",
-        placeholder: "Mulai mengetik di sini...",
-        modules: {
-          toolbar: [[{ header: [1, 2, false] }], ["bold", "italic", "underline"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"]],
-        },
-      });
-    }
+  // useEffect(() => {
+  //   if (!quillInstance.current && editorRef.current) {
+  //     quillInstance.current = new Quill(editorRef.current, {
+  //       theme: "snow",
+  //       placeholder: "Mulai mengetik di sini...",
+  //       modules: {
+  //         toolbar: [[{ header: [1, 2, false] }], ["bold", "italic", "underline"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"]],
+  //       },
+  //     });
+  //   }
 
-    const quill = quillInstance.current;
+  //   const quill = quillInstance.current;
 
-    const savedData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
-    const currentData = savedData.find((item) => item.idBooking === idBooking);
+  //   const savedData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
+  //   const currentData = savedData.find((item) => item.idBooking === idBooking);
 
-    if (currentData && isJoined) {
-      quill.root.innerHTML = currentData.content;
-    }
+  //   if (currentData && isJoined) {
+  //     quill.root.innerHTML = currentData.content;
+  //   }
 
-    const handleTextChange = () => {
-      const content = quill.root.innerHTML;
+  //   const handleTextChange = () => {
+  //     const content = quill.root.innerHTML;
 
-      const existingData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
+  //     const existingData = JSON.parse(localStorage.getItem("hasilKonsultasi")) || [];
 
-      const updatedData = existingData.filter((item) => item.idBooking !== idBooking);
+  //     const updatedData = existingData.filter((item) => item.idBooking !== idBooking);
 
-      updatedData.push({ idBooking, content });
+  //     updatedData.push({ idBooking, content });
 
-      localStorage.setItem("hasilKonsultasi", JSON.stringify(updatedData));
-    };
+  //     localStorage.setItem("hasilKonsultasi", JSON.stringify(updatedData));
+  //   };
 
-    if (isJoined) {
-      quill.on("text-change", handleTextChange);
-    }
+  //   if (isJoined) {
+  //     quill.on("text-change", handleTextChange);
+  //   }
 
-    const placeholderStyle = `
-      color: #888; 
-      font-style: italic; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-      display: block;
-    `;
+  //   const placeholderStyle = `
+  //     color: #888; 
+  //     font-style: italic; 
+  //     white-space: nowrap; 
+  //     overflow: hidden; 
+  //     text-overflow: ellipsis; 
+  //     display: block;
+  //   `;
 
-    if (isJoined) {
-      const quillEditorElement = editorRef.current.querySelector(".ql-editor::before");
-      if (quillEditorElement) {
-        quillEditorElement.style.cssText = placeholderStyle;
-      }
-    }
+  //   if (isJoined) {
+  //     const quillEditorElement = editorRef.current.querySelector(".ql-editor::before");
+  //     if (quillEditorElement) {
+  //       quillEditorElement.style.cssText = placeholderStyle;
+  //     }
+  //   }
 
-    return () => {
-      if (isJoined) {
-        quill.off("text-change", handleTextChange);
-      }
-    };
-  }, [idBooking, isJoined]);
+  //   return () => {
+  //     if (isJoined) {
+  //       quill.off("text-change", handleTextChange);
+  //     }
+  //   };
+  // }, [idBooking, isJoined]);
 
   return (
     <div className="fixed left-0 top-0 z-50 h-full w-full bg-slate-50 p-8">
@@ -531,7 +531,7 @@ const VideoRoom = () => {
                       {new Date(consultation?.startTime).toLocaleString()} - {new Date(consultation?.endTime).toLocaleString()}
                     </span>
                   </h1>
-                  {!showVideo && <p className="font-medium italic">saat ini anda sudah bisa berkomunikasi Via chat, video akan ditampilkan saat waktu konsultasi dimulai</p>}
+                  {showVideo && <p className="font-medium italic">saat ini anda sudah bisa berkomunikasi Via chat, video akan ditampilkan saat waktu konsultasi dimulai</p>}
                 </section>
                 <div id="meeting-info">
                   <div className="flex items-center gap-2">
@@ -548,7 +548,7 @@ const VideoRoom = () => {
                   </div>
                 </div>
               </div>
-              {showVideo && (
+              {!showVideo && (
                 <>
                   <div ref={videoContainerRef} id="videoContainer" className="video-container flex items-center gap-2">
                     <div className="video-wrapper flex rounded bg-white p-4 shadow shadow-gray-300">
@@ -599,7 +599,7 @@ const VideoRoom = () => {
                 </>
               )}
             </section>
-            {showChat && (
+            {!showChat && (
               <section className="max-w-[800px] flex-1">
                 <div className="chat-container shadow-gray rounded bg-white p-4 shadow">
                   <ul id="messages" className="messages-list max-h-[500px] min-h-[400px] space-y-4 overflow-y-auto pr-2">
@@ -642,27 +642,27 @@ const VideoRoom = () => {
           </>
         ) : (
           <>
-            {showVideo ? (
+            {typeTimer === "after" ? (
               <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
-                <section className="flex items-center">
-                  <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
-                    Kembali ke Layanan
-                  </Link>
-                  <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
-                    Kembali kedalam room
-                  </button>
-                </section>
-                <p className="text-sm text-gray-600">
-                  Konsultasi sedang berlangsung <span className="font-bold">Jika anda keluar, konsultasi bisa dianggap tidak sah!</span>.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
+              <section className="flex items-center">
+                <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                  Kembali ke Layanan
+                </Link>
+                <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                  Kembali kedalam room
+                </button>
+              </section>
+              <p className="text-sm text-gray-600">
+                Konsultasi sedang berlangsung <span className="font-bold">Jika anda keluar, konsultasi bisa dianggap tidak sah!</span>.
+              </p>
+            </div>
+              ): (
+                <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
                 <section>
                   <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
                     Kembali ke Layanan
                   </Link>
-                  {showChat && (
+                  {!showChat && (
                     <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
                       Masuk kedalam room
                     </button>
@@ -675,6 +675,7 @@ const VideoRoom = () => {
                   Anda baru bisa bergabung ke dalam room <span className="font-bold">5 menit sebelum mulai</span>.
                 </p>
               </div>
+              
             )}
           </>
         )}

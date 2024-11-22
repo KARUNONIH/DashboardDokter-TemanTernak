@@ -194,11 +194,11 @@ const Table = () => {
     {
       name: "Aksi",
       cell: (row) => (
-        <Link to={`/layanan?id=${row.id}&token=${JSON.parse(localStorage.getItem("token"))}`}
+        <a href={`https://room-teman-ternak.netlify.app/?id=${row.id}&token=${JSON.parse(localStorage.getItem("token"))}`}
           className="flex aspect-square h-10 items-center justify-center rounded border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-white"
-        >
+        target="_Blank">
           <FaInfoCircle className="cursor-pointer text-xl" />
-        </Link>
+        </a>
       ),
       width: "10%",
     },
