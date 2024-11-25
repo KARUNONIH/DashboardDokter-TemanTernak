@@ -49,3 +49,4 @@ export const modalRiwayatAtom = atom(false);
 export const dataIdModalRiwayat = atom(null);
 export const dataModalKonsultasiAtom = atom([]);
 export const allDataKonsultasiAtom = atom([]);
+export const dataDashboardAtom = atom({});

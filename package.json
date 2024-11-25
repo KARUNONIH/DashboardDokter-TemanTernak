@@ -30,6 +30,7 @@
     "react-quill": "^0.0.2",
     "react-router-dom": "^6.27.0",
     "react-select": "^5.8.3",
+    "react-tooltip": "^5.28.0",
     "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.6.13",
     "thirdversion": "file:"

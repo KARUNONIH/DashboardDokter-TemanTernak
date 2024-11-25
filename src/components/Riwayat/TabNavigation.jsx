@@ -37,7 +37,7 @@ const TabNavigation = () => {
 
   const handleSearch = (searchTerm) => {
     const filteredData = (dataRiwayat || []).filter(
-      (item) => item.bookerName.toLowerCase().includes(searchTerm.toLowerCase()) || formatDateTimeRange(item.startTime, item.endTime).toLowerCase().includes(searchTerm.toLowerCase()) || item.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
+      (item) => item.bookerName.toLowerCase().includes(searchTerm.toLowerCase()) || formatDateTimeRange(item.startTime, item.endTime).toLowerCase().includes(searchTerm.toLowerCase()) || item.serviceName.toLowerCase().includes(searchTerm.toLowerCase()) || item.status.toLowerCase().includes(searchTerm.toLowerCase())
       // item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       // status(item.isAccepted, item.isSuspended).toLowerCase().includes(searchTerm.toLowerCase())
     );

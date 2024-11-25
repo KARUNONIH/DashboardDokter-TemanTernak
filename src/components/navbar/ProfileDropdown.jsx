@@ -31,8 +31,8 @@ function ProfileDropdown({}) {
       <div className="flex cursor-pointer items-center p-2" onClick={toggleDropdown}>
         <img src="/asset/stars.png" alt="Profile" className="h-10 w-10 rounded-full" />
         <div className="ml-2">
-          <h1 className="font-semibold">{dataUser.name}</h1>
-          <p className="text-sm text-gray-500">{dataUser.role}</p>
+          <h1 className={`font-semibold ${!dataUser.name ? "h-4 w-40 animate-pulse rounded bg-slate-200" : ""}`}>{dataUser.name}</h1>
+          <p className={`text-sm text-gray-500 ${!dataUser.role ? "h-3 w-24 animate-pulse rounded bg-slate-200 mt-1" : ""}`}>{dataUser.role}</p>
         </div>
         <FaChevronDown className="ml-2" />
       </div>

@@ -34,7 +34,7 @@ const Layanan = () => {
     getAllShedule: "https://api.temanternak.h14.my.id/users/my/schedules",
     editService: "https://api.temanternak.h14.my.id/veterinarians/services/",
     addSchedule: "https://api.temanternak.h14.my.id/veterinarians/schedules",
-    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations"
+    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
   };
 
   const { data: addServiceData, loading: addServiceLoading, error: addServiceError, fetchData: fetchAddService } = PostAuthorization(endpoint.addService, dataService, JSON.parse(localStorage.getItem("token")));

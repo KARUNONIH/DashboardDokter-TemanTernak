@@ -36,25 +36,9 @@ const AppointmentsCalendar = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const events = [
-    {
-      start: "2024-11-06T09:00:00",
-      end: "2024-11-06T10:30:00",
-      backgroundColor: "rgba(192, 38, 211, 0.1)",
-      borderColor: "rgba(192, 38, 211, 0.0)",
-      extendedProps: {
-        title: "Rafli Jainudin",
-        status: "Finished",
-        consultationName: "Video Call",
-        bgIcon: "rgba(192, 38, 211, 1)",
-        image: ""
-      },
-    },
-  ];
-
   const handleEvents = (events) => {
-    const filteredEvents = events.filter((event) => event.title !== "Break Time");
-    setTotalEvents(filteredEvents.length);
+    console.log(events);
+    setTotalEvents(events.length);
   };
 
   const renderEventContent = (eventInfo) => {
@@ -101,7 +85,7 @@ const AppointmentsCalendar = () => {
         headerToolbar={{
           left: "totalEventsDisplay",
           center: "prev,next title today",
-          right: "timeGridDay,timeGridWeek,listWeek",
+          right: "timeGridDay,listWeek",
         }}
         customButtons={{
           totalEventsDisplay: {
@@ -111,9 +95,17 @@ const AppointmentsCalendar = () => {
         }}
         datesSet={(dateInfo) => {
           handleEvents(
-            events.filter((event) => {
+            dataCalendar.filter((event) => {
               const eventStart = new Date(event.start);
-              return eventStart >= dateInfo.start && eventStart < dateInfo.end;
+              const startBoundary = new Date(dateInfo.startStr);
+              const endBoundary = new Date(dateInfo.endStr);
+              console.log(
+                eventStart,
+                startBoundary,
+                endBoundary,
+                eventStart >= startBoundary && eventStart < endBoundary
+              );
+              return eventStart >= startBoundary && eventStart < endBoundary;
             }),
           );
         }}

@@ -245,17 +245,17 @@ const Table = () => {
     <>
       {settingMenuLayanan.activeMenu === "layanan" && (
         <div className="mt-10 rounded-lg bg-white p-6 shadow shadow-gray-300">
-          <DataTable columns={columnsLayanan} data={filterData.layanan} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.layanan === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.layanan.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data yang cocok dengan pencarian Anda</div> : ""}  />
+          <DataTable columns={columnsLayanan} data={filterData.layanan} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.layanan === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.layanan.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data</div> : ""}  />
         </div>
       )}
       {settingMenuLayanan.activeMenu === "jadwal" && (
         <div className="mt-10 rounded-lg bg-white p-6 shadow shadow-gray-300">
-          <DataTable columns={columnsJadwal} data={filterData.jadwal} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.jadwal === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.jadwal.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data yang cocok dengan pencarian Anda</div> : ""}  />
+          <DataTable columns={columnsJadwal} data={filterData.jadwal} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.jadwal === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.jadwal.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data</div> : ""}  />
         </div>
       )}
       {settingMenuLayanan.activeMenu === "konsultasi" && (
         <div className="mt-10 rounded-lg bg-white p-6 shadow shadow-gray-300">
-          <DataTable columns={columnsKonsultasi} data={filterData.konsultasi} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.konsultasi === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.konsultasi.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data yang cocok dengan pencarian Anda</div> : ""} />
+          <DataTable columns={columnsKonsultasi} data={filterData.konsultasi} customStyles={customStyles} pagination highlightOnHover pointerOnHover noDataComponent={lengthOfConsultations.konsultasi === null ? <div className="py-4 text-center text-gray-500">Memuat data</div> : filterData.konsultasi.length === 0 ? <div className="py-4 text-center text-gray-500">Tidak ada data</div> : ""} />
         </div>
       )}
     </>

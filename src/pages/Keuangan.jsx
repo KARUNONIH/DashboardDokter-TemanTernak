@@ -26,7 +26,7 @@ const Keuangan = () => {
     dataUSer();
   }, []);
   return (
-    <div className="">
+    <div className="bg-slate-50 h-screen w-full pt-8">
       <FinancialOverview/>
     </div>
   );

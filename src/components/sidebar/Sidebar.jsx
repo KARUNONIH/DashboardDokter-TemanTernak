@@ -5,10 +5,11 @@ import { FaCalendarAlt, FaUser, FaPills, FaUsers, FaBriefcase, FaChartBar, FaSho
 import { MdDashboard } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import { useAtom } from "jotai";
-import { sidebarAtom } from "../../atoms/Atom";
+import { dataUSerAtom, sidebarAtom } from "../../atoms/Atom";
 
 function Sidebar() {
   const [isSidebarVisible] = useAtom(sidebarAtom);
+  const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const location = useLocation();
   const isActive = (path) => (location.pathname === path ? "bg-blue-600/[.1] text-blue-600" : "");
 
@@ -18,11 +19,11 @@ function Sidebar() {
         <div className="">
           <div className="flex items-center h-max gap-2">
             <img src="/asset/stars.png" alt="" className="w-[40px] h-[40px]" />
-            <h1 className="md:text-2xl font-bold mb-2">4 in 1</h1>
+            <h1 className="md:text-sm font-bold mb-2">Teman Ternak</h1>
           </div>
-          <div className="bg-white p-2 rounded-lg my-4">
-            <h2 className="text-sm md:text-md font-semibold text-nowrap">Teman Ternak</h2>
-            <p className="text-xs text-gray-500 md:text-sm text-nowrap">Doctor App</p>
+          <div className={`p-2 rounded my-4 ${dataUser.isSuspended ? "bg-red-600/10" : "bg-green-600/10"}`}>
+            <h2 className="text-sm md:text-md font-semibold text-nowrap">Status { dataUser.isSuspended ? "Suspended" : "Active" }</h2>
+            <p className="text-xs text-gray-500 md:text-sm text-nowrap">Poin pelanggaran { dataUser.penaltyPoint }</p>
           </div>
         </div>
         <SidebarItem icon={<MdDashboard />} label="Dashboard" className="mb-4" classActive={isActive("/dashboard")} path={'/dashboard'}/>
@@ -37,7 +38,7 @@ function Sidebar() {
           <SidebarItem icon={<FaBriefcase />} label="Keuangan" classActive={isActive("/keuangan")} path={'/keuangan'}/>
         </SidebarGroup>
 
-        <SidebarItem icon={<FaComments />} label="setting"classActive={isActive("/pengaturan")} path={'/pengaturan'}/>
+        <SidebarItem icon={<FaComments />} label="Pengaturan"classActive={isActive("/pengaturan")} path={'/pengaturan'}/>
       </div>
     </div>
   );

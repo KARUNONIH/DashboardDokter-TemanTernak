@@ -1,28 +1,35 @@
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
-import { ConsultationDataDashboardAtom, dataUSerAtom, konsultasiTerkiniAtom, sessionSignAtom } from "../atoms/Atom";
+import { ConsultationDataDashboardAtom, dataDashboardAtom, dataUSerAtom, konsultasiTerkiniAtom, sessionSignAtom } from "../atoms/Atom";
 import { useNavigate } from "react-router-dom";
 import LineChart from "../components/Dashboard/LineChart";
 import SummaryCard from "../components/Dashboard/SummaryCard";
-import WorkHoursChart from "../components/Dashboard/StatisktikKonsultasi";
-import MonthlyEvents from "../components/Dashboard/KonsultasiTerkini";
 import EmployeeList from "../components/Dashboard/JadwalUlang";
 import Schedule from "../components/Dashboard/JadwalHariIni";
 import GetAuthorization from "../fetchAPI/GetAuthorization";
+import StatisktikKonsultasi from "../components/Dashboard/StatisktikKonsultasi";
+import RecentConsultation from "../components/Dashboard/RecentConsultation";
 
 const Dashboard = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const [infoDashboard, setInfoDashboard] = useState({ consultationToday: 0, totalConsultation: 0, futureConsultation: 0 });
   const [dataConsultation, setDataConsultation] = useAtom(ConsultationDataDashboardAtom);
   const [KonsultasiTerkini, setKonsultasiTerkini] = useAtom(konsultasiTerkiniAtom);
+  const [DataDashboard, setDataDashboard] = useAtom(dataDashboardAtom);
 
   const endpoint = {
     dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
     getConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
+    getDataDashboard: "https://api.temanternak.h14.my.id/dashboard/veterinarian",
+    getSchedule: "https://api.temanternak.h14.my.id/users/my/schedules",
+    getService: "https://api.temanternak.h14.my.id/users/my/services",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
   const { data: consultationData, loading: consultationLoading, error: consultationError, fetchData: fetchConsultation } = GetAuthorization(endpoint.getConsultation, JSON.parse(localStorage.getItem("token")));
+  const { data: dataDashboardData, loading: dataDashboardLoading, error: dataDashboardError, fetchData: fetchDataDashboard } = GetAuthorization(endpoint.getDataDashboard, JSON.parse(localStorage.getItem("token")));
+  const { data: ScheduleData, loading: ScheduleLoading, error: ScheduleError, fetchData: fetchSchedule } = GetAuthorization(endpoint.getSchedule, JSON.parse(localStorage.getItem("token")));
+  const { data: serviceData, loading: serviceLoading, error: serviceError, fetchData: fetchService } = GetAuthorization(endpoint.getService, JSON.parse(localStorage.getItem("token")));
   
   const isTodayOrAfter = (dateString, type) => {
 
@@ -74,6 +81,37 @@ const Dashboard = () => {
           done: consultationResponse.data.filter(item => item.status === "COMPLETED"),
         }));
       }
+
+      const dataDashboardResponse = await fetchDataDashboard();
+      if (dataDashboardResponse) {
+        setDataDashboard((prev) => ({
+          ...prev,
+          totalTransactionsAmount: dataDashboardResponse.data.totalTransactionsAmount,
+          averageRating: dataDashboardResponse.data.averageRating
+        }));
+      }
+
+      const scheduleResponse = await fetchSchedule();
+      if (scheduleResponse) {
+        setDataDashboard((prev) => ({
+          ...prev,
+          futureSchedule: scheduleResponse.data.filter(item => {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const startTime = new Date(item.startTime); 
+            return startTime >= tomorrow;
+          }).length
+        }));
+      }
+
+      const serviceResponse = await fetchService();
+      if (serviceResponse) {
+        setDataDashboard((prev) => ({
+          ...prev,
+          approvedService: serviceResponse.data.filter(item => item.isAccepted && !item.isSuspended && !item.isDeleted).length
+        }))
+      }
     }
 
     fetch();
@@ -124,14 +162,9 @@ const Dashboard = () => {
           </div>
 
           <div className="flex gap-6 h-[400px]">
-            <WorkHoursChart />
-            <MonthlyEvents />
+            <StatisktikKonsultasi />
+            <RecentConsultation />
           </div>
-
-          {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mt-6">
-            <EmployeeList />
-            <Schedule />
-          </div> */}
         </div>
       </div>
   );

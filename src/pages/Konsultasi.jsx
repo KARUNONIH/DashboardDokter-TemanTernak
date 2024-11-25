@@ -35,11 +35,11 @@ const Konsultasi = () => {
     }
   }, [isFetch.getMe]);
 
-  const changeFormatDate = (originalDate) => {
-    const date = new Date(originalDate);
+  // const changeFormatDate = (originalDate) => {
+  //   const date = new Date(originalDate);
 
-    return date.toISOString().split("T")[0] + "T" + date.toISOString().split("T")[1].split(".")[0];
-  };
+  //   return date.toISOString().split("T")[0] + "T" + date.toISOString().split("T")[1].split(".")[0];
+  // };
 
   useEffect(() => {
     const fetch = async () => {
@@ -47,8 +47,8 @@ const Konsultasi = () => {
       if (response) {
         console.log(response);
         const newData = response.data.map((item) => ({
-          start: changeFormatDate(item.startTime),
-          end: changeFormatDate(item.endTime),
+          start: item.startTime,
+          end: item.endTime,
           backgroundColor: "rgba(192, 38, 211, 0.1)",
           borderColor: "rgba(192, 38, 211, 0.0)",
           extendedProps: {

@@ -53,16 +53,16 @@ const Modal = () => {
         </div>
         <div className="flex justify-between py-6">
           <GeneralData logo={<LuClock3 />} label={"Tipe Konsultasi"} data={ dataModal[0].serviceName } />
-          <GeneralData logo={<LuClock3 />} label={"Tanggal dan Waktu"} data={ "Fri, 16 May" } time={"02:00-03:00 PM"}/>
-          <GeneralData logo={<LuClock3 />} label={"Durasi"} data={ "120 Menit" } />
+          <GeneralData logo={<LuClock3 />} label={"Tanggal dan Waktu"} data={new Date(dataModal[0].startTime).toLocaleString()} time={""}/>
+          <GeneralData logo={<LuClock3 />} label={"Durasi"} data={ dataModal[0].duration + "Menit"} />
         </div>
-        <div className="border-y-2 border-gray-300 py-3 flex items-center justify-between">
+        {/* <div className="border-y-2 border-gray-300 py-3 flex items-center justify-between">
           <p className="text-sm text-gray-600">Biaya Konsultasi: <span className="text-black font-medium">Rp 90.000</span></p>
           <Link to={'/keuangan'} className="flex items-center text-xs gap-2 border-2 border-gray-300 py-1 px-2 rounded hover:">
             <div className="text-yellow-600"><PiHandWithdraw /></div>
             Keuangan
           </Link>
-        </div>
+        </div> */}
         {/* content */}
       </div>
     </div>

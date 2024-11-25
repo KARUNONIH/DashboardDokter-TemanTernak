@@ -5,7 +5,7 @@ import { konsultasiTerkiniAtom, recentPatientAtom } from "../../atoms/Atom";
 import ButtonChangeRecentPatient from "./ButtonChangeRecentPatient";
 import { FaVideo } from "react-icons/fa6";
 
-function KonsultasiTerkini() {
+function RecentConsultation() {
   const [recentPatient, setRecentPatient] = useAtom(recentPatientAtom);
   const [KonsultasiTerkini, setKonsultasiTerkini] = useAtom(konsultasiTerkiniAtom);
 
@@ -46,4 +46,4 @@ function KonsultasiTerkini() {
   );
 }
 
-export default KonsultasiTerkini;
+export default RecentConsultation;
