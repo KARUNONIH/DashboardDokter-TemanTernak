@@ -21,7 +21,6 @@ const BankAndTax = ({ submit }) => {
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
   const [isSubmit, setIsSubmit] = useState(false);
 
-
   const endpoint = {
     file: "https://api.temanternak.h14.my.id/users/my/files/",
   };
@@ -31,7 +30,6 @@ const BankAndTax = ({ submit }) => {
   const { fetchData: fetchGetBankFile } = GetAuthorization(endpoint.file + bankAccountFileId, token);
 
   const dataRegis = JSON.parse(localStorage.getItem("data"));
-
 
   useEffect(() => {
     if (dataRegis?.bankAndTax) {
@@ -156,21 +154,20 @@ const BankAndTax = ({ submit }) => {
   const checkAction = (type) => {
     if (type) {
       const checkError = validate();
-
+  
       if (checkError === 0) {
         setDataRegistration((prev) => ({
           ...prev,
           bankAndTax: data,
         }));
-        console.log("Fasdf");
-        setIsContinue(true);
-        setIsSubmit(true);
-        
+        console.log("Valid, processing...");
+        setIsContinue(true); // Trigger submission
       } else {
-        setIsCheckAction(true);
+        console.warn("Validation error, check your input!");
+        setIsCheckAction(true); // Indicate error for user feedback
       }
     } else {
-      setIsContinue(true);
+      setIsContinue(true); // Proceed without validation
       registrationProggres("proggress3");
       setformSpecializations("organizationExperiences");
     }
@@ -178,15 +175,15 @@ const BankAndTax = ({ submit }) => {
 
   useEffect(() => {
     if (isContinue) {
+      // Simulate submit process
       localStorage.setItem("data", JSON.stringify(dataRegistration));
-      submit();
+      console.log("Submit process completed");
+      submit(); // Call the actual submission function
+  
+      // Reset state
       setIsContinue(false);
-      setIsSubmit(false);
-    } else {
-      setIsContinue(false);
-      setIsSubmit(false);
     }
-  }, [isContinue, isSubmit]);
+  }, [isContinue]);
 
   return (
     <div className="px-6">
