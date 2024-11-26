@@ -49,44 +49,6 @@ const FormRegistration = ({ type, signin, signup, preSignup }) => {
   //   }
   // }, [type]);
 
-  // const validatePart = (part) => {
-  //   const newErrors = {};
-  //   if (part === "proggress1") {
-  //     if (!dataSignup.generalIdentity.frontTitle) newErrors.frontTitle = "Gelar depan dibutuhkan";
-  //     if (!dataSignup.generalIdentity.backTitle) newErrors.backTitle = "Gelar belakang dibutuhkan";
-  //     if (!dataSignup.generalIdentity.dateOfBirth) newErrors.dateOfBirth = "Tanggal lahir dibutuhkan";
-  //     if (!dataSignup.generalIdentity.whatsappNumber) newErrors.whatsappNumber = "No whatsapp dibutuhkan";
-  //     if (!dataSignup.generalIdentity.formalPictureId) newErrors.formalPictureId = "Foto formal dibutuhkan";
-  //     if (!dataSignup.generalIdentity.nik) newErrors.nik = "NIK dibutuhkan";
-  //     if (!dataSignup.generalIdentity.ktpFileId) newErrors.ktpFileId = "KTP dibutuhkan";
-  //     if (!dataSignup.generalIdentity.biodata) newErrors.biodata = "Biodata dibutuhkan";
-  //   } else if (part === "proggress2") {
-  //     if (!dataSignup.license.strvFileId) newErrors.strvFileId = "File STRV dibutuhkan";
-  //     if (!dataSignup.license.strvValidUntil) newErrors.strvValidUntil = "No STRV dibutuhkan";
-  //     if (!dataSignup.license.strvNumber) newErrors.strvNumber = "Masa Berlaku STRV dibutuhkan";
-  //     if (!dataSignup.license.sipFileId) newErrors.sipFileId = "File SIP dibutuhkan";
-  //     if (!dataSignup.license.sipValidUntil) newErrors.sipValidUntil = "No SIP dibutuhkan";
-  //     if (!dataSignup.license.sipNumber) newErrors.sipNumber = "Masa Berlaku SIP dibutuhkan";
-  //   } else if (part === "proggress4") {
-  //     if (!dataSignup.bankAndTax.npwp) newErrors.npwp = "NPWP dibutuhkan";
-  //     if (!dataSignup.bankAndTax.npwpFileId) newErrors.npwpFileId = "File NPWP dibutuhkan";
-  //     if (!dataSignup.bankAndTax.bankName) newErrors.bankName = "Nama Bank dibutuhkan";
-  //     if (!dataSignup.bankAndTax.bankAccountNumber) newErrors.bankAccountNumber = "Nomor rekening dibutuhkan";
-  //     if (!dataSignup.bankAndTax.bankAccountName) newErrors.bankAccountName = "Nama pemilik bank dibutuhkan";
-  //     if (!dataSignup.bankAndTax.bankAccountFileId) newErrors.bankAccountFileId = "Foto Rekening dibutuhkan";
-  //   }
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
-  // useEffect(() => {
-  //   validatePart(registration);
-  //   if (dataSignup.specializations) {
-  //     setErrorsSpecialization(null);
-  //   }
-  // }, [dataSignup]);
-
   const iniciateSignin = (e) => {
     e.preventDefault();
     signin();

@@ -25,9 +25,9 @@ const Login = ({ sign }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (searchParams.get("invitationId")) {
+    if (searchParams.get("invitationId") && sign == "signup") {
       localStorage.setItem("invitationId", JSON.stringify(searchParams.get("invitationId")));
-    } else {
+    } else if (!searchParams.get("invitationId") && sign === "signup") {
       navigate("/");
     }
   }, []);

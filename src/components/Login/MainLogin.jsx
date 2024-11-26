@@ -15,11 +15,11 @@ const MainLogin = ({ sign, signin, signup, preSignup, invitationId }) => {
           <p className="text-sm text-gray-500">Provide your email and choose a password</p>
         </section>
         <FormRegistration type={sign} signin={signin} signup={signup} preSignup={preSignup} />
-        {sign === "signin" && (
+        {/* {sign === "signin" && (
         <p className={`text-center mt-6 text-sm capitalize`}>
           doesn't have an account ? <Link to={`/signup?invitationId=${invitationId}`} className="underline text-blue-600">sign up</Link>
         </p>
-        )}
+        )} */}
 
         {sign === "signup" && registration === "proggress5" && (
           <button type="button" className={`text-center mt-6 text-sm capitalize`} onClick={() => registrationProggres("proggress1")}>
