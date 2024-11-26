@@ -19,6 +19,7 @@ const BankAndTax = ({ submit }) => {
   const [isCheckAction, setIsCheckAction] = useState(false);
   const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
+  const [isSubmit, setIsSubmit] = useState(false);
 
 
   const endpoint = {
@@ -162,7 +163,8 @@ const BankAndTax = ({ submit }) => {
           bankAndTax: data,
         }));
         console.log("Fasdf");
-      setIsContinue(true);
+        setIsContinue(true);
+        setIsSubmit(true);
         
       } else {
         setIsCheckAction(true);
@@ -179,8 +181,12 @@ const BankAndTax = ({ submit }) => {
       localStorage.setItem("data", JSON.stringify(dataRegistration));
       submit();
       setIsContinue(false);
+      setIsSubmit(false);
+    } else {
+      setIsContinue(false);
+      setIsSubmit(false);
     }
-  }, [isContinue]);
+  }, [isContinue, isSubmit]);
 
   return (
     <div className="px-6">
