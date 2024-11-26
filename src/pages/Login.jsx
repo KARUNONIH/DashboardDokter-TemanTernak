@@ -21,6 +21,7 @@ const Login = ({ sign }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [isPreSignup, setIsPreSignup] = useState(false);
   const [errorLogin, setErrorLogin] = useAtom(errorLoginAtom);
+  const [isDataRegis, setIsDataRegis] = useState(false);
 
   const navigate = useNavigate();
 
@@ -83,16 +84,17 @@ const Login = ({ sign }) => {
   useEffect(() => {
     const fetch = async () => {
       console.log(dataRegistration);
+      console.log("status Registration:", statusRegistration);
       let result = "";
 
       if (statusRegistration) {
         result = await fetchEditSignup();
       } else {
-         result = await fetchSignup();
+        result = await fetchSignup();
       }
 
       if (result) {
-        console.log(result);
+        console.log("result", statusRegistration ,result);
         localStorage.removeItem("data");
         const response = await fetchDataUser();
         const dataRegis = {
@@ -123,8 +125,13 @@ const Login = ({ sign }) => {
 
     if (isSignup) {
       fetch()
+      setIsSignup(false);
     }
-  }, [dataRegistration.invitationId]);
+  }, [isSignup]);
+
+  useEffect(() => {
+    console.log("data Regis", dataRegistration);
+  }, [dataRegistration]);
 
   useEffect(() => {
     const statusUser = async () => {
@@ -163,6 +170,8 @@ const Login = ({ sign }) => {
           invitationId: responseData.data[0].invitation.id,
           // revisingId: responseData.data[0].id
         };
+        console.log(dataRegis);
+        setDataRegistration(dataRegis);
         localStorage.setItem("data", JSON.stringify(dataRegis));
         navigate("/signup");
       }
@@ -173,9 +182,7 @@ const Login = ({ sign }) => {
     }
   }, [localStorage.getItem("token")]);
 
-  useEffect(() => {
-    console.log("data", dataRegistration);
-  }, [dataRegistration]);
+  
 
   const signin = async () => {
     const result = await fetchSignin();

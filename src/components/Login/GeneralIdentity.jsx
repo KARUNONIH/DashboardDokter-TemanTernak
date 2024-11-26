@@ -34,6 +34,7 @@ const GeneralIdentity = () => {
 
 
   useEffect(() => {
+    console.log("before",dataRegis);
     if (dataRegis?.generalIdentity) {
       setData((prev) => ({
         ...prev,
@@ -205,6 +206,7 @@ const GeneralIdentity = () => {
     const checkError = validate();
 
     if (checkError === 0) {
+      console.log("continue",dataRegis);
       setDataRegistration((prev) => ({
         ...prev,
         generalIdentity: data,
@@ -214,9 +216,10 @@ const GeneralIdentity = () => {
       setIsCheckAction(true);
     }
   };
-
+  
   useEffect(() => {
     if (isContinue) {
+      console.log(data);
       localStorage.setItem("data", JSON.stringify(dataRegistration));
       registrationProggres("proggress2");
       setIsContinue(false);
