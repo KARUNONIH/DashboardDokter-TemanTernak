@@ -43,11 +43,11 @@ const FormRegistration = ({ type, signin, signup, preSignup }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (type === "signin") {
-      registrationProggres("proggress1");
-    }
-  }, [type]);
+  // useEffect(() => {
+  //   if (type === "signin") {
+  //     registrationProggres("proggress1");
+  //   }
+  // }, [type]);
 
   // const validatePart = (part) => {
   //   const newErrors = {};
