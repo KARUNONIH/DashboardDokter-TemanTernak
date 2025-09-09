@@ -22,7 +22,7 @@ const FinancialOverview = () => {
       setLoading(true);
       setLoadingWithdrawals(true);
       setLoadingDeposits(true);
-      const response = await fetch("https://api-temanternak.test.h14.my.id/users/my/wallet", {
+      const response = await fetch("/api/users/my/wallet", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -45,7 +45,7 @@ const FinancialOverview = () => {
 
   const fetchBankList = async () => {
     try {
-      const response = await fetch("https://api-temanternak.test.h14.my.id/payouts/banks", {
+      const response = await fetch("/api/payouts/banks", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -69,7 +69,7 @@ const FinancialOverview = () => {
 
   const fetchIdempotencyKey = async () => {
     try {
-      const response = await fetch("https://api-temanternak.test.h14.my.id/payouts/idempotencyKey", {
+      const response = await fetch("/api/payouts/idempotencyKey", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -105,7 +105,7 @@ const FinancialOverview = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("https://api-temanternak.test.h14.my.id/payouts/disbursement", {
+      const response = await fetch("/api/payouts/disbursement", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

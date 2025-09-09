@@ -13,8 +13,8 @@ const Konsultasi = () => {
   const [allDataModal, setAllDataModal] = useAtom(allDataKonsultasiAtom);
 
   const endpoint = {
-    getMe: "https://api-temanternak.test.h14.my.id/users/my",
-    getConsultation: "https://api-temanternak.test.h14.my.id/users/my/consultations",
+    getMe: "/api/users/my",
+    getConsultation: "/api/users/my/consultations",
   };
 
   const { data: getMeData, loading: getMeLoading, error: getMeError, fetchData: fetchGetMe } = GetAuthorization(endpoint.getMe, JSON.parse(localStorage.getItem("token")));

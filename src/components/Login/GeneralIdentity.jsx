@@ -24,7 +24,7 @@ const GeneralIdentity = () => {
   const dataRegis = JSON.parse(localStorage.getItem("data"));
 
   const endpoint = {
-    file: "https://api-temanternak.test.h14.my.id/users/my/files/",
+    file: "/api/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -118,7 +118,7 @@ const GeneralIdentity = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api-temanternak.test.h14.my.id/users/my/files", {
+      const response = await fetch("/api/users/my/files", {
         method: "POST",
         body: formData,
         headers: {

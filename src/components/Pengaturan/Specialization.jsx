@@ -8,7 +8,7 @@ const Specialization = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newSpecialization, setNewSpecialization] = useState("");
 
-  const endpoint = "https://api-temanternak.test.h14.my.id/users/my/profile/specializations";
+  const endpoint = "/api/users/my/profile/specializations";
   const token = JSON.parse(localStorage.getItem("token"));
 
   const { data: getData, loading: getLoading, error: getError, fetchData: fetchGet } = GetAuthorization(endpoint, token);

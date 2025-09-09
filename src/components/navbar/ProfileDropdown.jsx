@@ -11,7 +11,7 @@ function ProfileDropdown({}) {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const navigate = useNavigate();
 
-  const { data: signOutData, loading: signOutLoading, error: signOutError, fetchData: fetchSignOut } = DestroyAuthorization("https://api-temanternak.test.h14.my.id/authentications", JSON.parse(localStorage.getItem("token")));
+  const { data: signOutData, loading: signOutLoading, error: signOutError, fetchData: fetchSignOut } = DestroyAuthorization("/api/authentications", JSON.parse(localStorage.getItem("token")));
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);

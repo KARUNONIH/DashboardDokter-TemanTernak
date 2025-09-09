@@ -36,11 +36,11 @@ const Login = ({ sign }) => {
   const invitationIdValue = JSON.parse(localStorage.getItem("invitationId"));
 
   const endpoint = {
-    preSignup: "https://api-temanternak.test.h14.my.id/users",
-    signup: "https://api-temanternak.test.h14.my.id/registrations/veterinarians",
-    signin: "https://api-temanternak.test.h14.my.id/authentications",
-    statusUser: "https://api-temanternak.test.h14.my.id/users/my",
-    dataUser: "https://api-temanternak.test.h14.my.id/users/my/registrations",
+    preSignup: "/api/users",
+    signup: "/api/registrations/veterinarians",
+    signin: "/api/authentications",
+    statusUser: "/api/users/my",
+    dataUser: "/api/users/my/registrations",
   };
 
   const { data: preSignupData, loading: preSignupLoading, error: preSignupError, fetchData: fetchPreSignup } = Post(endpoint.preSignup, dataPreSignup);

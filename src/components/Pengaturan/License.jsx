@@ -15,8 +15,8 @@ const License = () => {
   const [sipFileId, setSipFileId] = useState(null);
 
   const endpoint = {
-    data: "https://api-temanternak.test.h14.my.id/users/my/profile/license",
-    file: "https://api-temanternak.test.h14.my.id/users/my/files/",
+    data: "/api/users/my/profile/license",
+    file: "/api/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -73,7 +73,7 @@ const License = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api-temanternak.test.h14.my.id/users/my/files", {
+      const response = await fetch("/api/users/my/files", {
         method: "POST",
         body: formData,
         headers: {

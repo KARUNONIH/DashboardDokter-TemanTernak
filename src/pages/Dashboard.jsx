@@ -18,11 +18,11 @@ const Dashboard = () => {
   const [DataDashboard, setDataDashboard] = useAtom(dataDashboardAtom);
 
   const endpoint = {
-    dataUserUrl: "https://api-temanternak.test.h14.my.id/users/my",
-    getConsultation: "https://api-temanternak.test.h14.my.id/users/my/consultations",
-    getDataDashboard: "https://api-temanternak.test.h14.my.id/dashboard/veterinarian",
-    getSchedule: "https://api-temanternak.test.h14.my.id/users/my/schedules",
-    getService: "https://api-temanternak.test.h14.my.id/users/my/services",
+    dataUserUrl: "/api/users/my",
+    getConsultation: "/api/users/my/consultations",
+    getDataDashboard: "/api/dashboard/veterinarian",
+    getSchedule: "/api/users/my/schedules",
+    getService: "/api/users/my/services",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));

@@ -13,7 +13,7 @@ const WorkingExperience = () => {
     isActive: false,
   });
 
-  const endpoint = "https://api-temanternak.test.h14.my.id/users/my/profile/workingExperiences";
+  const endpoint = "/api/users/my/profile/workingExperiences";
   const token = JSON.parse(localStorage.getItem("token"));
 
   const { data: getData, loading: getLoading, error: getError, fetchData: fetchGet } = GetAuthorization(endpoint, token);
