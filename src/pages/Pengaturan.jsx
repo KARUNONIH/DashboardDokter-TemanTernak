@@ -9,13 +9,11 @@ const Pengaturan = () => {
   const [dataRegistrationUser, setDataRegistrationUser] = useAtom(dataRegistrationUserAtom);
 
   const endpoint = {
-    dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
-    dataRegistrationUSerUrl: "https://api.temanternak.h14.my.id/users/my/registrations"
+    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
+    dataRegistrationUSerUrl: "http://api-temanternak.test.h14.my.id/users/my/registrations",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
-
- 
 
   useEffect(() => {
     const dataUSer = async () => {
@@ -23,16 +21,14 @@ const Pengaturan = () => {
       if (response) {
         setDataUSer(response.data);
       }
-    }
+    };
 
-    
     dataUSer();
   }, []);
 
-
   return (
-    <div className="w-4/5 mx-auto my-10">
-      <Kategori/>
+    <div className="mx-auto my-10 w-4/5">
+      <Kategori />
     </div>
   );
 };

@@ -2,8 +2,8 @@ import { useAtom } from "jotai";
 import { modalRiwayatAtom, dataIdModalRiwayat } from "../../atoms/Atom";
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
-import { Editor } from "@tinymce/tinymce-react"; 
-import Swal from "sweetalert2"; 
+import { Editor } from "@tinymce/tinymce-react";
+import Swal from "sweetalert2";
 
 const Modal = () => {
   const [isModalOpen, setModalOpen] = useAtom(modalRiwayatAtom);
@@ -13,22 +13,22 @@ const Modal = () => {
   const apiKey = "rabze7jmjzkemmjg46ascadg7u4eiu648iaws73n4qzfb5ug";
 
   const handleEditorChange = (content, editor) => {
-      setEditorContent(content);
+    setEditorContent(content);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const postData = {
-      result: editorContent, 
+      result: editorContent,
     };
 
     try {
-      const response = await fetch(`https://api.temanternak.h14.my.id/bookings/${idRiwayat}/consultations/result`, {
+      const response = await fetch(`http://api-temanternak.test.h14.my.id/bookings/${idRiwayat}/consultations/result`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
         body: JSON.stringify(postData),
       });
@@ -41,17 +41,17 @@ const Modal = () => {
       console.log(result);
 
       Swal.fire({
-        icon: 'success',
-        title: 'Sukses!',
-        text: 'Data berhasil dikirim.',
+        icon: "success",
+        title: "Sukses!",
+        text: "Data berhasil dikirim.",
       });
     } catch (error) {
       console.error("Terjadi kesalahan:", error);
 
       Swal.fire({
-        icon: 'error',
-        title: 'Terjadi kesalahan!',
-        text: 'Gagal mengirim data, coba lagi.',
+        icon: "error",
+        title: "Terjadi kesalahan!",
+        text: "Gagal mengirim data, coba lagi.",
       });
     }
   };
@@ -67,37 +67,20 @@ const Modal = () => {
   if (!isModalOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5"
-      onClick={() => setModalOpen(false)}
-    >
-      <form
-        className="relative w-full max-w-xl rounded-lg bg-white p-4 shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit} 
-      >
-        <div
-          className="absolute -right-4 -top-4 flex aspect-square h-10 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white text-4xl text-black"
-          onClick={() => setModalOpen(false)}
-        >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5" onClick={() => setModalOpen(false)}>
+      <form className="relative w-full max-w-xl rounded-lg bg-white p-4 shadow-lg" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
+        <div className="absolute -right-4 -top-4 flex aspect-square h-10 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white text-4xl text-black" onClick={() => setModalOpen(false)}>
           <IoIosClose />
         </div>
         <h1 className="text-center text-xl font-semibold">Membuat Hasil Konsultasi</h1>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Hasil Konsultasi yang ditampilkan melanjutkan dari yang dibuat ketika konsultasi sedang berlangsung
-        </p>
+        <p className="mt-2 text-center text-sm text-gray-600">Hasil Konsultasi yang ditampilkan melanjutkan dari yang dibuat ketika konsultasi sedang berlangsung</p>
         <div className="mt-10 w-full">
           <Editor
             apiKey={apiKey} // Menyertakan API key di sini
             init={{
               selector: "#editor-container",
-              plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table paste code help wordcount",
-              ],
-              toolbar:
-                "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+              plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
+              toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
               menubar: true,
               height: 400,
             }}

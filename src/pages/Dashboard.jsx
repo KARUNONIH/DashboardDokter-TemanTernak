@@ -18,11 +18,11 @@ const Dashboard = () => {
   const [DataDashboard, setDataDashboard] = useAtom(dataDashboardAtom);
 
   const endpoint = {
-    dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
-    getConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
-    getDataDashboard: "https://api.temanternak.h14.my.id/dashboard/veterinarian",
-    getSchedule: "https://api.temanternak.h14.my.id/users/my/schedules",
-    getService: "https://api.temanternak.h14.my.id/users/my/services",
+    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
+    getConsultation: "http://api-temanternak.test.h14.my.id/users/my/consultations",
+    getDataDashboard: "http://api-temanternak.test.h14.my.id/dashboard/veterinarian",
+    getSchedule: "http://api-temanternak.test.h14.my.id/users/my/schedules",
+    getService: "http://api-temanternak.test.h14.my.id/users/my/services",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
@@ -30,26 +30,20 @@ const Dashboard = () => {
   const { data: dataDashboardData, loading: dataDashboardLoading, error: dataDashboardError, fetchData: fetchDataDashboard } = GetAuthorization(endpoint.getDataDashboard, JSON.parse(localStorage.getItem("token")));
   const { data: ScheduleData, loading: ScheduleLoading, error: ScheduleError, fetchData: fetchSchedule } = GetAuthorization(endpoint.getSchedule, JSON.parse(localStorage.getItem("token")));
   const { data: serviceData, loading: serviceLoading, error: serviceError, fetchData: fetchService } = GetAuthorization(endpoint.getService, JSON.parse(localStorage.getItem("token")));
-  
-  const isTodayOrAfter = (dateString, type) => {
 
+  const isTodayOrAfter = (dateString, type) => {
     const date = new Date(dateString);
-  
+
     const today = new Date();
-  
+
     if (type === "today") {
-      return (
-        date.getFullYear() === today.getFullYear() &&
-        date.getMonth() === today.getMonth() &&
-        date.getDate() === today.getDate()
-      );
+      return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
     } else if (type === "future") {
       return date.getDate() > today.getDate();
     } else {
       return false;
     }
   };
-  
 
   useEffect(() => {
     const fetch = async () => {
@@ -63,22 +57,16 @@ const Dashboard = () => {
       if (consultationResponse) {
         console.log(consultationResponse);
         setDataConsultation(consultationResponse.data);
-        const consultationsToday = consultationResponse.data.filter(item =>
-          isTodayOrAfter(item.startTime, "today") && item.status === "WAITING"
-        );
+        const consultationsToday = consultationResponse.data.filter((item) => isTodayOrAfter(item.startTime, "today") && item.status === "WAITING");
 
-        const totalConsultations = consultationResponse.data.filter(item =>
-          item.status === "COMPLETED"
-        );
+        const totalConsultations = consultationResponse.data.filter((item) => item.status === "COMPLETED");
 
-        const consultationsFuture = consultationResponse.data.filter(item =>
-          isTodayOrAfter(item.startTime, "future") && item.status === "WAITING"
-        );
+        const consultationsFuture = consultationResponse.data.filter((item) => isTodayOrAfter(item.startTime, "future") && item.status === "WAITING");
         setInfoDashboard({ ...infoDashboard, consultationToday: consultationsToday.length, totalConsultation: totalConsultations.length, futureConsultation: consultationsFuture.length });
         setKonsultasiTerkini((prev) => ({
           ...prev,
-          upcoming: consultationResponse.data.filter(item => item.status === "WAITING"),
-          done: consultationResponse.data.filter(item => item.status === "COMPLETED"),
+          upcoming: consultationResponse.data.filter((item) => item.status === "WAITING"),
+          done: consultationResponse.data.filter((item) => item.status === "COMPLETED"),
         }));
       }
 
@@ -87,7 +75,7 @@ const Dashboard = () => {
         setDataDashboard((prev) => ({
           ...prev,
           totalTransactionsAmount: dataDashboardResponse.data.totalTransactionsAmount,
-          averageRating: dataDashboardResponse.data.averageRating
+          averageRating: dataDashboardResponse.data.averageRating,
         }));
       }
 
@@ -95,13 +83,13 @@ const Dashboard = () => {
       if (scheduleResponse) {
         setDataDashboard((prev) => ({
           ...prev,
-          futureSchedule: scheduleResponse.data.filter(item => {
+          futureSchedule: scheduleResponse.data.filter((item) => {
             const today = new Date();
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
-            const startTime = new Date(item.startTime); 
+            const startTime = new Date(item.startTime);
             return startTime >= tomorrow;
-          }).length
+          }).length,
         }));
       }
 
@@ -109,10 +97,10 @@ const Dashboard = () => {
       if (serviceResponse) {
         setDataDashboard((prev) => ({
           ...prev,
-          approvedService: serviceResponse.data.filter(item => item.isAccepted && !item.isSuspended && !item.isDeleted).length
-        }))
+          approvedService: serviceResponse.data.filter((item) => item.isAccepted && !item.isSuspended && !item.isDeleted).length,
+        }));
       }
-    }
+    };
 
     fetch();
   }, []);
@@ -145,28 +133,27 @@ const Dashboard = () => {
   };
 
   return (
-    <div className=" bg-slate-50 px-8 py-4">
+    <div className="bg-slate-50 px-8 py-4">
       <div className="">
         <h1 className="text-lg font-semibold">
           {getGreetingMessage()}
-          <span>, { dataUser.name }!</span>
+          <span>, {dataUser.name}!</span>
         </h1>
         <p className="text-sm text-gray-600">{getCurrentDate()}</p>
       </div>
       <div className="w-full">
+        <div className="relative z-0 my-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <SummaryCard title="Konsutasi Hari Ini" value={infoDashboard.consultationToday} color="blue" />
+          <SummaryCard title="Total Konsultasi" value={infoDashboard.totalConsultation} color="purple" />
+          <SummaryCard title="Konsultasi Mendatang" value={infoDashboard.futureConsultation} color="green" />
+        </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 my-6 relative z-0">
-            <SummaryCard title="Konsutasi Hari Ini" value={infoDashboard.consultationToday} color="blue" />
-            <SummaryCard title="Total Konsultasi" value={infoDashboard.totalConsultation} color="purple" />
-            <SummaryCard title="Konsultasi Mendatang" value={infoDashboard.futureConsultation} color="green" />
-          </div>
-
-          <div className="flex gap-6 h-[400px]">
-            <StatisktikKonsultasi />
-            <RecentConsultation />
-          </div>
+        <div className="flex h-[400px] gap-6">
+          <StatisktikKonsultasi />
+          <RecentConsultation />
         </div>
       </div>
+    </div>
   );
 };
 

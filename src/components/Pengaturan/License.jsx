@@ -3,7 +3,7 @@ import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
 import Input from "./Input";
 import Get from "../../fetchAPI/Get";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const License = () => {
   const [data, setData] = useState(null);
@@ -15,8 +15,8 @@ const License = () => {
   const [sipFileId, setSipFileId] = useState(null);
 
   const endpoint = {
-    data: "https://api.temanternak.h14.my.id/users/my/profile/license",
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    data: "http://api-temanternak.test.h14.my.id/users/my/profile/license",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -73,7 +73,7 @@ const License = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: {
@@ -137,10 +137,10 @@ const License = () => {
       console.log("update", response);
 
       Swal.fire({
-        title: 'Success!',
-        text: 'Data berhasil diupdate.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Success!",
+        text: "Data berhasil diupdate.",
+        icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
         setFile({
           strv: { url: "", name: "STRV Lama" },
@@ -149,7 +149,7 @@ const License = () => {
 
         fetchGet().then(() => {
           if (strvFileId) {
-            fetchGetFile().then(response => {
+            fetchGetFile().then((response) => {
               if (response) {
                 setFile((prevFile) => ({
                   ...prevFile,
@@ -159,7 +159,7 @@ const License = () => {
             });
           }
           if (sipFileId) {
-            fetchDataSipFile().then(response => {
+            fetchDataSipFile().then((response) => {
               if (response) {
                 setFile((prevFile) => ({
                   ...prevFile,
@@ -184,7 +184,9 @@ const License = () => {
         <Input label="STRV File" type="file" value={file.strv} onChange={(e) => uploadFile(e.target.files[0], "strvFileId")} />
         <Input label="SIP File" type="file" value={file.sip} onChange={(e) => uploadFile(e.target.files[0], "sipFileId")} />
       </div>
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 text-sm mt-4 rounded cursor-pointer">Update Perizinan</button>
+      <button type="submit" className="mt-4 cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm text-white">
+        Update Perizinan
+      </button>
     </form>
   );
 };

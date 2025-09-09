@@ -3,7 +3,7 @@ import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
 import Input from "./Input";
 import Get from "../../fetchAPI/Get";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const GeneralIdentity = () => {
   const [data, setData] = useState(null);
@@ -15,13 +15,13 @@ const GeneralIdentity = () => {
   const [ktpFileId, setKtpFileId] = useState(null);
 
   const endpoint = {
-    data: "https://api.temanternak.h14.my.id/users/my/profile/generalIdentity",
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    data: "http://api-temanternak.test.h14.my.id/users/my/profile/generalIdentity",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
   const { data: getData, loading: getLoading, error: getError, fetchData: fetchGet } = GetAuthorization(endpoint.data, token);
-  const { data: putData, loading: putLoading, error: putError, fetchData: fetchPut } = PutAuthorization(endpoint.data, data ,token);
+  const { data: putData, loading: putLoading, error: putError, fetchData: fetchPut } = PutAuthorization(endpoint.data, data, token);
   const { data: getFileData, loading: getFileLoading, error: getFileError, fetchData: fetchGetFile } = GetAuthorization(endpoint.file + idFile, token);
   const { data: getKtpFileData, loading: getKtpFileLoading, error: getKtpFileError, fetchData: fetchDataKtpFile } = GetAuthorization(endpoint.file + ktpFileId, token);
 
@@ -73,7 +73,7 @@ const GeneralIdentity = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: {
@@ -137,10 +137,10 @@ const GeneralIdentity = () => {
       console.log("update", response);
 
       Swal.fire({
-        title: 'Success!',
-        text: 'Data berhasil diupdate.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Success!",
+        text: "Data berhasil diupdate.",
+        icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
         setFile({
           foto: { url: "", name: "Foto Formal Lama" },
@@ -149,7 +149,7 @@ const GeneralIdentity = () => {
 
         fetchGet().then(() => {
           if (idFile) {
-            fetchGetFile().then(response => {
+            fetchGetFile().then((response) => {
               if (response) {
                 setFile((prevFile) => ({
                   ...prevFile,
@@ -159,7 +159,7 @@ const GeneralIdentity = () => {
             });
           }
           if (ktpFileId) {
-            fetchDataKtpFile().then(response => {
+            fetchDataKtpFile().then((response) => {
               if (response) {
                 setFile((prevFile) => ({
                   ...prevFile,
@@ -186,7 +186,9 @@ const GeneralIdentity = () => {
         <Input label="Foto Formal" type="file" value={file.foto} onChange={(e) => uploadFile(e.target.files[0], "formalPictureId")} />
         <Input label="Foto KTP" type="file" value={file.ktp} onChange={(e) => uploadFile(e.target.files[0], "ktpFileId")} />
       </div>
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 text-sm mt-4 rounded cursor-pointer">Update Identitas</button>
+      <button type="submit" className="mt-4 cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm text-white">
+        Update Identitas
+      </button>
     </form>
   );
 };

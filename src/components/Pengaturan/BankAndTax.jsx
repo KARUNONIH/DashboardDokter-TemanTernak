@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import Input from "./Input";
 
 const BankAndTax = () => {
@@ -14,8 +14,8 @@ const BankAndTax = () => {
   const [bankAccountFileId, setBankAccountFileId] = useState(null);
 
   const endpoint = {
-    data: "https://api.temanternak.h14.my.id/users/my/profile/bankAndTax",
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    data: "http://api-temanternak.test.h14.my.id/users/my/profile/bankAndTax",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -58,7 +58,7 @@ const BankAndTax = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },
@@ -95,10 +95,10 @@ const BankAndTax = () => {
     const response = await fetchPut();
     if (response) {
       Swal.fire({
-        title: 'Success!',
-        text: 'Data berhasil diupdate.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Success!",
+        text: "Data berhasil diupdate.",
+        icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
         setFile({
           npwp: { url: "", name: "File NPWP Lama" },
@@ -123,7 +123,9 @@ const BankAndTax = () => {
         <Input label="File NPWP" type="file" value={file.npwp} onChange={(e) => uploadFile(e.target.files[0], "npwpFileId")} />
         <Input label="File Rekening Bank" type="file" value={file.bankAccount} onChange={(e) => uploadFile(e.target.files[0], "bankAccountFileId")} />
       </div>
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 text-sm mt-4 rounded cursor-pointer">Update Data Bank dan Perpajakan</button>
+      <button type="submit" className="mt-4 cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm text-white">
+        Update Data Bank dan Perpajakan
+      </button>
     </form>
   );
 };

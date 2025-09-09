@@ -11,7 +11,7 @@ function ProfileDropdown({}) {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
   const navigate = useNavigate();
 
-  const { data: signOutData, loading: signOutLoading, error: signOutError, fetchData: fetchSignOut } = DestroyAuthorization("https://api.temanternak.h14.my.id/authentications", JSON.parse(localStorage.getItem("token")));
+  const { data: signOutData, loading: signOutLoading, error: signOutError, fetchData: fetchSignOut } = DestroyAuthorization("http://api-temanternak.test.h14.my.id/authentications", JSON.parse(localStorage.getItem("token")));
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -32,7 +32,7 @@ function ProfileDropdown({}) {
         <img src="/asset/stars.png" alt="Profile" className="h-10 w-10 rounded-full" />
         <div className="ml-2">
           <h1 className={`font-semibold ${!dataUser.name ? "h-4 w-40 animate-pulse rounded bg-slate-200" : ""}`}>{dataUser.name}</h1>
-          <p className={`text-sm text-gray-500 ${!dataUser.role ? "h-3 w-24 animate-pulse rounded bg-slate-200 mt-1" : ""}`}>{dataUser.role}</p>
+          <p className={`text-sm text-gray-500 ${!dataUser.role ? "mt-1 h-3 w-24 animate-pulse rounded bg-slate-200" : ""}`}>{dataUser.role}</p>
         </div>
         <FaChevronDown className="ml-2" />
       </div>

@@ -57,7 +57,7 @@ const VideoRoom = () => {
 
   const getMe = async () => {
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my", {
         headers: {
           Authorization: `Bearer ${query.get("token") || authToken}`,
         },
@@ -72,7 +72,7 @@ const VideoRoom = () => {
 
   const getConsultation = async () => {
     try {
-      const response = await fetch(`https://api.temanternak.h14.my.id/bookings/${query.get("id")}/consultations`, {
+      const response = await fetch(`http://api-temanternak.test.h14.my.id/bookings/${query.get("id")}/consultations`, {
         headers: {
           Authorization: `Bearer ${query.get("token") || authToken}`,
           accept: "application/json",
@@ -362,7 +362,7 @@ const VideoRoom = () => {
       formData.append("document_type", "message-media");
 
       try {
-        const uploadResponse = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+        const uploadResponse = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${query.get("token") || authToken}`,
@@ -495,11 +495,11 @@ const VideoRoom = () => {
   //   }
 
   //   const placeholderStyle = `
-  //     color: #888; 
-  //     font-style: italic; 
-  //     white-space: nowrap; 
-  //     overflow: hidden; 
-  //     text-overflow: ellipsis; 
+  //     color: #888;
+  //     font-style: italic;
+  //     white-space: nowrap;
+  //     overflow: hidden;
+  //     text-overflow: ellipsis;
   //     display: block;
   //   `;
 
@@ -610,7 +610,7 @@ const VideoRoom = () => {
                             <div>
                               <p className="text-base font-semibold">{msg.userId === myData?.id ? `Anda (${myData.role === "veterinarian" ? consultation.veterinarianNameAndTitle : consultation.bookerName})` : myData.role === "veterinarian" ? consultation.bookerName : consultation.veterinarianNameAndTitle}</p>
                               <p className="text-sm">{msg.message.split("END;")[1]}</p>
-                              <a href={`https://api.temanternak.h14.my.id/${msg.message.split("END;")[0].replace("WITHFILE:", "")}`} target="_blank" rel="noopener noreferrer" className={`${msg.userId === myData?.id ? "text-blue-600" : "text-white"} text-sm underline hover:text-blue-700`}>
+                              <a href={`http://api-temanternak.test.h14.my.id/${msg.message.split("END;")[0].replace("WITHFILE:", "")}`} target="_blank" rel="noopener noreferrer" className={`${msg.userId === myData?.id ? "text-blue-600" : "text-white"} text-sm underline hover:text-blue-700`}>
                                 View Attachment
                               </a>
                             </div>
@@ -644,20 +644,20 @@ const VideoRoom = () => {
           <>
             {typeTimer === "after" ? (
               <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
-              <section className="flex items-center">
-                <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
-                  Kembali ke Layanan
-                </Link>
-                <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
-                  Kembali kedalam room
-                </button>
-              </section>
-              <p className="text-sm text-gray-600">
-                Konsultasi sedang berlangsung <span className="font-bold">Jika anda keluar, konsultasi bisa dianggap tidak sah!</span>.
-              </p>
-            </div>
-              ): (
-                <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
+                <section className="flex items-center">
+                  <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                    Kembali ke Layanan
+                  </Link>
+                  <button onClick={joinRoom} className="text-blue-600 underline transition duration-200 hover:text-blue-800">
+                    Kembali kedalam room
+                  </button>
+                </section>
+                <p className="text-sm text-gray-600">
+                  Konsultasi sedang berlangsung <span className="font-bold">Jika anda keluar, konsultasi bisa dianggap tidak sah!</span>.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4 rounded-md bg-white p-6 text-center shadow-md">
                 <section>
                   <Link to="/layanan" className="text-blue-600 underline transition duration-200 hover:text-blue-800">
                     Kembali ke Layanan
@@ -675,7 +675,6 @@ const VideoRoom = () => {
                   Anda baru bisa bergabung ke dalam room <span className="font-bold">5 menit sebelum mulai</span>.
                 </p>
               </div>
-              
             )}
           </>
         )}

@@ -24,17 +24,15 @@ const GeneralIdentity = () => {
   const dataRegis = JSON.parse(localStorage.getItem("data"));
 
   const endpoint = {
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
-
 
   const { data: getFileData, loading: getFileLoading, error: getFileError, fetchData: fetchGetFile } = GetAuthorization(endpoint.file + idFile, token);
   const { data: getKtpFileData, loading: getKtpFileLoading, error: getKtpFileError, fetchData: fetchDataKtpFile } = GetAuthorization(endpoint.file + ktpFileId, token);
 
-
   useEffect(() => {
-    console.log("before",dataRegis);
+    console.log("before", dataRegis);
     if (dataRegis?.generalIdentity) {
       setData((prev) => ({
         ...prev,
@@ -46,15 +44,15 @@ const GeneralIdentity = () => {
   useEffect(() => {
     if (dataRegis?.generalIdentity) {
       console.log("file");
-        setIdFile(dataRegis.generalIdentity.formalPictureId);
-        setKtpFileId(dataRegis.generalIdentity.ktpFileId);
+      setIdFile(dataRegis.generalIdentity.formalPictureId);
+      setKtpFileId(dataRegis.generalIdentity.ktpFileId);
     }
   }, []);
 
   useEffect(() => {
     console.log(idFile, ktpFileId);
     console.log(dataRegis?.generalIdentity?.formalPictureId, dataRegis?.generalIdentity?.ktpFileId);
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (dataRegis?.generalIdentity) {
@@ -120,7 +118,7 @@ const GeneralIdentity = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: {
@@ -206,7 +204,7 @@ const GeneralIdentity = () => {
     const checkError = validate();
 
     if (checkError === 0) {
-      console.log("continue",dataRegis);
+      console.log("continue", dataRegis);
       setDataRegistration((prev) => ({
         ...prev,
         generalIdentity: data,
@@ -216,7 +214,7 @@ const GeneralIdentity = () => {
       setIsCheckAction(true);
     }
   };
-  
+
   useEffect(() => {
     if (isContinue) {
       console.log(data);
@@ -225,7 +223,6 @@ const GeneralIdentity = () => {
       setIsContinue(false);
     }
   }, [isContinue]);
-
 
   return (
     <div className="px-6">
@@ -239,7 +236,7 @@ const GeneralIdentity = () => {
         <InputRegistration label="Foto Formal" type="file" value={file.foto} onChange={(e) => uploadFile(e.target.files[0], "formalPictureId")} error={errors.formalPictureId} />
         <InputRegistration label="Foto KTP" type="file" value={file.ktp} onChange={(e) => uploadFile(e.target.files[0], "ktpFileId")} error={errors.ktpFileId} />
       </div>
-      <button type="button" className="mt-4 cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm text-white w-1/2" onClick={() => checkAction(true)}>
+      <button type="button" className="mt-4 w-1/2 cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm text-white" onClick={() => checkAction(true)}>
         Continue
       </button>
     </div>

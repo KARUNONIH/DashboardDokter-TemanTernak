@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import GetAuthorization from "../../fetchAPI/GetAuthorization";
 import PutAuthorization from "../../fetchAPI/PutAuthorization";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const Specialization = () => {
   const [data, setData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [newSpecialization, setNewSpecialization] = useState("");
 
-  const endpoint = "https://api.temanternak.h14.my.id/users/my/profile/specializations";
+  const endpoint = "http://api-temanternak.test.h14.my.id/users/my/profile/specializations";
   const token = JSON.parse(localStorage.getItem("token"));
 
   const { data: getData, loading: getLoading, error: getError, fetchData: fetchGet } = GetAuthorization(endpoint, token);
@@ -32,10 +32,10 @@ const Specialization = () => {
     const response = await fetchPut();
     if (response) {
       Swal.fire({
-        title: 'Success!',
-        text: 'Specializations updated successfully.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Success!",
+        text: "Specializations updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
         setIsEditing(false);
       });
@@ -63,9 +63,9 @@ const Specialization = () => {
       ) : getError ? (
         <p>Error: {getError}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {data.map((specialization, index) => (
-            <div key={index} className=" flex items-center gap-2">
+            <div key={index} className="flex items-center gap-2">
               {isEditing ? (
                 <input
                   type="text"
@@ -75,7 +75,7 @@ const Specialization = () => {
                     updatedData[index] = e.target.value;
                     setData(updatedData);
                   }}
-                  className="border border-gray-300 rounded px-2 py-1 w-full"
+                  className="w-full rounded border border-gray-300 px-2 py-1"
                 />
               ) : (
                 <input
@@ -86,16 +86,13 @@ const Specialization = () => {
                     updatedData[index] = e.target.value;
                     setData(updatedData);
                   }}
-                              className="border border-gray-300 rounded px-2 py-1 w-full"
-                              readOnly
+                  className="w-full rounded border border-gray-300 px-2 py-1"
+                  readOnly
                 />
               )}
               {isEditing && (
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleRemoveSpecialization(index)}
-                    className="text-red-600 bg-red-100 px-2 py-1 rounded"
-                  >
+                  <button onClick={() => handleRemoveSpecialization(index)} className="rounded bg-red-100 px-2 py-1 text-red-600">
                     Delete
                   </button>
                 </div>
@@ -104,18 +101,9 @@ const Specialization = () => {
           ))}
 
           {isEditing && (
-            <div className=" flex items-center gap-2">
-              <input
-                type="text"
-                value={newSpecialization}
-                onChange={(e) => setNewSpecialization(e.target.value)}
-                placeholder="Add new specialization"
-                className="border border-gray-300 rounded px-2 py-1 w-full"
-              />
-              <button
-                onClick={handleAddSpecialization}
-                className="text-blue-600 bg-blue-100 px-2 py-1 rounded"
-              >
+            <div className="flex items-center gap-2">
+              <input type="text" value={newSpecialization} onChange={(e) => setNewSpecialization(e.target.value)} placeholder="Add new specialization" className="w-full rounded border border-gray-300 px-2 py-1" />
+              <button onClick={handleAddSpecialization} className="rounded bg-blue-100 px-2 py-1 text-blue-600">
                 Add
               </button>
             </div>
@@ -125,11 +113,11 @@ const Specialization = () => {
 
       <div className="mt-4">
         {isEditing ? (
-          <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button onClick={handleSave} className="rounded bg-blue-600 px-4 py-2 text-white">
             Update Spesialisasi
           </button>
         ) : (
-          <button onClick={handleEdit} className="bg-gray-600 text-white px-4 py-2 rounded">
+          <button onClick={handleEdit} className="rounded bg-gray-600 px-4 py-2 text-white">
             Edit Spesialisasi
           </button>
         )}

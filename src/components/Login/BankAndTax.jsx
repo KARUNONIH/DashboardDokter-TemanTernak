@@ -22,7 +22,7 @@ const BankAndTax = ({ submit }) => {
   const [isSubmit, setIsSubmit] = useState(false);
 
   const endpoint = {
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -96,7 +96,7 @@ const BankAndTax = ({ submit }) => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: {
@@ -154,7 +154,7 @@ const BankAndTax = ({ submit }) => {
   const checkAction = (type) => {
     if (type) {
       const checkError = validate();
-  
+
       if (checkError === 0) {
         setDataRegistration((prev) => ({
           ...prev,
@@ -179,7 +179,7 @@ const BankAndTax = ({ submit }) => {
       localStorage.setItem("data", JSON.stringify(dataRegistration));
       console.log("Submit process completed");
       submit(); // Call the actual submission function
-  
+
       // Reset state
       setIsContinue(false);
     }

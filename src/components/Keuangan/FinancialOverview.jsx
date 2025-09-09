@@ -22,7 +22,7 @@ const FinancialOverview = () => {
       setLoading(true);
       setLoadingWithdrawals(true);
       setLoadingDeposits(true);
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/wallet", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/wallet", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -45,7 +45,7 @@ const FinancialOverview = () => {
 
   const fetchBankList = async () => {
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/payouts/banks", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/payouts/banks", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -69,7 +69,7 @@ const FinancialOverview = () => {
 
   const fetchIdempotencyKey = async () => {
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/payouts/idempotencyKey", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/payouts/idempotencyKey", {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
@@ -105,7 +105,7 @@ const FinancialOverview = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("https://api.temanternak.h14.my.id/payouts/disbursement", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/payouts/disbursement", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -228,8 +228,16 @@ const FinancialOverview = () => {
                       </section>
                       <section>
                         <section className="flex items-center gap-2">
-                          <span className={`text-sm font-medium ${category == "Penerimaan Dana" ? "text-green-600" : category == "Penarikan Dana" ? "text-red-600" : "text-black" } `}> {category == "Penerimaan Dana" ? "+" : category == "Penarikan Dana" ? "-" : ""} {Math.abs(category !== "Penerimaan Dana" ? price : acceptedAmount).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
-                          {category === "Penarikan Dana" && <p className="text-xs text-gray-600">  ({ acceptedAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" }) } + {platformFee.toLocaleString("id-ID", { style: "currency", currency: "IDR" })})</p>}
+                          <span className={`text-sm font-medium ${category == "Penerimaan Dana" ? "text-green-600" : category == "Penarikan Dana" ? "text-red-600" : "text-black"} `}>
+                            {" "}
+                            {category == "Penerimaan Dana" ? "+" : category == "Penarikan Dana" ? "-" : ""} {Math.abs(category !== "Penerimaan Dana" ? price : acceptedAmount).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}
+                          </span>
+                          {category === "Penarikan Dana" && (
+                            <p className="text-xs text-gray-600">
+                              {" "}
+                              ({acceptedAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })} + {platformFee.toLocaleString("id-ID", { style: "currency", currency: "IDR" })})
+                            </p>
+                          )}
                           {category === "Penerimaan Dana" && (
                             <p className="text-xs text-gray-600">
                               ({price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })} - {platformFee.toLocaleString("id-ID", { style: "currency", currency: "IDR" })})

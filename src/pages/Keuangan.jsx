@@ -8,11 +8,10 @@ const Keuangan = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
 
   const endpoint = {
-    dataUserUrl: "https://api.temanternak.h14.my.id/users/my",
+    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));
-
 
   useEffect(() => {
     const dataUSer = async () => {
@@ -20,14 +19,13 @@ const Keuangan = () => {
       if (response) {
         setDataUSer(response.data);
       }
-    }
+    };
 
-    
     dataUSer();
   }, []);
   return (
-    <div className="bg-slate-50 h-screen w-full pt-8">
-      <FinancialOverview/>
+    <div className="h-screen w-full bg-slate-50 pt-8">
+      <FinancialOverview />
     </div>
   );
 };

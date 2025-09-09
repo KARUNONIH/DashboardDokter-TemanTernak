@@ -13,7 +13,7 @@ const WorkingExperience = () => {
     isActive: false,
   });
 
-  const endpoint = "https://api.temanternak.h14.my.id/users/my/profile/workingExperiences";
+  const endpoint = "http://api-temanternak.test.h14.my.id/users/my/profile/workingExperiences";
   const token = JSON.parse(localStorage.getItem("token"));
 
   const { data: getData, loading: getLoading, error: getError, fetchData: fetchGet } = GetAuthorization(endpoint, token);
@@ -188,7 +188,7 @@ const WorkingExperience = () => {
               <input type="text" value={newExperience.position} onChange={(e) => setNewExperience({ ...newExperience, position: e.target.value })} placeholder="Add position" className="w-full rounded border border-gray-300 px-2 py-1" />
               <div className="flex items-center">
                 <label>Active</label>
-                <input type="checkbox" checked={newExperience.isActive} onChange={(e) => setNewExperience({ ...newExperience, isActive: e.target.checked })} className="mr-4"/>
+                <input type="checkbox" checked={newExperience.isActive} onChange={(e) => setNewExperience({ ...newExperience, isActive: e.target.checked })} className="mr-4" />
               </div>
               <button onClick={handleAddExperience} className="mt-2 rounded bg-blue-100 px-2 py-1 text-blue-600">
                 Add

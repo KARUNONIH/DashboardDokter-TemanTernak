@@ -20,12 +20,10 @@ const License = () => {
   const [registration, registrationProggres] = useAtom(activeFormRegistrationAtom);
   const [formSpecializations, setformSpecializations] = useAtom(formSpecializationAtom);
 
-
   const dataRegis = JSON.parse(localStorage.getItem("data"));
 
-
   const endpoint = {
-    file: "https://api.temanternak.h14.my.id/users/my/files/",
+    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -72,7 +70,7 @@ const License = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://api.temanternak.h14.my.id/users/my/files", {
+      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },
@@ -82,7 +80,6 @@ const License = () => {
         const dataFile = await response.json();
         const fileId = dataFile.data.id;
         setData((prevData) => ({ ...prevData, [type]: fileId }));
-
 
         if (type === "strvFileId") {
           setStrvFileId(fileId);
@@ -132,8 +129,7 @@ const License = () => {
           ...prev,
           license: data,
         }));
-      setIsContinue(true);
-        
+        setIsContinue(true);
       } else {
         setIsCheckAction(true);
       }
@@ -144,7 +140,7 @@ const License = () => {
     if (isContinue) {
       localStorage.setItem("data", JSON.stringify(dataRegistration));
       registrationProggres("proggress3");
-        setformSpecializations("specializations");
+      setformSpecializations("specializations");
       setIsContinue(false);
     }
   }, [isContinue]);

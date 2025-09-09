@@ -13,8 +13,8 @@ const Konsultasi = () => {
   const [allDataModal, setAllDataModal] = useAtom(allDataKonsultasiAtom);
 
   const endpoint = {
-    getMe: "https://api.temanternak.h14.my.id/users/my",
-    getConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
+    getMe: "http://api-temanternak.test.h14.my.id/users/my",
+    getConsultation: "http://api-temanternak.test.h14.my.id/users/my/consultations",
   };
 
   const { data: getMeData, loading: getMeLoading, error: getMeError, fetchData: fetchGetMe } = GetAuthorization(endpoint.getMe, JSON.parse(localStorage.getItem("token")));
@@ -57,7 +57,7 @@ const Konsultasi = () => {
             consultationName: item.serviceName,
             bgIcon: "rgba(192, 38, 211, 1)",
             image: `https://ui-avatars.com/api/?name=${item.bookerName}`,
-            id : item.id
+            id: item.id,
           },
         }));
         setDataCalendar(newData);

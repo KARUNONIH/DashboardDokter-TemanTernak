@@ -27,14 +27,14 @@ const Layanan = () => {
   const [lengthOfConsultations, setLengthOfConsultations] = useAtom(lengthOfConsultationAtom);
 
   const endpoint = {
-    getMe: "https://api.temanternak.h14.my.id/users/my",
-    getBookings: "https://api.temanternak.h14.my.id/bookings",
-    getOnlyService: "https://api.temanternak.h14.my.id/users/my/services",
-    addService: "https://api.temanternak.h14.my.id/veterinarians/services",
-    getAllShedule: "https://api.temanternak.h14.my.id/users/my/schedules",
-    editService: "https://api.temanternak.h14.my.id/veterinarians/services/",
-    addSchedule: "https://api.temanternak.h14.my.id/veterinarians/schedules",
-    getSConsultation: "https://api.temanternak.h14.my.id/users/my/consultations",
+    getMe: "http://api-temanternak.test.h14.my.id/users/my",
+    getBookings: "http://api-temanternak.test.h14.my.id/bookings",
+    getOnlyService: "http://api-temanternak.test.h14.my.id/users/my/services",
+    addService: "http://api-temanternak.test.h14.my.id/veterinarians/services",
+    getAllShedule: "http://api-temanternak.test.h14.my.id/users/my/schedules",
+    editService: "http://api-temanternak.test.h14.my.id/veterinarians/services/",
+    addSchedule: "http://api-temanternak.test.h14.my.id/veterinarians/schedules",
+    getSConsultation: "http://api-temanternak.test.h14.my.id/users/my/consultations",
   };
 
   const { data: addServiceData, loading: addServiceLoading, error: addServiceError, fetchData: fetchAddService } = PostAuthorization(endpoint.addService, dataService, JSON.parse(localStorage.getItem("token")));
@@ -48,7 +48,7 @@ const Layanan = () => {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const hasFilter = params.has('id');
+  const hasFilter = params.has("id");
 
   useEffect(() => {
     const fetchDataSequential = async () => {
@@ -66,15 +66,13 @@ const Layanan = () => {
       const bookingsResponse = await fetchGetBookings();
       if (bookingsResponse) {
         console.log(bookingsResponse);
-        const confirmBookings = bookingsResponse.data.filter((item) =>
-          item.status === "CONFIRMED"
-        );
+        const confirmBookings = bookingsResponse.data.filter((item) => item.status === "CONFIRMED");
         setDataLayanan((prev) => ({ ...prev, konsultasi: confirmBookings }));
         setLengthOfConsultations((prev) => ({ ...prev, konsultasi: confirmBookings.length }));
       }
 
       const scheduleResponse = await fetchGetAllSchedule();
-      if (scheduleResponse) { 
+      if (scheduleResponse) {
         setDataLayanan((prev) => ({ ...prev, jadwal: scheduleResponse.data }));
         setLengthOfConsultations((prev) => ({ ...prev, jadwal: scheduleResponse.data.length }));
       }
@@ -161,21 +159,21 @@ const Layanan = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 px-8 py-4">
-  {hasFilter ? (
-    <Videoroom />
-  ) : (
-    <>
-      <Modal addService={addService} editService={editService} addSchedule={addSchedule} />
-      {/* <Info /> */}
-      <div className="mt-10">
-        <Menu />
-        <div className="">
-          <Table />
-        </div>
-      </div>
-    </>
-  )}
-</div>
+      {hasFilter ? (
+        <Videoroom />
+      ) : (
+        <>
+          <Modal addService={addService} editService={editService} addSchedule={addSchedule} />
+          {/* <Info /> */}
+          <div className="mt-10">
+            <Menu />
+            <div className="">
+              <Table />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 

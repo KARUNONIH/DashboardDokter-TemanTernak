@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 const VideoChat = ({ authToken }) => {
   const [peers, setPeers] = useState(new Map());
@@ -32,7 +32,7 @@ const VideoChat = ({ authToken }) => {
   };
 
   const getMe = async () => {
-    const response = await fetch("https://api.temanternak.h14.my.id/users/my", {
+    const response = await fetch("http://api-temanternak.test.h14.my.id/users/my", {
       headers: {
         Authorization: `Bearer ${query.get("token") || authToken}`,
       },
@@ -42,15 +42,12 @@ const VideoChat = ({ authToken }) => {
   };
 
   const getConsultation = async () => {
-    const response = await fetch(
-      `https://api.temanternak.h14.my.id/bookings/${query.get("id")}/consultations`,
-      {
-        headers: {
-          Authorization: `Bearer ${query.get("token") || authToken}`,
-          accept: "application/json",
-        },
-      }
-    );
+    const response = await fetch(`http://api-temanternak.test.h14.my.id/bookings/${query.get("id")}/consultations`, {
+      headers: {
+        Authorization: `Bearer ${query.get("token") || authToken}`,
+        accept: "application/json",
+      },
+    });
     const data = await response.json();
     setConsultation(data.data);
     return data.data;
@@ -72,17 +69,7 @@ const VideoChat = ({ authToken }) => {
     };
 
     peerConnection.ontrack = (event) => {
-      createVideoElement(
-        socketId,
-        `${
-          myData?.role === "veterinarian"
-            ? consultation?.bookerName
-            : consultation?.veterinarianNameAndTitle
-        }`,
-        isMuted,
-        isVideoOn,
-        event.streams[0]
-      );
+      createVideoElement(socketId, `${myData?.role === "veterinarian" ? consultation?.bookerName : consultation?.veterinarianNameAndTitle}`, isMuted, isVideoOn, event.streams[0]);
     };
 
     setPeers(new Map(peers.set(socketId, peerConnection)));
@@ -137,15 +124,7 @@ const VideoChat = ({ authToken }) => {
         const peerConnection = createPeerConnection(socketId, userId);
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
-        newSocket.emit(
-          "offer",
-          offer,
-          consultation.id,
-          socketId,
-          localIsMuted,
-          localIsVideoOn,
-          query.get("token") || authToken
-        );
+        newSocket.emit("offer", offer, consultation.id, socketId, localIsMuted, localIsVideoOn, query.get("token") || authToken);
       });
 
       newSocket.on("offer", async (offer, socketId, userId, isMuted, isVideoOn) => {
@@ -157,7 +136,7 @@ const VideoChat = ({ authToken }) => {
       });
 
       // Add other socket event handlers...
-      
+
       newSocket.emit("join-room", query.get("token"), query.get("id"));
       setSocket(newSocket);
       setIsJoined(true);
@@ -217,23 +196,17 @@ const VideoChat = ({ authToken }) => {
       formData.append("document_type", "message-media");
 
       try {
-        const uploadResponse = await fetch(
-          "https://api.temanternak.h14.my.id/users/my/files",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${query.get("token") || authToken}`,
-            },
-            body: formData,
-          }
-        );
+        const uploadResponse = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${query.get("token") || authToken}`,
+          },
+          body: formData,
+        });
 
         if (uploadResponse.ok) {
           const uploadResult = await uploadResponse.json();
-          socket?.emit(
-            "sendMessage",
-            { message: `WITHFILE:${uploadResult.data.pathname}END;${message}` }
-          );
+          socket?.emit("sendMessage", { message: `WITHFILE:${uploadResult.data.pathname}END;${message}` });
         }
       } catch (error) {
         console.error("File upload failed:", error);
@@ -250,13 +223,13 @@ const VideoChat = ({ authToken }) => {
     const init = async () => {
       await getMe();
       const consultationData = await getConsultation();
-      
+
       // Set up timer
       const interval = setInterval(() => {
         const now = new Date().getTime();
         const startTime = new Date(consultationData.startTime).getTime();
         const endTime = new Date(consultationData.endTime).getTime();
-        
+
         let distance;
         if (startTime > now) {
           distance = startTime - now;
@@ -270,11 +243,7 @@ const VideoChat = ({ authToken }) => {
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        setTimerText(
-          `${hours.toString().padStart(2, "0")}:${minutes
-            .toString()
-            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-        );
+        setTimerText(`${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
 
         if (distance < -10) {
           clearInterval(interval);
@@ -306,20 +275,14 @@ const VideoChat = ({ authToken }) => {
       </div>
 
       <div className="controls">
-        <button onClick={isJoined ? leaveRoom : joinRoom}>
-          {isJoined ? "Leave Room" : "Join Room"}
-        </button>
-        <button onClick={toggleMute}>
-          {localIsMuted ? "Unmute" : "Mute"}
-        </button>
-        <button onClick={toggleVideo}>
-          {localIsVideoOn ? "Turn Off Video" : "Turn On Video"}
-        </button>
-        
+        <button onClick={isJoined ? leaveRoom : joinRoom}>{isJoined ? "Leave Room" : "Join Room"}</button>
+        <button onClick={toggleMute}>{localIsMuted ? "Unmute" : "Mute"}</button>
+        <button onClick={toggleVideo}>{localIsVideoOn ? "Turn Off Video" : "Turn On Video"}</button>
+
         <select id="cameraSelect" onChange={() => changeCamera()}>
           {/* Camera options */}
         </select>
-        
+
         <select id="microphoneSelect" onChange={() => changeMicrophone()}>
           {/* Microphone options */}
         </select>
@@ -330,28 +293,15 @@ const VideoChat = ({ authToken }) => {
       <div className="chat-container">
         <ul id="messages" className="messages-list">
           {messages.map((msg, index) => (
-            <li
-              key={index}
-              className={`chat-bubble ${msg.userId === myData?.id ? "right" : "left"}`}
-            >
+            <li key={index} className={`chat-bubble ${msg.userId === myData?.id ? "right" : "left"}`}>
               {/* Render message content */}
             </li>
           ))}
         </ul>
 
         <form id="chatForm" onSubmit={handleSendMessage}>
-          <input
-            type="text"
-            ref={messageInputRef}
-            id="messageInput"
-            placeholder="Type a message..."
-          />
-          <input
-            type="file"
-            ref={fileInputRef}
-            id="fileInput"
-            accept="image/*"
-          />
+          <input type="text" ref={messageInputRef} id="messageInput" placeholder="Type a message..." />
+          <input type="file" ref={fileInputRef} id="fileInput" accept="image/*" />
           <button type="submit">Send</button>
         </form>
       </div>
