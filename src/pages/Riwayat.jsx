@@ -15,8 +15,8 @@ const Riwayat = () => {
   const [lengthHistory, setLengthHistory] = useAtom(lengthOfHistoryAtom);
 
   const endpoint = {
-    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
-    getSConsultation: "http://api-temanternak.test.h14.my.id/users/my/consultations",
+    dataUserUrl: "https://api-temanternak.test.h14.my.id/users/my",
+    getSConsultation: "https://api-temanternak.test.h14.my.id/users/my/consultations",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));

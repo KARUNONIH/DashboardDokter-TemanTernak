@@ -9,8 +9,8 @@ const Pengaturan = () => {
   const [dataRegistrationUser, setDataRegistrationUser] = useAtom(dataRegistrationUserAtom);
 
   const endpoint = {
-    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
-    dataRegistrationUSerUrl: "http://api-temanternak.test.h14.my.id/users/my/registrations",
+    dataUserUrl: "https://api-temanternak.test.h14.my.id/users/my",
+    dataRegistrationUSerUrl: "https://api-temanternak.test.h14.my.id/users/my/registrations",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));

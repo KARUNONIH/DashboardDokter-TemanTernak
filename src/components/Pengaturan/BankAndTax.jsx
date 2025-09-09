@@ -14,8 +14,8 @@ const BankAndTax = () => {
   const [bankAccountFileId, setBankAccountFileId] = useState(null);
 
   const endpoint = {
-    data: "http://api-temanternak.test.h14.my.id/users/my/profile/bankAndTax",
-    file: "http://api-temanternak.test.h14.my.id/users/my/files/",
+    data: "https://api-temanternak.test.h14.my.id/users/my/profile/bankAndTax",
+    file: "https://api-temanternak.test.h14.my.id/users/my/files/",
   };
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -58,7 +58,7 @@ const BankAndTax = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
+      const response = await fetch("https://api-temanternak.test.h14.my.id/users/my/files", {
         method: "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },
