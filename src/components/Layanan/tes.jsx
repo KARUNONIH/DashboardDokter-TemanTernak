@@ -32,7 +32,7 @@ const VideoChat = ({ authToken }) => {
   };
 
   const getMe = async () => {
-    const response = await fetch("/api/users/my", {
+    const response = await fetch("http://api-temanternak.test.h14.my.id/users/my", {
       headers: {
         Authorization: `Bearer ${query.get("token") || authToken}`,
       },
@@ -42,7 +42,7 @@ const VideoChat = ({ authToken }) => {
   };
 
   const getConsultation = async () => {
-    const response = await fetch(`/api/bookings/${query.get("id")}/consultations`, {
+    const response = await fetch(`http://api-temanternak.test.h14.my.id/bookings/${query.get("id")}/consultations`, {
       headers: {
         Authorization: `Bearer ${query.get("token") || authToken}`,
         accept: "application/json",
@@ -196,7 +196,7 @@ const VideoChat = ({ authToken }) => {
       formData.append("document_type", "message-media");
 
       try {
-        const uploadResponse = await fetch("/api/users/my/files", {
+        const uploadResponse = await fetch("http://api-temanternak.test.h14.my.id/users/my/files", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${query.get("token") || authToken}`,

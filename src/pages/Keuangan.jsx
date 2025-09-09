@@ -8,7 +8,7 @@ const Keuangan = () => {
   const [dataUser, setDataUSer] = useAtom(dataUSerAtom);
 
   const endpoint = {
-    dataUserUrl: "/api/users/my",
+    dataUserUrl: "http://api-temanternak.test.h14.my.id/users/my",
   };
 
   const { data: statusUserData, loading: statusUserLoading, error: statusUserError, fetchData: fetchDataUser } = GetAuthorization(endpoint.dataUserUrl, JSON.parse(localStorage.getItem("token")));

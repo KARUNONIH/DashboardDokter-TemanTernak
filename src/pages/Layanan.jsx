@@ -27,14 +27,14 @@ const Layanan = () => {
   const [lengthOfConsultations, setLengthOfConsultations] = useAtom(lengthOfConsultationAtom);
 
   const endpoint = {
-    getMe: "/api/users/my",
-    getBookings: "/api/bookings",
-    getOnlyService: "/api/users/my/services",
-    addService: "/api/veterinarians/services",
-    getAllShedule: "/api/users/my/schedules",
-    editService: "/api/veterinarians/services/",
-    addSchedule: "/api/veterinarians/schedules",
-    getSConsultation: "/api/users/my/consultations",
+    getMe: "http://api-temanternak.test.h14.my.id/users/my",
+    getBookings: "http://api-temanternak.test.h14.my.id/bookings",
+    getOnlyService: "http://api-temanternak.test.h14.my.id/users/my/services",
+    addService: "http://api-temanternak.test.h14.my.id/veterinarians/services",
+    getAllShedule: "http://api-temanternak.test.h14.my.id/users/my/schedules",
+    editService: "http://api-temanternak.test.h14.my.id/veterinarians/services/",
+    addSchedule: "http://api-temanternak.test.h14.my.id/veterinarians/schedules",
+    getSConsultation: "http://api-temanternak.test.h14.my.id/users/my/consultations",
   };
 
   const { data: addServiceData, loading: addServiceLoading, error: addServiceError, fetchData: fetchAddService } = PostAuthorization(endpoint.addService, dataService, JSON.parse(localStorage.getItem("token")));

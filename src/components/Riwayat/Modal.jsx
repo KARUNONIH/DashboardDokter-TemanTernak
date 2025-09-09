@@ -24,7 +24,7 @@ const Modal = () => {
     };
 
     try {
-      const response = await fetch(`/api/bookings/${idRiwayat}/consultations/result`, {
+      const response = await fetch(`http://api-temanternak.test.h14.my.id/bookings/${idRiwayat}/consultations/result`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

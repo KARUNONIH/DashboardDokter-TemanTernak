@@ -36,10 +36,10 @@ function RecentConsultation() {
         </div>
       </div>
       {recentPatient === "upcoming" ? (
-        <div>{KonsultasiTerkini.upcoming && KonsultasiTerkini.upcoming.length > 0 ? KonsultasiTerkini.upcoming.slice(0, 4).map((item, index) => <RecentPatient key={index} logo={`https://ui-avatars.com/api/?name=${item.bookerName}&background=0D8ABC&color=fff`} nama={item.bookerName} tanggal={konversiTanggalDanWaktu(item.startTime, "tanggal")} jam={konversiTanggalDanWaktu(item.startTime, "waktu")} />) : <p className="text-center">Belum ada konsultasi yang dijadwalkan.</p>}</div>
+        <div>{KonsultasiTerkini.upcoming && KonsultasiTerkini.upcoming.length > 0 ? KonsultasiTerkini.upcoming.slice(0, 4).map((item, index) => <RecentPatient key={index} logo={`https://ui-avatars.comhttp://api-temanternak.test.h14.my.id/?name=${item.bookerName}&background=0D8ABC&color=fff`} nama={item.bookerName} tanggal={konversiTanggalDanWaktu(item.startTime, "tanggal")} jam={konversiTanggalDanWaktu(item.startTime, "waktu")} />) : <p className="text-center">Belum ada konsultasi yang dijadwalkan.</p>}</div>
       ) : (
         <div className="">
-          <div>{KonsultasiTerkini.done && KonsultasiTerkini.done.length > 0 ? KonsultasiTerkini.done.slice(0, 4).map((item, index) => <RecentPatient key={index} logo={`https://ui-avatars.com/api/?name=${item.bookerName}&background=0D8ABC&color=fff`} nama={item.bookerName} tanggal={konversiTanggalDanWaktu(item.startTime, "tanggal")} jam={konversiTanggalDanWaktu(item.startTime, "waktu")} />) : <p className="text-center">Belum ada konsultasi yang dijadwalkan.</p>}</div>
+          <div>{KonsultasiTerkini.done && KonsultasiTerkini.done.length > 0 ? KonsultasiTerkini.done.slice(0, 4).map((item, index) => <RecentPatient key={index} logo={`https://ui-avatars.comhttp://api-temanternak.test.h14.my.id/?name=${item.bookerName}&background=0D8ABC&color=fff`} nama={item.bookerName} tanggal={konversiTanggalDanWaktu(item.startTime, "tanggal")} jam={konversiTanggalDanWaktu(item.startTime, "waktu")} />) : <p className="text-center">Belum ada konsultasi yang dijadwalkan.</p>}</div>
         </div>
       )}
     </div>

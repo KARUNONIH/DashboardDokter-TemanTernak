@@ -1,8 +1,4 @@
-[[redirects]]
-  from = "/api/*"
-  to = "http://api-temanternak.test.h14.my.id/:splat"
-  status = 200
-  force = true
+
 
 [[redirects]]
   from = "/*"

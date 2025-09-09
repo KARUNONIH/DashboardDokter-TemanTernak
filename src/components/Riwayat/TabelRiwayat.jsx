@@ -39,7 +39,7 @@ const TabelRiwayat = () => {
   };
 
   const getReportLink = (link) => {
-    return `/api/${link.replace(/\\/g, "")}`;
+    return `http://api-temanternak.test.h14.my.id/${link.replace(/\\/g, "")}`;
   };
 
   const columnsKonsultasi = [
